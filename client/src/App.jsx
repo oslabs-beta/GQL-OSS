@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { request, gql } from 'graphql-request';
+import { EndpointInput } from './components/EndpointInput';
 
 // backend endpoint: /api/
 
@@ -130,9 +131,11 @@ const introspection = gql`
 `;
 
 const App = () => {
+  const [endpoint, setEndpoint] = useState('https://swapi-graphql.netlify.app/.netlify/functions/index');
+
   const testGql = async () => {
-    const endpoint =
-      'https://swapi-graphql.netlify.app/.netlify/functions/index';
+    // const endpoint =
+    //   'https://swapi-graphql.netlify.app/.netlify/functions/index';
     const data = await request(endpoint, query);
     console.log(data);
     const schema = await request(endpoint, introspection);
@@ -142,6 +145,7 @@ const App = () => {
   return (
     <div>
       <h1>OSS: Our app</h1>
+      <EndpointInput endpoint={endpoint} setEndpoint={setEndpoint}/>
       <button onClick={testGql}>Send gql request</button>
     </div>
   );
