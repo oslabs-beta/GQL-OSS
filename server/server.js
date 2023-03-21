@@ -1,7 +1,7 @@
 // const express = require("express")
 import express from 'express';
 
-const PORT = 8080,
+const PORT = 3000,
   app = express();
 
 app.get('/api/', (req, res) => {
