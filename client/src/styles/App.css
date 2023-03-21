@@ -1,0 +1,17 @@
+@keyframes sliding {
+  0% {
+    transform: translateX(0vh);
+  }
+
+  50% {
+    transform: translateX(75vw);
+  }
+
+  100% {
+    transform: translateX(0vw);
+  }
+}
+
+.test {
+  animation: sliding 6s linear infinite;
+}
