@@ -7,10 +7,22 @@ import { request, gql } from 'graphql-request';
 //graphql tests endpoint: http://localhost:4000/
 
 const query = gql`
-  {
-    users {
-      id
-      name
+  query Query {
+    allFilms {
+      films {
+        title
+        director
+        releaseDate
+        speciesConnection {
+          species {
+            name
+            classification
+            homeworld {
+              name
+            }
+          }
+        }
+      }
     }
   }
 `;
@@ -119,7 +131,8 @@ const introspection = gql`
 
 const App = () => {
   const testGql = async () => {
-    const endpoint = 'http://localhost:4000/';
+    const endpoint =
+      'https://swapi-graphql.netlify.app/.netlify/functions/index';
     const data = await request(endpoint, query);
     console.log(data);
     const schema = await request(endpoint, introspection);
