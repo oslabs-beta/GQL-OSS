@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { request, gql } from 'graphql-request';
 import { EndpointInput } from './components/EndpointInput';
+import { buildClientSchema, getIntrospectionQuery, printSchema } from 'graphql';
 
 // backend endpoint: /api/
 
@@ -28,6 +29,7 @@ const query = gql`
   }
 `;
 
+/*
 const introspection = gql`
   query IntrospectionQuery {
     __schema {
@@ -129,17 +131,30 @@ const introspection = gql`
     }
   }
 `;
+*/
 
 const App = () => {
+  // state
   const [endpoint, setEndpoint] = useState('https://swapi-graphql.netlify.app/.netlify/functions/index');
 
   const testGql = async () => {
-    // const endpoint =
-    //   'https://swapi-graphql.netlify.app/.netlify/functions/index';
+    // test query for allFilms
     const data = await request(endpoint, query);
-    console.log(data);
-    const schema = await request(endpoint, introspection);
-    console.log(schema);
+    console.log('allFilms query: ', data);
+
+    // introspection query for schema
+    // generate introspection query to retrieve schema
+    const introspectionQuery = getIntrospectionQuery();
+    const schema = await request(endpoint, introspectionQuery);
+    console.log('introspection query: ', schema);
+
+    // format schema for CodeMirror hint and lint
+    const clientSchema = buildClientSchema(schema);
+    console.log('clientSchema: ', clientSchema);
+
+    // format schema in SDL (if needed?)
+    const schemaSDL = printSchema(clientSchema);
+    console.log('schemaSDL: ', schemaSDL);
   };
 
   return (
