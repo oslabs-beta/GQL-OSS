@@ -8,11 +8,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@graphiql/toolkit": "^0.8.2",
     "axios": "^0.26.0",
+    "codemirror-graphql": "^2.0.4",
     "graphql": "^16.6.0",
     "graphql-request": "^5.2.0",
+    "jsonc-parser": "^3.2.0",
+    "monaco-editor": "^0.36.1",
+    "monaco-graphql": "^1.1.8",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "vite-plugin-monaco-editor": "^1.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^1.0.7",
