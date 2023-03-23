@@ -37,5 +37,8 @@ body {
 }
 .vars-editor {
   flex: 1;
-
+}
+main {
+  display: flex;
+  flex-direction: row;
 }

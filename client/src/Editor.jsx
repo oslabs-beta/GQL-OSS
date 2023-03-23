@@ -1,16 +1,9 @@
 import React, { useEffect, useState, useRef} from 'react';
-import { getIntrospectionQuery } from 'graphql';
 import { Uri, editor, KeyMod, KeyCode, languages } from 'monaco-editor';
 import { initializeMode } from 'monaco-graphql/esm/initializeMode';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
 import { debounce } from './utils/debounce';
-
-// refactor to receive the schema from parent component
-// editor itself will not be fetching the schema
-const fetcher = createGraphiQLFetcher({
-  url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
-});
 
 // description that is displayed in request pane above actual code
 // indicate to the user what commands are available and defined
@@ -40,13 +33,6 @@ Format your variables as valid JSON */
 }
 `;
 
-// probably don't need this here, will receive schema from parent
-const getSchema = async () =>
-  fetcher({
-    query: getIntrospectionQuery(),
-    operationName: 'IntrospectionQuery',
-});
-
 // docs here are sparse
 // i believe that the URI here is *internally* looking into monaco config files
 // to find the proper model which is specified as an argument.
@@ -60,44 +46,6 @@ const getOrCreateModel = (uri, value,) => {
   );
 };
 
-// this function gets called when the user hits cmd + enter to run the operation they typed
-
-const execOperation = async function () {
-  // grab the code from the variables pane
-  const variables = editor.getModel(Uri.file('variables.json')).getValue();
-  // grab the operations from the operations pane
-  const operations = editor.getModel(Uri.file('operation.graphql')).getValue();
-  // create reference to the results pane
-  const resultsModel = editor.getModel(Uri.file('results.json'));
-
-  // make GQL request with given operations, passing in the variables
-  const result = await fetcher({
-    query: operations,
-    variables: JSON.stringify(JSONC.parse(variables)),
-  });
-  console.log('RESULT IS: ', result);
-  // Note: this app only supports a single iteration for http GET/POST,
-  // no multipart or subscriptions yet.
-
-  const data = await result.next();
-
-  // display the results in results pane
-  resultsModel?.setValue(JSON.stringify(data.value, null, 2));
-};
-
-// this is the 'run operation' action which is bound to cmd+enter
-// execOperation function will be called
-const queryAction = {
-  id: 'graphql-run',
-  label: 'Run Operation',
-  contextMenuOrder: 0,
-  contextMenuGroupId: 'graphql',
-  keybindings: [
-    // eslint-disable-next-line no-bitwise
-    KeyMod.CtrlCmd | KeyCode.Enter,
-  ],
-  run: execOperation,
-};
 
 // set these early on so that initial variables with comments don't flash an error
 // NOTE: This may set up options for the variables being cross checked across the schema
@@ -116,7 +64,7 @@ const createEditor = (
 ) => editor.create(ref.current, options);
 
 
-export default function Editor() {
+export default function Editor({schema, endpoint}) {
   /* STATE AND REFS */
   // setting up refs to DOM nodes, one for each pane (operations, variables, results)
   const opsRef = useRef(null);
@@ -127,9 +75,47 @@ export default function Editor() {
   const [variablesEditor, setVariablesEditor] = useState(null);
   const [resultsViewer, setResultsViewer] = useState(null);
 
-  const [schema, setSchema] = useState(null); // currently implemented as introspection JSON
-  const [loading, setLoading] = useState(false);
   const [MonacoGQLAPI, setMonacoGQLAPI] = useState(null);
+  const fetcher = endpoint ? createGraphiQLFetcher({
+    url: endpoint
+  }) : null;
+
+  // this function gets called when the user hits cmd + enter to run the operation they typed
+  const execOperation = async function () {
+    // grab the code from the variables pane
+    const variables = editor.getModel(Uri.file('variables.json')).getValue();
+    // grab the operations from the operations pane
+    const operations = editor.getModel(Uri.file('operation.graphql')).getValue();
+    // create reference to the results pane
+    const resultsModel = editor.getModel(Uri.file('results.json'));
+
+    if (!fetcher) return;
+    // make GQL request with given operations, passing in the variables
+    const result = await fetcher({
+      query: operations,
+      variables: JSON.stringify(JSONC.parse(variables)),
+    });
+    // Note: this app only supports a single iteration for http GET/POST,
+    // no multipart or subscriptions yet.
+    const data = await result.next();
+
+    // display the results in results pane
+    resultsModel?.setValue(JSON.stringify(data.value, null, 2));
+  };
+
+  // this is the 'run operation' action which is bound to cmd+enter
+  // execOperation function will be called
+  const queryAction = {
+    id: 'graphql-run',
+    label: 'Run Operation',
+    contextMenuOrder: 0,
+    contextMenuGroupId: 'graphql',
+    keybindings: [
+      // eslint-disable-next-line no-bitwise
+      KeyMod.CtrlCmd | KeyCode.Enter,
+    ],
+    run: execOperation,
+  };
 
   /**
    * Create the models & editors
@@ -197,26 +183,10 @@ export default function Editor() {
    * Handle the initial schema load
    */
   useEffect(() => {
-    if (!schema && !loading) {
-      setLoading(true);
-      const initSchema = async () => {
-        const data = await getSchema();
-        if (!('data' in data)) {
-          throw Error(
-            'Sorry, this app does not support subscriptions or http multipart yet'
-          );
-        }
-        // data.data represents the schema introspection in JSON
-        // we have the option to buildSchema into a GQLSchemaObject alternatively
-        initMonacoAPI(data.data);
-        setSchema(data.data);
-        setLoading(false);
-      }
-      initSchema();
-    }
-  }, [schema, loading]);
+    if (schema) initMonacoAPI();
+  }, [schema]);
 
-  const initMonacoAPI = (introspectionJSON) => {
+  const initMonacoAPI = () => {
     // set up a way to interface with the monacoGQL api
     // configure settings
     setMonacoGQLAPI(initializeMode({
@@ -237,7 +207,7 @@ export default function Editor() {
       },
       schemas: [
         {
-          introspectionJSON, // this is all we're currently using
+          introspectionJSON: schema, // this is all we're currently using
           uri: 'myschema.graphql', // if such a file exists (you can load multiple schemas)
         },
       ],
