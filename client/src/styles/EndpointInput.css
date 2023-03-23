@@ -1,0 +1,6 @@
+.endpoint-input input {
+  width: 30rem;
+  padding: .3rem;
+  margin: .3rem;
+  outline: none;
+}
