@@ -11,16 +11,13 @@ export const EndpointInput = ({endpoint, setEndpoint}) => {
   return (
     <div className="endpoint-input">
       <label htmlFor='endpoint-input'>GraphQL Server Endpoint:</label>
-      <input 
-        type='text' 
-        id='endpoint-input' 
+      <input
+        type='text'
+        id='endpoint-input'
         placeholder="GraphQL Endpoint..."
         value={endpointText}
         onChange={(e) => setEndpointText(e.target.value)}></input>
       <button onClick={updateEndpoint}>Update Endpoint</button>
-      <h3>State:</h3>
-      <p><strong>endpointText (in EndpointInput component): </strong>{endpointText}</p>
-      <p><strong>endpoint (in App component): </strong>{endpoint}</p>
     </div>
   )
 }
