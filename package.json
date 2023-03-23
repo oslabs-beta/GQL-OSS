@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "concurrently": "^7.0.0"
+    "concurrently": "^7.0.0",
+    "reactflow": "^11.6.1"
   },
   "scripts": {
     "start": "concurrently \"cd ./server && npm run server\" \"cd ./client && npm run dev\""
