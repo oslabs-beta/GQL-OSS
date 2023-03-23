@@ -14,17 +14,9 @@ const App = () => {
   }, []);
 
   const testGql = async () => {
-    // const data = await request(endpoint, query);
-    // console.log('data is: ', data);
-
     const schema = await request(endpoint, getIntrospectionQuery());
-    console.log('SCHEMA is: ', schema);
-
     const clientSchema = buildClientSchema(schema);
-    console.log('CLIENT SCHEMA is: ', clientSchema);
-
     const schemaSDL = printSchema(clientSchema);
-    console.log('SCHEMA SDL is: ', schemaSDL);
   };
 
   return (
@@ -36,25 +28,3 @@ const App = () => {
 };
 
 export default App;
-
-
-// const query = gql`
-//   query Query {
-//     allFilms {
-//       films {
-//         title
-//         director
-//         releaseDate
-//         speciesConnection {
-//           species {
-//             name
-//             classification
-//             homeworld {
-//               name
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-// `;

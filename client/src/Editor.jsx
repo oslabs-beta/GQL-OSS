@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef} from 'react';
 import { getIntrospectionQuery } from 'graphql';
 import { Uri, editor, KeyMod, KeyCode, languages } from 'monaco-editor';
 import { initializeMode } from 'monaco-graphql/esm/initializeMode';
@@ -18,14 +18,12 @@ const fetcher = createGraphiQLFetcher({
 const defaultOperations =
   localStorage.getItem('operations') ??
   `
-# cmd/ctrl + return/enter will execute the op,
-# same in variables editor below
-# also available via context menu & f1 command palette
+# GQL Request Pane
+# cmd/ctrl + return/enter will execute the operation
+# Also available via context menu & f1 command palette
 
-query($limit: Int!) {
-    payloads(limit: $limit) {
-        customer
-    }
+query {
+
 }
 `;
 
@@ -33,12 +31,13 @@ query($limit: Int!) {
 const defaultVariables =
   localStorage.getItem('variables') ??
   `
- {
-     // limit will appear here as autocomplete,
-     // and because the default value is 0, will
-     // complete as such
-     "limit": false
- }
+/* Variables Pane
+cmd/ctrl + return/enter will execute the operation
+Format your variables as valid JSON */
+
+{
+
+}
 `;
 
 // probably don't need this here, will receive schema from parent
@@ -120,16 +119,17 @@ const createEditor = (
 export default function Editor() {
   /* STATE AND REFS */
   // setting up refs to DOM nodes, one for each pane (operations, variables, results)
-  const opsRef = React.useRef(null);
-  const varsRef = React.useRef(null);
-  const resultsRef = React.useRef(null);
+  const opsRef = useRef(null);
+  const varsRef = useRef(null);
+  const resultsRef = useRef(null);
   // state of each pane's monaco (i believe) instance/interface/api
-  const [queryEditor, setQueryEditor] = React.useState(null);
-  const [variablesEditor, setVariablesEditor] = React.useState(null);
-  const [resultsViewer, setResultsViewer] = React.useState(null);
+  const [queryEditor, setQueryEditor] = useState(null);
+  const [variablesEditor, setVariablesEditor] = useState(null);
+  const [resultsViewer, setResultsViewer] = useState(null);
 
-  const [schema, setSchema] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
+  const [schema, setSchema] = useState(null); // currently implemented as introspection JSON
+  const [loading, setLoading] = useState(false);
+  const [MonacoGQLAPI, setMonacoGQLAPI] = useState(null);
 
   /**
    * Create the models & editors
@@ -206,43 +206,51 @@ export default function Editor() {
             'Sorry, this app does not support subscriptions or http multipart yet'
           );
         }
-        initializeMode({
-          diagnosticSettings: {
-            validateVariablesJSON: {
-              [Uri.file('operation.graphql').toString()]: [
-                Uri.file('variables.json').toString(),
-              ],
-            },
-            jsonDiagnosticSettings: {
-              validate: true,
-              schemaValidation: 'error',
-              // set these again, because we are entirely re-setting them here
-              allowComments: true,
-              trailingCommas: 'ignore',
-            },
-          },
-          schemas: [
-            {
-              introspectionJSON: data.data,
-              uri: 'myschema.graphql',
-            },
-          ],
-        });
+        // data.data represents the schema introspection in JSON
+        // we have the option to buildSchema into a GQLSchemaObject alternatively
+        initMonacoAPI(data.data);
         setSchema(data.data);
         setLoading(false);
       }
       initSchema();
     }
   }, [schema, loading]);
+
+  const initMonacoAPI = (introspectionJSON) => {
+    // set up a way to interface with the monacoGQL api
+    // configure settings
+    setMonacoGQLAPI(initializeMode({
+      // match the request pane with variables pane for validation
+      diagnosticSettings: {
+        validateVariablesJSON: {
+          [Uri.file('operation.graphql').toString()]: [
+            Uri.file('variables.json').toString(),
+          ],
+        },
+        jsonDiagnosticSettings: {
+          validate: true,
+          schemaValidation: 'error',
+          // set these again, because we are entirely re-setting them here
+          allowComments: true,
+          trailingCommas: 'ignore',
+        },
+      },
+      schemas: [
+        {
+          introspectionJSON, // this is all we're currently using
+          uri: 'myschema.graphql', // if such a file exists (you can load multiple schemas)
+        },
+      ],
+    }));
+  }
+
   return (
-    <div id="wrapper">
-      <div id="left-pane" className="pane">
+    <div className="monaco-container">
+      <section className="editor-pane">
         <div ref={opsRef} className="editor" />
-        <div ref={varsRef} className="editor" />
-      </div>
-      <div id="right-pane" className="pane">
+        <div ref={varsRef} className="editor vars-editor" />
         <div ref={resultsRef} className="editor" />
-      </div>
+      </section>
     </div>
   );
 }
