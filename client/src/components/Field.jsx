@@ -1,5 +1,6 @@
 import React, { memo, useEffect } from 'react';
 import { Handle } from 'reactflow';
+import { MarkerType } from 'reactflow';
 
 const field = {
   position: `relative`,
@@ -16,57 +17,38 @@ const fieldData = {
 };
 
 const Field = ({ typeName, fieldName, returnType, updateEdge, relationship }) => {
-  // console.log(linkTo);
-  //WHAT NEEDS TO HAPPEN IS WHEN LINKTO IS TRUE, A NEW EDGE NEEDS TO BE MADE
-  // THE NEW NODE NEEDS TO HAVE THE TABLENAME AND COLUMN NAME FOR THE SOURCE
-  // THE NEW NODE ALSO NEEDS THE TABLENAME AND THE COLUMN NAME FOR THE TARGET
+
   useEffect(() => {
+    // for our vSchema:
+    // relationship is a key on a field object that only exists if that field points to a type
+    // its value corresponds 1:1 to the object type name and its node's id
     if (relationship) {
-      // console.log('relationship is: ', relationship);
       const targetType = relationship;
-      const sourceField = fieldName;
-      // const [targetTable, targetColumn] = linkTo.split(`.`);
-
-      const test = {
-        id: `${typeName}/${sourceField}-${targetType}`,
-        targetHandle: `${targetType}`,
-        sourceHandle: `${typeName}/${sourceField}`,
-      }
-      console.log('update edge object for field: ', fieldName,'is: ', test);
-
       updateEdge({
-        id: `${typeName}/${sourceField}-${targetType}`,
-        // targetHandle: `${targetType}`,
-        target: targetType,
+        id: `${typeName}/${fieldName}-${targetType}`,
         source: typeName,
-        sourceHandle: `${typeName}/${sourceField}`,
+        sourceHandle: `${typeName}/${fieldName}`,
+        target: targetType,
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: 'cornflowerblue',
+          width: 20,
+          height: 20,
+          strokeWidth: .3
+        },
+        animated: true,
+        style: { stroke: 'cornflowerblue' },
       });
     }
   }, []);
 
-  // data.updateEdge({
-    //         id: `${sourceTable}/${sourceColumn}-${targetTable}/${targetColumn}`,
-    //         source: sourceTable,
-    //         target: targetTable,
-    //         sourceHandle: sourceColumn,
-    //         targetHandle: targetColumn,
-    //       });
-
   return (
     <div style={field}>
-      {/* isPrimaryKey && !linkTo && */}
-      {/* { (
-        <Handle type="target" position="left" id={fieldName} />
-      )} */}
-
       <div style={fieldData}>
-        <p className="name">{fieldName}</p>
-        <p className="data-type">{returnType}</p>
+        <p className="field-name">{fieldName}</p>
+        <p className="return-type">{returnType}</p>
       </div>
-      {/* linkTo && !isPrimaryKey && */}
-      { (
-        <Handle type="source" position="right" id={`${typeName}/${fieldName}`} />
-      )}
+      <Handle type="source" position="right" isConnectable={false} id={`${typeName}/${fieldName}`} />
     </div>
   );
 };

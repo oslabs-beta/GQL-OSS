@@ -22,7 +22,7 @@ body {
 
 .monaco-container {
   height: 100vh;
-  width: 33%;
+  width: 40%;
 }
 
 .editor-pane {
@@ -46,4 +46,9 @@ main {
 .visualizer-container {
   width: 100%;
   height: 100%;
+}
+
+.endpoint-section {
+  width: 100%;
+  height: 90vh;
 }

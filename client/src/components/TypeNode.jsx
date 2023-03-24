@@ -1,9 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
 import { Handle } from 'reactflow';
-
 import Field from './Field';
-
-// import './TableNode.css';
 
 const containerStyle = {
   display: 'flex',
@@ -25,62 +22,25 @@ const typeHeading = {
 };
 
 const TypeNode = ({ data }) => {
-  // const [fields, setFields] = useState([]);
   const { typeName, fields, updateEdge } =  data;
+  const [fieldElements, setFieldElements] = useState();
 
-  // NOT implementing edges yet, just want to render
-
-  const fieldElements = fields.map((field, i) => {
-    const newField =
-      (<Field
-        key={`F${i}`}
+  useEffect(() => {
+    setFieldElements(fields.map(field => (
+      <Field
+        key={`${typeName}/${field.fieldName}`}
         typeName={typeName}
         fieldName={field.fieldName}
         returnType={field.returnType}
         updateEdge={updateEdge}
         relationship={field.relationship}
-      />);
-
-    return newField;
-  });
-
-
-  // useEffect(() => {
-  //   tableData.columns.forEach((column, i) => {
-  //     const [[columnName, other]] = Object.entries(column);
-  //     const columnDataType = other.type || other;
-  //     const isPrimaryKey = other.primaryKey || false;
-  //     const linkTo = other.linkedTable || null;
-  //     setColumns((prev) => [
-  //       ...prev,
-  //       <Column
-  //         key={`C${i}`}
-  //         columnName={columnName}
-  //         columnDetails={other}
-  //         columnDataType={columnDataType}
-  //         isPrimaryKey={isPrimaryKey}
-  //         linkTo={linkTo}
-  //       />,
-  //     ]);
-  //     if (linkTo) {
-  //       const sourceTable = tableData.tableName;
-  //       const sourceColumn = columnName;
-  //       const [targetTable, targetColumn] = linkTo.split(`.`);
-
-  //       data.updateEdge({
-  //         id: `${sourceTable}/${sourceColumn}-${targetTable}/${targetColumn}`,
-  //         source: sourceTable,
-  //         target: targetTable,
-  //         sourceHandle: sourceColumn,
-  //         targetHandle: targetColumn,
-  //       });
-  //     }
-  //   });
-  // }, []);
+      />
+    )));
+  }, []);
 
   return (
     <div className="type-node" style={containerStyle}>
-      <Handle type="target" position="left" id={typeName} />
+      <Handle type="target" position="left" id={typeName} isConnectable={false}/>
       <div className="type-node__container">
         <div style={typeHeading}>{typeName}</div>
         <div className="type-node__columns-container">{fieldElements}</div>

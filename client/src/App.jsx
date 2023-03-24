@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { request, gql } from 'graphql-request';
 import { EndpointInput } from './components/EndpointInput';
-import { buildClientSchema, getIntrospectionQuery, printSchema } from 'graphql';
+import { getIntrospectionQuery } from 'graphql';
 import Editor from './Editor';
 import Visualizer from './components/Visualizer';
-
-import parseReceivedSchema from './funcs/parseIntrospectionQueryResponse';
+import parseReceivedSchema from './utils/parseIntrospectionQueryResponse';
 
 // backend endpoint: /api/
-
 //graphql tests endpoint: http://localhost:4000/
 
 const App = () => {
@@ -25,17 +23,7 @@ const App = () => {
     setSchema(schema);
     const parsedSchemaData = parseReceivedSchema(schema);
     setVSchema(parsedSchemaData.visualizerSchema);
-
-    // format schema for CodeMirror hint and lint
-    // const clientSchema = buildClientSchema(schema);
-    // console.log('clientSchema: ', clientSchema);
-
-    // format schema in SDL (if needed?)
-    // const schemaSDL = printSchema(clientSchema);
-    // console.log('schemaSDL: ', schemaSDL);
   };
-  console.log('schema is: ', schema);
-  console.log('vSchema is: ', vSchema);
 
   return (
     <main>

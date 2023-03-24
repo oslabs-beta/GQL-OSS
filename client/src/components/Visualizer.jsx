@@ -5,97 +5,43 @@ import ReactFlow,
   MiniMap,
   applyEdgeChanges,
   applyNodeChanges,
-  addEdge,
   SelectionMode
 } from 'reactflow';
-
 import 'reactflow/dist/style.css';
 import TypeNode from './TypeNode';
-// import {schema} from '../testdata/visualizerSchema';
 
-// const vSchema = schema.visualizerSchema;
-
+// Declare custom node type
+// Outside of component to prevent re-declaration upon every render
 const nodeTypes = {
   typeNode: TypeNode,
 };
-// console.log('schema is: ', schema);
 
 const Visualizer = ({ vSchema }) => {
+  // State management for a controlled react-flow
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
-  // console.log('nodes are: ', nodes);
-  // console.log('edges are: ', edges);
+  // Memoized (cached) event listeners to prevent unnecessary re-renders
+  const onNodesChange = useCallback((changes) => setNodes((nds) => applyNodeChanges(changes, nds)), []);
+  const onEdgesChange = useCallback((changes) => setEdges((eds) => applyEdgeChanges(changes, eds)), []);
 
+  // If a schema is loaded, map each Object Type to a Type Node
   useEffect(() => {
-    // console.log('vschema is: ', vSchema);
-    if (vSchema !== null) {
-      vSchema.objectTypes.forEach((type, i) => {
-        const newNode = {
-          id: type.name,
-          position: { x: i * 300, y: 0 }, //refactor this to be autospaced with a library(?)
-          data: {
-            typeName: type.name,
-            fields: type.fields,
-            updateEdge: (newEdge) => {
-              setEdges((prev) => [...prev, newEdge]);
-            },
-          },
-          type: `typeNode`
-        };
-        setNodes((prev) => {
-          return [...prev, newNode];
-        });
-      });
-    }
+    if (!vSchema) return;
+    const newNodes = vSchema.objectTypes.map((type, i) => ({
+      id: type.name,
+      position: { x: i * 300, y: 0 }, // TODO: refactor using a graph/hierarchy library
+      data: {
+        typeName: type.name,
+        fields: type.fields,
+        updateEdge: (newEdge) => {
+          setEdges((prev) => [...prev, newEdge]);
+        },
+      },
+      type: `typeNode`,
+    }));
+    setNodes(newNodes);
+    setEdges([]);
   }, [vSchema]);
-  // const newNodes = vSchema.objectTypes.map((type, i) => ({
-      //   id: type.name,
-      //   position: { x: i * 300, y: 0 }, //refactor this to be autospaced with a library(?)
-      //   data: {
-      //     typeName: type.name,
-      //     fields: type.fields,
-      //     updateEdge: (newEdge) => {
-      //       setEdges((prev) => [...prev, newEdge]);
-      //     },
-      //   },
-      //   type: `typeNode`,
-      // }));
-      // setNodes(newNodes);
-
-  // useEffect(() => {
-  //   tables.forEach((tableData, i) => {
-  //     const newNode = {
-  //       id: tableData.tableName,
-  //       position: { x: i * 300, y: 0 },
-  //       data: {
-  //         tableData,
-  //         updateEdge: (newEdge) => {
-  //           setEdges((prev) => [...prev, newEdge]);
-  //         },
-  //       },
-  //       type: `tableNode`,
-  //     };
-
-  //     setNodes((prev) => {
-  //       return [...prev, newNode];
-  //     });
-  //   });
-  // }, [tables]);
-
-
-  const onNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    []
-  );
-  const onEdgesChange = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    []
-  );
-
-  const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
-    []
-  );
 
   return (
     <div className='visualizer-container'>
@@ -104,12 +50,10 @@ const Visualizer = ({ vSchema }) => {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
         selectionOnDrag={true}
         selectionMode={SelectionMode.Partial}
         nodeTypes={nodeTypes}
         fitView
-
         panOnScroll={true}
       >
         <Background />
