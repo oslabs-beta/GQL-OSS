@@ -18,6 +18,7 @@
     "monaco-graphql": "^1.1.8",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "reactflow": "^11.6.1",
     "vite-plugin-monaco-editor": "^1.1.0"
   },
   "devDependencies": {

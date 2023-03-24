@@ -1,38 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { request, gql } from 'graphql-request';
 import { EndpointInput } from './components/EndpointInput';
-import { buildClientSchema, getIntrospectionQuery, printSchema } from 'graphql';
+import { getIntrospectionQuery } from 'graphql';
 import Editor from './Editor';
-
-import parseReceivedSchema from './funcs/parseIntrospectionQueryResponse';
+import Visualizer from './components/Visualizer';
+import parseReceivedSchema from './utils/parseIntrospectionQueryResponse';
 
 // backend endpoint: /api/
-
 //graphql tests endpoint: http://localhost:4000/
 
 const App = () => {
   // state
   const [endpoint, setEndpoint] = useState(
-    'https://swapi-graphql.netlify.app/.netlify/functions/index'
+    'https://countries.trevorblades.com/'
   );
   const [schema, setSchema] = useState(null);
+  const [vSchema, setVSchema] = useState(null);
 
   const fetchSchema = async () => {
     // introspection query to get schema
     const schema = await request(endpoint, getIntrospectionQuery());
-
+    setSchema(schema);
     const parsedSchemaData = parseReceivedSchema(schema);
-    setSchema(parsedSchemaData);
-
-    // format schema for CodeMirror hint and lint
-    // const clientSchema = buildClientSchema(schema);
-    // console.log('clientSchema: ', clientSchema);
-
-    // format schema in SDL (if needed?)
-    // const schemaSDL = printSchema(clientSchema);
-    // console.log('schemaSDL: ', schemaSDL);
+    setVSchema(parsedSchemaData.visualizerSchema);
   };
-  console.log(schema);
 
   return (
     <main>
@@ -40,6 +31,7 @@ const App = () => {
       <section className="endpoint-section">
         <EndpointInput endpoint={endpoint} setEndpoint={setEndpoint} />
         <button onClick={fetchSchema}>Fetch Schema</button>
+        <Visualizer vSchema={vSchema}></Visualizer>
       </section>
     </main>
   );
