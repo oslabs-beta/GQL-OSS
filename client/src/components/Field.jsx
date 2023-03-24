@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { Handle } from 'reactflow';
 
 const field = {
@@ -15,18 +15,49 @@ const fieldData = {
   gap: 10,
 };
 
-const Field = ({ fieldName, returnType }) => {
+const Field = ({ typeName, fieldName, returnType, updateEdge, relationship }) => {
   // console.log(linkTo);
   //WHAT NEEDS TO HAPPEN IS WHEN LINKTO IS TRUE, A NEW EDGE NEEDS TO BE MADE
   // THE NEW NODE NEEDS TO HAVE THE TABLENAME AND COLUMN NAME FOR THE SOURCE
   // THE NEW NODE ALSO NEEDS THE TABLENAME AND THE COLUMN NAME FOR THE TARGET
+  useEffect(() => {
+    if (relationship) {
+      // console.log('relationship is: ', relationship);
+      const targetType = relationship;
+      const sourceField = fieldName;
+      // const [targetTable, targetColumn] = linkTo.split(`.`);
+
+      const test = {
+        id: `${typeName}/${sourceField}-${targetType}`,
+        targetHandle: `${targetType}`,
+        sourceHandle: `${typeName}/${sourceField}`,
+      }
+      console.log('update edge object for field: ', fieldName,'is: ', test);
+
+      updateEdge({
+        id: `${typeName}/${sourceField}-${targetType}`,
+        // targetHandle: `${targetType}`,
+        target: targetType,
+        source: typeName,
+        sourceHandle: `${typeName}/${sourceField}`,
+      });
+    }
+  }, []);
+
+  // data.updateEdge({
+    //         id: `${sourceTable}/${sourceColumn}-${targetTable}/${targetColumn}`,
+    //         source: sourceTable,
+    //         target: targetTable,
+    //         sourceHandle: sourceColumn,
+    //         targetHandle: targetColumn,
+    //       });
 
   return (
     <div style={field}>
       {/* isPrimaryKey && !linkTo && */}
-      { (
+      {/* { (
         <Handle type="target" position="left" id={fieldName} />
-      )}
+      )} */}
 
       <div style={fieldData}>
         <p className="name">{fieldName}</p>
@@ -34,7 +65,7 @@ const Field = ({ fieldName, returnType }) => {
       </div>
       {/* linkTo && !isPrimaryKey && */}
       { (
-        <Handle type="source" position="right" id={fieldName} />
+        <Handle type="source" position="right" id={`${typeName}/${fieldName}`} />
       )}
     </div>
   );

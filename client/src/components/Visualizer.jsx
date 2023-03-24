@@ -11,34 +11,56 @@ import ReactFlow,
 
 import 'reactflow/dist/style.css';
 import TypeNode from './TypeNode';
-import {schema} from '../testdata/visualizerSchema';
+// import {schema} from '../testdata/visualizerSchema';
 
-const vSchema = schema.visualizerSchema;
+// const vSchema = schema.visualizerSchema;
 
 const nodeTypes = {
   typeNode: TypeNode,
 };
-console.log('schema is: ', schema);
+// console.log('schema is: ', schema);
 
-const Visualizer = () => {
+const Visualizer = ({ vSchema }) => {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
+  // console.log('nodes are: ', nodes);
+  // console.log('edges are: ', edges);
 
   useEffect(() => {
-    const newNodes = vSchema.objectTypes.map((type, i) => ({
-      id: type.name,
-      position: { x: i * 300, y: 0 }, //refactor this to be autospaced with a library(?)
-      data: {
-        typeName: type.name,
-        fields: type.fields,
-        updateEdge: (newEdge) => {
-          setEdges((prev) => [...prev, newEdge]);
-        },
-      },
-      type: `typeNode`,
-    }));
-    setNodes(newNodes);
-  }, []);
+    // console.log('vschema is: ', vSchema);
+    if (vSchema !== null) {
+      vSchema.objectTypes.forEach((type, i) => {
+        const newNode = {
+          id: type.name,
+          position: { x: i * 300, y: 0 }, //refactor this to be autospaced with a library(?)
+          data: {
+            typeName: type.name,
+            fields: type.fields,
+            updateEdge: (newEdge) => {
+              setEdges((prev) => [...prev, newEdge]);
+            },
+          },
+          type: `typeNode`
+        };
+        setNodes((prev) => {
+          return [...prev, newNode];
+        });
+      });
+    }
+  }, [vSchema]);
+  // const newNodes = vSchema.objectTypes.map((type, i) => ({
+      //   id: type.name,
+      //   position: { x: i * 300, y: 0 }, //refactor this to be autospaced with a library(?)
+      //   data: {
+      //     typeName: type.name,
+      //     fields: type.fields,
+      //     updateEdge: (newEdge) => {
+      //       setEdges((prev) => [...prev, newEdge]);
+      //     },
+      //   },
+      //   type: `typeNode`,
+      // }));
+      // setNodes(newNodes);
 
   // useEffect(() => {
   //   tables.forEach((tableData, i) => {
@@ -87,6 +109,8 @@ const Visualizer = () => {
         selectionMode={SelectionMode.Partial}
         nodeTypes={nodeTypes}
         fitView
+
+        panOnScroll={true}
       >
         <Background />
         <Controls />

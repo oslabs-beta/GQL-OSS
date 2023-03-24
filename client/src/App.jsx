@@ -14,16 +14,17 @@ import parseReceivedSchema from './funcs/parseIntrospectionQueryResponse';
 const App = () => {
   // state
   const [endpoint, setEndpoint] = useState(
-    'https://swapi-graphql.netlify.app/.netlify/functions/index'
+    'https://countries.trevorblades.com/'
   );
   const [schema, setSchema] = useState(null);
+  const [vSchema, setVSchema] = useState(null);
 
   const fetchSchema = async () => {
     // introspection query to get schema
     const schema = await request(endpoint, getIntrospectionQuery());
-
+    setSchema(schema);
     const parsedSchemaData = parseReceivedSchema(schema);
-    setSchema(parsedSchemaData);
+    setVSchema(parsedSchemaData.visualizerSchema);
 
     // format schema for CodeMirror hint and lint
     // const clientSchema = buildClientSchema(schema);
@@ -33,7 +34,8 @@ const App = () => {
     // const schemaSDL = printSchema(clientSchema);
     // console.log('schemaSDL: ', schemaSDL);
   };
-  console.log(schema);
+  console.log('schema is: ', schema);
+  console.log('vSchema is: ', vSchema);
 
   return (
     <main>
@@ -41,7 +43,7 @@ const App = () => {
       <section className="endpoint-section">
         <EndpointInput endpoint={endpoint} setEndpoint={setEndpoint} />
         <button onClick={fetchSchema}>Fetch Schema</button>
-        <Visualizer></Visualizer>
+        <Visualizer vSchema={vSchema}></Visualizer>
       </section>
     </main>
   );

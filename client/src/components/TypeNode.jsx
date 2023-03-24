@@ -1,4 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
+import { Handle } from 'reactflow';
 
 import Field from './Field';
 
@@ -25,17 +26,23 @@ const typeHeading = {
 
 const TypeNode = ({ data }) => {
   // const [fields, setFields] = useState([]);
-  const { typeName, fields, updateEdge} =  data;
+  const { typeName, fields, updateEdge } =  data;
 
   // NOT implementing edges yet, just want to render
 
-  const fieldElements = fields.map((field, i) => (
-    <Field
-      key={`F${i}`}
-      fieldName={field.fieldName}
-      returnType={field.returnType}
-    />
-  ));
+  const fieldElements = fields.map((field, i) => {
+    const newField =
+      (<Field
+        key={`F${i}`}
+        typeName={typeName}
+        fieldName={field.fieldName}
+        returnType={field.returnType}
+        updateEdge={updateEdge}
+        relationship={field.relationship}
+      />);
+
+    return newField;
+  });
 
 
   // useEffect(() => {
@@ -73,6 +80,7 @@ const TypeNode = ({ data }) => {
 
   return (
     <div className="type-node" style={containerStyle}>
+      <Handle type="target" position="left" id={typeName} />
       <div className="type-node__container">
         <div style={typeHeading}>{typeName}</div>
         <div className="type-node__columns-container">{fieldElements}</div>
