@@ -42,3 +42,8 @@ main {
   display: flex;
   flex-direction: row;
 }
+
+.visualizer-container {
+  width: 100%;
+  height: 100%;
+}

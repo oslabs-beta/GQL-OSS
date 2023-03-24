@@ -3,6 +3,7 @@ import { request, gql } from 'graphql-request';
 import { EndpointInput } from './components/EndpointInput';
 import { buildClientSchema, getIntrospectionQuery, printSchema } from 'graphql';
 import Editor from './Editor';
+import Visualizer from './components/Visualizer';
 
 // backend endpoint: /api/
 
@@ -34,6 +35,7 @@ const App = () => {
       <section className="endpoint-section">
         <EndpointInput endpoint={endpoint} setEndpoint={setEndpoint}/>
         <button onClick={fetchSchema}>Fetch Schema</button>
+        <Visualizer></Visualizer>
       </section>
     </main>
   );
