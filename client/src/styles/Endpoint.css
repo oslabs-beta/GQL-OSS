@@ -1,6 +1,18 @@
-.endpoint-input input {
+.endpoint__container {
+  margin: 1rem 0;
+}
+
+.endpoint__label {
+  font-weight: 500;
+}
+
+.endpoint__input {
   width: 30rem;
   padding: .3rem;
-  margin: .3rem;
+  margin: 0 .3rem;
   outline: none;
+}
+
+.endpoint__button {
+  padding: .3rem;
 }
