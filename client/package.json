@@ -12,6 +12,7 @@
     "@tisoap/react-flow-smart-edge": "^3.0.0",
     "axios": "^0.26.0",
     "codemirror-graphql": "^2.0.4",
+    "dagre": "^0.8.5",
     "graphql": "^16.6.0",
     "graphql-request": "^5.2.0",
     "jsonc-parser": "^3.2.0",

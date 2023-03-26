@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
-import { Handle, StraightEdge } from 'reactflow';
+import { Handle } from 'reactflow';
 import { MarkerType, useNodes, useUpdateNodeInternals } from 'reactflow';
 
 
@@ -46,7 +46,7 @@ const Field = ({ typeName, fieldName, returnType, updateEdge, relationship }) =>
           height: 20,
           strokeWidth: .3
         },
-        animated: true,
+        // animated: true,
         style: { stroke: 'cornflowerblue' },
       });
     }

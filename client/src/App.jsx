@@ -15,6 +15,7 @@ const App = () => {
   const [schema, setSchema] = useState(null);
   const [vSchema, setVSchema] = useState(null);
 
+  console.log('vSchema: ', vSchema);
 
   return (
     <main>
