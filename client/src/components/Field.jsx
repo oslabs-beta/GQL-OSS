@@ -21,22 +21,16 @@ const Field = ({ typeName, fieldName, returnType, updateEdge, relationship }) =>
   const nodes = useNodes();
   const updateNodeInternals = useUpdateNodeInternals();
   const [handlePosition, setHandlePosition] = useState('right');
+  // const [targetNode, setTargetNode] = useState(null);
+  // const [currNode, setCurrNode] = useState(null);
+
   useEffect(() => {
     // for our vSchema:
     // relationship is a key on a field object that only exists if that field points to a type
     // its value corresponds 1:1 to the object type name and its node's id
     if (relationship) {
+
       const targetType = relationship;
-      const targetNode = nodes.find(node => node.id === targetType)
-      const currNode = nodes.find(node => node.id === typeName)
-      const targetPosition = targetNode.position;
-      const currPosition = currNode.position;
-      console.log('the position of target node is: ', targetPosition );
-      console.log('the position of curr node is: ', currPosition );
-      if (currPosition.x > targetPosition.x) {
-        setHandlePosition('left');
-        updateNodeInternals(typeName);
-      }
 
       updateEdge({
         id: `${typeName}/${fieldName}-${targetType}`,
@@ -57,6 +51,25 @@ const Field = ({ typeName, fieldName, returnType, updateEdge, relationship }) =>
       });
     }
   }, []);
+
+  // I originally tried to store curr and target nodes in state
+  // and assign them only once in useEffect, however ... that created
+  // all sorts of unintended behavior
+  // You'd think it'd be easier that way ... it seems 'references' got lost in state
+  // So here, we're 'brute forcing' instead.
+  if (relationship) {
+    const targetNode = nodes.find(node => node.id === relationship);
+    const currNode = nodes.find(node => node.id === typeName);
+    const targetPosition = targetNode.position;
+    const currPosition = currNode.position;
+    if (currPosition.x > targetPosition.x && handlePosition !== 'left') {
+      setHandlePosition('left');
+      updateNodeInternals(typeName);
+    } else if (currPosition.x < targetPosition.x && handlePosition !== 'right') {
+      setHandlePosition('right');
+      updateNodeInternals(typeName);
+    }
+  }
 
   return (
     <div style={field}>

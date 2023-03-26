@@ -71,6 +71,7 @@ const Visualizer = ({ vSchema }) => {
     // setEdges([]);
   }, [vSchema]);
 
+
   return (
     <div className='visualizer-container'>
       <ReactFlow

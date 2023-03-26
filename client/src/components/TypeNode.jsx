@@ -38,6 +38,7 @@ const TypeNode = ({ data }) => {
     )));
   }, []);
 
+
   return (
     <div className="type-node" style={containerStyle}>
       { typeName !== 'Root' && typeName !== 'Query' &&
