@@ -38,7 +38,7 @@ const Field = ({ typeName, fieldName, returnType, updateEdge, relationship }) =>
         sourceHandle: `${typeName}/${fieldName}`,
         target: targetType,
         // smooth: true,
-        type: 'smart',
+        // type: 'smart',
         markerEnd: {
           type: MarkerType.ArrowClosed,
           color: 'cornflowerblue',

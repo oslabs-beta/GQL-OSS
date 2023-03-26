@@ -26,6 +26,7 @@ import {
 
 import SmartEdge from './SmartEdge';
 import createGraphLayout from '../utils/createGraphLayout';
+import createElkLayout from '../utils/createElkLayout';
 // Declare custom node type
 // Outside of component to prevent re-declaration upon every render
 const nodeTypes = {
@@ -43,8 +44,8 @@ const nodeTypes = {
 const edgeTypes = {
   // smart: SmartBezierEdge
   // smart: bezierResult
-  smart: SmartEdge
-  // smart: SmartStepEdge
+  // smart: SmartEdge
+  smart: SmartStepEdge
   // smart: SmartStraightEdge
 }
 
@@ -99,15 +100,19 @@ const Visualizer = ({ vSchema }) => {
   // }, [nodes]);
 
   useEffect(() => {
-    if (nodesInitialized && shouldGraph.current) {
-      const { nodeInternals } = store.getState();
+    const generateGraph = async () => {
+      const { nodeInternals, edges } = store.getState();
+      console.log('nodeInternals: ', nodeInternals, ' edges: ', edges);
+
       const currNodes = Array.from(nodeInternals.values());
       // The node printed here won't have a width or height in some cases
       // console.log('currnodes: ', currNodes);
-      const graphedNodes = createGraphLayout(currNodes);
+      // const graphedNodes = createGraphLayout(currNodes);
+      const graphedNodes = await createElkLayout(currNodes, edges);
       setNodes(graphedNodes);
       shouldGraph.current = false;
     }
+    if (nodesInitialized && shouldGraph.current) generateGraph();
   }, [nodesInitialized, store]);
 
 
@@ -122,7 +127,7 @@ const Visualizer = ({ vSchema }) => {
           selectionOnDrag={true}
           selectionMode={SelectionMode.Partial}
           nodeTypes={nodeTypes}
-          // edgeTypes={edgeTypes}
+          edgeTypes={edgeTypes}
           fitView={true}
           panOnScroll={true}
           zoom={1}
