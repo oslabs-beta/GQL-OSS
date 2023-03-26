@@ -40,7 +40,9 @@ const TypeNode = ({ data }) => {
 
   return (
     <div className="type-node" style={containerStyle}>
-      <Handle type="target" position="left" id={typeName} isConnectable={false}/>
+      { typeName !== 'Root' && typeName !== 'Query' &&
+        <Handle type="target" position="top" id={typeName} isConnectable={false}/>
+      }
       <div className="type-node__container">
         <div style={typeHeading}>{typeName}</div>
         <div className="type-node__columns-container">{fieldElements}</div>

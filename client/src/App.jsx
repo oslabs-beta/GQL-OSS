@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Endpoint } from './components/Endpoint';
 import Editor from './Editor';
 import Visualizer from './components/Visualizer';
+import TestVisualizer from './components/TestVisualizer';
 
 // backend endpoint: /api/
 //graphql tests endpoint: http://localhost:4000/
@@ -18,14 +19,15 @@ const App = () => {
   return (
     <main>
       <Editor schema={schema} endpoint={endpoint}></Editor>
-      <section className="endpoint-section">
-        <Endpoint 
-          endpoint={endpoint} 
+      <section className="visualizer-section">
+        <Endpoint
+          endpoint={endpoint}
           setEndpoint={setEndpoint}
           setSchema={setSchema}
           setVSchema={setVSchema}
         />
         <Visualizer vSchema={vSchema}></Visualizer>
+        {/* <TestVisualizer></TestVisualizer> */}
       </section>
     </main>
   );

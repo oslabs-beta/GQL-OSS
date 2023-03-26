@@ -9,13 +9,41 @@ import ReactFlow,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import TypeNode from './TypeNode';
+import {
+  getSmartEdge,
+	svgDrawSmoothLinePath,
+	svgDrawStraightLinePath,
+	pathfindingAStarDiagonal,
+	pathfindingAStarNoDiagonal,
+	pathfindingJumpPointNoDiagonal,
+  SmartBezierEdge,
+  SmartStraightEdge,
+  SmartStepEdge,
+} from '@tisoap/react-flow-smart-edge';
+
+import SmartEdge from './SmartEdge';
 
 // Declare custom node type
 // Outside of component to prevent re-declaration upon every render
 const nodeTypes = {
   typeNode: TypeNode,
 };
+// Same as importing "SmartBezierEdge" directly
+// const bezierResult = getSmartEdge({
+//   // ...
+// 	options: {
+//     drawEdge: svgDrawStraightLinePath,
+// 		generatePath: pathfindingJumpPointNoDiagonal,
+// 	}
+// })
 
+const edgeTypes = {
+  // smart: SmartBezierEdge
+  // smart: bezierResult
+  smart: SmartEdge
+  // smart: SmartStepEdge
+  // smart: SmartStraightEdge
+}
 const Visualizer = ({ vSchema }) => {
   // State management for a controlled react-flow
   const [nodes, setNodes] = useState([]);
@@ -40,7 +68,7 @@ const Visualizer = ({ vSchema }) => {
       type: `typeNode`,
     }));
     setNodes(newNodes);
-    setEdges([]);
+    // setEdges([]);
   }, [vSchema]);
 
   return (
@@ -53,8 +81,12 @@ const Visualizer = ({ vSchema }) => {
         selectionOnDrag={true}
         selectionMode={SelectionMode.Partial}
         nodeTypes={nodeTypes}
-        fitView
+        // edgeTypes={edgeTypes}
+        fitView={true}
         panOnScroll={true}
+        zoom={1}
+        minZoom={.1}
+        maxZoom={2}
       >
         <Background />
         <Controls />
