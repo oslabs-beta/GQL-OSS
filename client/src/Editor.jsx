@@ -80,6 +80,7 @@ export default function Editor({schema, endpoint, setQuery}) {
     url: endpoint
   }) : null;
 
+
   // this function gets called when the user hits cmd + enter to run the operation they typed
   const execOperation = async function () {
     // grab the code from the variables pane
@@ -160,8 +161,15 @@ export default function Editor({schema, endpoint, setQuery}) {
     Goal: Only refresh the local storage values of queries and variables 300ms after user stops typing
     instead of immediately after each keypress
     */
+
     queryModel.onDidChangeContent(
       debounce(300, () => {
+        const markers = editor.getModelMarkers({resource: Uri.file('operation.graphql')});
+        if (!markers.length) {
+          const query = editor.getModel(Uri.file('operation.graphql')).getValue();
+          setQuery(query);
+          execOperation();
+        }
         localStorage.setItem('operations', queryModel.getValue());
       })
     );
@@ -173,6 +181,9 @@ export default function Editor({schema, endpoint, setQuery}) {
 
     // only run once on mount
   }, []);
+
+
+
 
   // Actions execute functionality based on events (in this case it's keybindings)
   // Wait until variables editor is actually instantiated before adding these keybindings

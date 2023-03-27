@@ -20,7 +20,7 @@ const App = () => {
 
   // If the user executes a query, update the active ID's
   useEffect(() => {
-    if (!query) return;
+    if (query === null) return;
     const {activeTypeIDs, activeFieldIDs} = getActivesFromQuery(query, vSchema);
     setActiveTypeIDs(activeTypeIDs);
     setActiveFieldIDs(activeFieldIDs);
