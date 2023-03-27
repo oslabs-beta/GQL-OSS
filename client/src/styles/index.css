@@ -52,3 +52,7 @@ main {
   width: 100%;
   height: 90vh;
 }
+
+.active {
+  border: 2px solid gold;
+}

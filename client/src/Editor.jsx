@@ -64,7 +64,7 @@ const createEditor = (
 ) => editor.create(ref.current, options);
 
 
-export default function Editor({schema, endpoint}) {
+export default function Editor({schema, endpoint, setQuery}) {
   /* STATE AND REFS */
   // setting up refs to DOM nodes, one for each pane (operations, variables, results)
   const opsRef = useRef(null);
@@ -86,6 +86,7 @@ export default function Editor({schema, endpoint}) {
     const variables = editor.getModel(Uri.file('variables.json')).getValue();
     // grab the operations from the operations pane
     const operations = editor.getModel(Uri.file('operation.graphql')).getValue();
+    setQuery(operations);
     // create reference to the results pane
     const resultsModel = editor.getModel(Uri.file('results.json'));
 

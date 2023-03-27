@@ -20,7 +20,7 @@ const nodeTypes = {
   typeNode: TypeNode,
 };
 
-const Visualizer = ({ vSchema }) => {
+const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs }) => {
   // State management for a controlled React Flow
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -46,11 +46,12 @@ const Visualizer = ({ vSchema }) => {
         updateEdge: (newEdge) => {
           setEdges((prev) => [...prev, newEdge]);
         },
+        active: activeTypeIDs?.has(type.name)
       },
       type: `typeNode`,
     }));
     setNodes(newNodes);
-  }, [vSchema]);
+  }, [vSchema, activeTypeIDs]);
 
   /* Process the initial nodes & edges through Elk Graph */
   useEffect(() => {

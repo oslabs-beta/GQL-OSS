@@ -22,13 +22,16 @@ const typeHeading = {
 };
 
 const TypeNode = ({ data }) => {
-  const { typeName, fields, updateEdge } =  data;
+  const { typeName, fields, updateEdge, active } =  data;
   const [fieldElements, setFieldElements] = useState();
+
+  console.log('TYPENODE: ', data);
 
   useEffect(() => {
     setFieldElements(fields.map(field => (
       <Field
         key={`${typeName}/${field.fieldName}`}
+        id={`${typeName}/${field.fieldName}`}
         typeName={typeName}
         fieldName={field.fieldName}
         returnType={field.returnType}
@@ -40,7 +43,7 @@ const TypeNode = ({ data }) => {
 
 
   return (
-    <div className="type-node" style={containerStyle}>
+    <div className={`type-node ${active ? 'active' : ''}`} style={containerStyle}>
       { typeName !== 'Root' && typeName !== 'Query' &&
         <Handle type="target" position="top" id={typeName} isConnectable={false}/>
       }
