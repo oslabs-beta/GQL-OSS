@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Endpoint } from './components/Endpoint';
 import Editor from './Editor';
 import Visualizer from './components/Visualizer';
-import TestVisualizer from './components/TestVisualizer';
 
 // backend endpoint: /api/
 //graphql tests endpoint: http://localhost:4000/
@@ -15,8 +14,6 @@ const App = () => {
   const [schema, setSchema] = useState(null);
   const [vSchema, setVSchema] = useState(null);
 
-  console.log('vSchema: ', vSchema);
-
   return (
     <main>
       <Editor schema={schema} endpoint={endpoint}></Editor>
@@ -28,7 +25,6 @@ const App = () => {
           setVSchema={setVSchema}
         />
         <Visualizer vSchema={vSchema}></Visualizer>
-        {/* <TestVisualizer></TestVisualizer> */}
       </section>
     </main>
   );

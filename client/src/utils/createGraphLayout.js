@@ -1,54 +1,59 @@
-import dagre from 'dagre';
-// import { Node } from 'reactflow';
+import Elk from "elkjs";
 
-const createGraphLayout = (flowNodeStates) => {
-  const g = new dagre.graphlib.Graph();
-  g.setGraph({
-    // ranker: 'network-simplex',
-//  ranker: 'tight-tree',
-//  ranker: 'longest-path',
-    rankdir: 'LR',
-    ranksep: 50,
-    // edgesep: 200,
-  });
+const elk = new Elk({
+  defaultLayoutOptions: {
+    'elk.algorithm': 'layered',
+    'elk.direction': 'RIGHT',
+    'elk.spacing.nodeNode': '150',
+    'elk.layered.spacing.nodeNodeBetweenLayers': '100',
+    'elk.edgeRouting': 'SPLINES',
+    'elk.layered.nodePlacement.strategy': 'SIMPLE',
+    // 'elk.edgeRouting.splines.mode': 'CONSERVATIVE',
+    // 'elk.crossingMinimization.strategy': 'LAYER_SWEEP',
+    // 'elk.layered.layering.strategy': 'NETWORK_SIMPLEX'
+  }
+})
 
+const createGraphLayout = async (flowNodes, flowEdges) => {
+    const elkNodes = [];
+    const elkEdges = [];
 
-  // Default to assigning a new object as a label for each new edge.
-  g.setDefaultEdgeLabel(() => ({}));
-
-  flowNodeStates.forEach((node) => {
-    // console.log('node: ', node);
-    // console.log('node id: ', node.id);
-    // console.log('node width: ', node.width);
-    // console.log('node height: ', node.height);
-    g.setNode(node.id, {
-      label: node.id,
-      width: node.width,
-      height: node.height,
+    // Create an Elk node and edge for every React Flow node and edge
+    flowNodes.forEach((node) => {
+        elkNodes.push({
+            id: node.id,
+            width: node.width,
+            height: node.height
+        });
     });
-    // Setting dagre edges based on RF Custom Node (Type Node) edges
-    // For every field that has a relationship, exists a corresponding edge
-    node.data.fields &&
-      node.data.fields.forEach((field) => {
-        // console.log('here');
-        if (field.relationship) g.setEdge(node.id, field.relationship);
-      });
-  });
+    flowEdges.forEach((edge) => {
+        elkEdges.push({
+            id: edge.id,
+            target: edge.target,
+            source: edge.source,
+        });
+    });
 
-  dagre.layout(g);
-
-  return flowNodeStates.map((nodeState) => {
-    const node = g.node(nodeState.id);
-    return {
-      ...nodeState,
-      position: {
-        // The position from dagre layout is the center of the node.
-        // Calculating the position of the top left corner for rendering.
-        x: node.x - node.width / 2,
-        y: node.y - node.height / 2,
-      },
-    };
-  });
+    // Create Elk graph based on nodes, edges, and configuration defined above
+    const graph = await elk.layout({
+        id: "root",
+        children: elkNodes,
+        edges: elkEdges,
+    });
+    // Map the positions of each Elk node back onto the corresponding React Flow node
+    return flowNodes.map((flowNode) => {
+        const elkNode = graph.children.find((eNode) => eNode.id === flowNode.id);
+        if (elkNode.x && elkNode.y && elkNode.width && elkNode.height) {
+            flowNode.position = {
+                // For nodes:
+                // Elk coordinates are centered
+                // React Flow coordinates start at upper left
+                x: elkNode.x - elkNode.width / 2,
+                y: elkNode.y - elkNode.height / 2,
+            };
+        }
+        return flowNode;
+    });
 };
 
 export default createGraphLayout;

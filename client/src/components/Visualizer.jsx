@@ -1,74 +1,45 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import ReactFlow,
 { Background,
   Controls,
   MiniMap,
-  applyEdgeChanges,
-  applyNodeChanges,
+  useNodesState,
+  useEdgesState,
   SelectionMode,
-  ReactFlowProvider,
   useNodesInitialized,
-  useStoreApi
+  useStoreApi,
+  useReactFlow
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import TypeNode from './TypeNode';
-import {
-  getSmartEdge,
-	svgDrawSmoothLinePath,
-	svgDrawStraightLinePath,
-	pathfindingAStarDiagonal,
-	pathfindingAStarNoDiagonal,
-	pathfindingJumpPointNoDiagonal,
-  SmartBezierEdge,
-  SmartStraightEdge,
-  SmartStepEdge,
-} from '@tisoap/react-flow-smart-edge';
-
-import SmartEdge from './SmartEdge';
 import createGraphLayout from '../utils/createGraphLayout';
-import createElkLayout from '../utils/createElkLayout';
-// Declare custom node type
-// Outside of component to prevent re-declaration upon every render
+
+/* Custom Node */
+// Declared outside of component to prevent re-declaration upon every render
 const nodeTypes = {
   typeNode: TypeNode,
 };
-// Same as importing "SmartBezierEdge" directly
-// const bezierResult = getSmartEdge({
-//   // ...
-// 	options: {
-//     drawEdge: svgDrawStraightLinePath,
-// 		generatePath: pathfindingJumpPointNoDiagonal,
-// 	}
-// })
-
-const edgeTypes = {
-  // smart: SmartBezierEdge
-  // smart: bezierResult
-  // smart: SmartEdge
-  smart: SmartStepEdge
-  // smart: SmartStraightEdge
-}
-
-const nodeHasDimension = (node) => node.height !== undefined && node.width !== undefined;
 
 const Visualizer = ({ vSchema }) => {
-  // State management for a controlled react-flow
-  const [nodes, setNodes] = useState([]);
-  const [edges, setEdges] = useState([]);
-  // const [shouldGraph, setShouldGraph] = useState(true);
-  const shouldGraph = useRef(true);
-  // Memoized (cached) event listeners to prevent unnecessary re-renders
-  const onNodesChange = useCallback((changes) => setNodes((nds) => applyNodeChanges(changes, nds)), []);
-  const onEdgesChange = useCallback((changes) => setEdges((eds) => applyEdgeChanges(changes, eds)), []);
-  const nodesInitialized = useNodesInitialized();
-  const store = useStoreApi();
+  // State management for a controlled React Flow
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  // If a schema is loaded, map each Object Type to a Type Node
+  // State relating to React Flow internals
+  const store = useStoreApi();
+  const nodesInitialized = useNodesInitialized();
+  const flowInstance = useReactFlow();
+
+  /* Create Initial Nodes & Edges */
+  // If a schema is passed in, map each Object Type to a Type Node
   useEffect(() => {
     if (!vSchema) return;
-    const newNodes = vSchema.objectTypes.map((type, i) => ({
+    // graphed.current = false;
+    const newNodes = vSchema.objectTypes.map(type => ({
       id: type.name,
-      position: { x: i * 300, y: 0 }, // TODO: refactor using a graph/hierarchy library
+      // Initial positions are arbitary and will be overwritten by Elk positions.
+      // React Flow nodes need to be initialized before processed by Elk.
+      position: { x: 0, y: 0 },
       data: {
         typeName: type.name,
         fields: type.fields,
@@ -78,47 +49,29 @@ const Visualizer = ({ vSchema }) => {
       },
       type: `typeNode`,
     }));
-    // const graphedNodes = createGraphLayout(newNodes);
-    shouldGraph.current = true;
     setNodes(newNodes);
-    // setNodes(graphedNodes);
-    // setEdges([]);
   }, [vSchema]);
 
-
-
-  // useEffect(() => {
-  //   // if (nodesInitialized && shouldGraph) {
-  //   //   console.log('in use effect, nodes is: ', nodes);
-  //   //   const graphedNodes = createGraphLayout(nodes);
-  //   //   // setNodes(graphedNodes);
-  //   //   // setShouldGraph(false);
-  //   // }
-  //   for (const node of nodes) {
-  //     console.log('current node is: ', node, ' nodHasDimension? ', nodeHasDimension(node));
-  //   }
-  // }, [nodes]);
-
+  /* Process the initial nodes & edges through Elk Graph */
   useEffect(() => {
+    if (!nodesInitialized) return;
     const generateGraph = async () => {
+      // Get accurate picture of nodes and edges from internal React Flow state
       const { nodeInternals, edges } = store.getState();
-      console.log('nodeInternals: ', nodeInternals, ' edges: ', edges);
-
       const currNodes = Array.from(nodeInternals.values());
-      // The node printed here won't have a width or height in some cases
-      // console.log('currnodes: ', currNodes);
-      // const graphedNodes = createGraphLayout(currNodes);
-      const graphedNodes = await createElkLayout(currNodes, edges);
+      // Generate a graph layout from the nodes and edges using Elk
+      const graphedNodes = await createGraphLayout(currNodes, edges);
+      // Reset React Flow nodes to reflect the graph layout
       setNodes(graphedNodes);
-      shouldGraph.current = false;
+      // Queue fitView to occur AFTER the graphed nodes have asynchronously been set
+      setTimeout(() => flowInstance.fitView(), 0);
     }
-    if (nodesInitialized && shouldGraph.current) generateGraph();
-  }, [nodesInitialized, store]);
-
+    generateGraph();
+  }, [ vSchema, nodesInitialized, store]);
 
   return (
+    // React Flow instance needs a container that has explicit width and height
     <div className='visualizer-container'>
-
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -127,7 +80,6 @@ const Visualizer = ({ vSchema }) => {
           selectionOnDrag={true}
           selectionMode={SelectionMode.Partial}
           nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
           fitView={true}
           panOnScroll={true}
           zoom={1}
@@ -138,7 +90,6 @@ const Visualizer = ({ vSchema }) => {
           <Controls />
           <MiniMap />
         </ReactFlow>
-
     </div>
   );
 };
