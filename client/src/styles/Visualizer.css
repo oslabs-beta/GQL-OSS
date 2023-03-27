@@ -1,0 +1,10 @@
+.visualizer-container {
+  border: 1px solid red;
+  width: 100%;
+  height: 100%;
+}
+
+.type-node__handle-target {
+  background-color: transparent;
+  top: 1rem;
+}
