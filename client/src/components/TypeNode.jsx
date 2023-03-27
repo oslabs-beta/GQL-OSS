@@ -2,17 +2,17 @@ import React, { memo, useEffect, useState } from 'react';
 import { Handle } from 'reactflow';
 import Field from './Field';
 
-const containerStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  backgroundColor: '#fff',
-  transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-  boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-  border: '0px solid #bbb',
-  fontSize: '10pt',
-  position: 'relative',
-  minWidth: 150,
-};
+// const containerStyle = {
+//   display: 'flex',
+//   flexDirection: 'column',
+//   backgroundColor: '#fff',
+//   transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+//   boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
+//   border: '0px solid #bbb',
+//   fontSize: '10pt',
+//   position: 'relative',
+//   minWidth: 150,
+// };
 
 const typeHeading = {
   padding: `8px 32px`,
@@ -43,7 +43,7 @@ const TypeNode = ({ data }) => {
 
 
   return (
-    <div className={`type-node ${active ? 'active' : ''}`} style={containerStyle}>
+    <div className={`type-node ${active ? 'active' : ''}`}>
       { typeName !== 'Root' && typeName !== 'Query' &&
         <Handle type="target" position="top" id={typeName} isConnectable={false}/>
       }

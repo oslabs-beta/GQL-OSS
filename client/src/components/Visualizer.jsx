@@ -46,12 +46,28 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs }) => {
         updateEdge: (newEdge) => {
           setEdges((prev) => [...prev, newEdge]);
         },
-        active: activeTypeIDs?.has(type.name)
+        active: activeTypeIDs?.has(type.name) ? true : false
       },
       type: `typeNode`,
     }));
     setNodes(newNodes);
-  }, [vSchema, activeTypeIDs]);
+  }, [vSchema]);
+
+  useEffect(() => {
+    console.log('here..');
+    setNodes(prevNodes => {
+      return prevNodes.map(node => {
+        console.log('node: ', node);
+        console.log('ATIDS: ', activeTypeIDs);
+        const newNode = {
+          ...node,
+          data: {...node.data, active: activeTypeIDs?.has(node.id) ? true : false}
+        }
+        console.log('newNode: ', newNode);
+        return newNode;
+      })
+    });
+  }, [activeTypeIDs]);
 
   /* Process the initial nodes & edges through Elk Graph */
   useEffect(() => {
