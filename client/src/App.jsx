@@ -14,13 +14,12 @@ const App = () => {
   const [schema, setSchema] = useState(null);
   const [vSchema, setVSchema] = useState(null);
 
-
   return (
     <main>
       <Editor schema={schema} endpoint={endpoint}></Editor>
-      <section className="endpoint-section">
-        <Endpoint 
-          endpoint={endpoint} 
+      <section className="visualizer-section">
+        <Endpoint
+          endpoint={endpoint}
           setEndpoint={setEndpoint}
           setSchema={setSchema}
           setVSchema={setVSchema}
