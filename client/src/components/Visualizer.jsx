@@ -34,7 +34,6 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs }) => {
   // If a schema is passed in, map each Object Type to a Type Node
   useEffect(() => {
     if (!vSchema) return;
-    // graphed.current = false;
     const newNodes = vSchema.objectTypes.map(type => ({
       id: type.name,
       // Initial positions are arbitary and will be overwritten by Elk positions.
@@ -46,24 +45,26 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs }) => {
         updateEdge: (newEdge) => {
           setEdges((prev) => [...prev, newEdge]);
         },
-        active: activeTypeIDs?.has(type.name) ? true : false
+        active: false,
+        activeFieldIDs
       },
       type: `typeNode`,
     }));
     setNodes(newNodes);
   }, [vSchema]);
 
+  // Whenever the active type ID's change, update the nodes' active properties to reflect the changes
   useEffect(() => {
-    console.log('here..');
     setNodes(prevNodes => {
       return prevNodes.map(node => {
-        console.log('node: ', node);
-        console.log('ATIDS: ', activeTypeIDs);
         const newNode = {
           ...node,
-          data: {...node.data, active: activeTypeIDs?.has(node.id) ? true : false}
+          data: {
+            ...node.data,
+            active: activeTypeIDs?.has(node.id) ? true : false,
+            activeFieldIDs
+          }
         }
-        console.log('newNode: ', newNode);
         return newNode;
       })
     });
@@ -84,7 +85,7 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs }) => {
       setTimeout(() => flowInstance.fitView(), 0);
     }
     generateGraph();
-  }, [ vSchema, nodesInitialized, store]);
+  }, [vSchema, nodesInitialized]);
 
   return (
     // React Flow instance needs a container that has explicit width and height

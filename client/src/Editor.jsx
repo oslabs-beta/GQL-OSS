@@ -86,6 +86,7 @@ export default function Editor({schema, endpoint, setQuery}) {
     const variables = editor.getModel(Uri.file('variables.json')).getValue();
     // grab the operations from the operations pane
     const operations = editor.getModel(Uri.file('operation.graphql')).getValue();
+    // update active ID's
     setQuery(operations);
     // create reference to the results pane
     const resultsModel = editor.getModel(Uri.file('results.json'));

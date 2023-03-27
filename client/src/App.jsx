@@ -18,21 +18,14 @@ const App = () => {
   const [activeTypeIDs, setActiveTypeIDs] = useState(null);
   const [activeFieldIDs, setActiveFieldIDs] = useState(null);
 
-  console.log('vSchema is: ', vSchema);
-
-
-
+  // If the user executes a query, update the active ID's
   useEffect(() => {
     if (!query) return;
     const {activeTypeIDs, activeFieldIDs} = getActivesFromQuery(query, vSchema);
-
     setActiveTypeIDs(activeTypeIDs);
     setActiveFieldIDs(activeFieldIDs);
   }, [query]);
 
-
-  console.log('ATI: ', activeTypeIDs);
-  console.log('AFI: ', activeFieldIDs);
   return (
     <main>
       <Editor schema={schema} endpoint={endpoint} setQuery={setQuery}></Editor>

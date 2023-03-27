@@ -9,6 +9,9 @@ const field = {
   flexGrow: 1,
   textAlign: `center`,
 };
+const fieldActive = {
+  background: 'lightblue'
+};
 
 const fieldData = {
   display: 'flex',
@@ -17,21 +20,17 @@ const fieldData = {
   gap: 10,
 };
 
-const Field = ({ typeName, fieldName, returnType, updateEdge, relationship }) => {
+const Field = ({ typeName, fieldName, returnType, updateEdge, relationship, active }) => {
   const nodes = useNodes();
   const updateNodeInternals = useUpdateNodeInternals();
   const [handlePosition, setHandlePosition] = useState('right');
-  // const [targetNode, setTargetNode] = useState(null);
-  // const [currNode, setCurrNode] = useState(null);
 
   useEffect(() => {
-    // for our vSchema:
-    // relationship is a key on a field object that only exists if that field points to a type
-    // its value corresponds 1:1 to the object type name and its node's id
+    // In vSchema:
+    // 'Relationship' is a key on a field object that only exists if that field points to a type.
+    // Its value corresponds 1:1 to the object type name and its node's id
     if (relationship) {
-
       const targetType = relationship;
-
       updateEdge({
         id: `${typeName}/${fieldName}-${targetType}`,
         source: typeName,
@@ -52,6 +51,8 @@ const Field = ({ typeName, fieldName, returnType, updateEdge, relationship }) =>
     }
   }, []);
 
+
+  /* Dynamically shift around the handles */
   // I originally tried to store curr and target nodes in state
   // and assign them only once in useEffect, however ... that created
   // all sorts of unintended behavior
@@ -72,7 +73,7 @@ const Field = ({ typeName, fieldName, returnType, updateEdge, relationship }) =>
   }
 
   return (
-    <div style={field}>
+    <div style={active ? {...field, ...fieldActive} : field}>
       <div style={fieldData}>
         <p className="field-name">{fieldName}</p>
         <p className="return-type">{returnType}</p>

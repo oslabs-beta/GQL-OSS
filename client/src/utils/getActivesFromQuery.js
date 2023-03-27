@@ -3,8 +3,8 @@ import { gql } from 'graphql-tag';
 /* Create sets of active type ID's and active field ID's */
 const getActivesFromQuery = (queryString, vSchema) => {
   const queryObj = gql`${queryString}`;
-  console.log('queryObj: ', queryObj);
-  console.log('vSchema: ', vSchema);
+  // console.log('queryObj: ', queryObj);
+  // console.log('vSchema: ', vSchema);
 
   // Array of Objects each representing an Object Type in the vSchema
   const vSchemaTypes = vSchema.objectTypes;
@@ -17,10 +17,9 @@ const getActivesFromQuery = (queryString, vSchema) => {
   const queryName = vSchema.queryName.name;
   // The actual Object Type in the vSchema which represents the Query/Root
   const queryType = vSchemaTypes.find(type => type.name === queryName);
-
-  const query = queryObj.definitions[0];
-  console.log('query: ', query);
   const gqlSelections = queryObj.definitions[0].selectionSet?.selections;
+
+  // Recursive helper function to parse the selections of the query object and add the corresponding ID's
   const addActives = (vSchemaType, gqlSelection) => {
     activeTypeIDs.add(vSchemaType.name);
     activeFieldIDs.add(`${vSchemaType.name}/${gqlSelection.name.value}`);
@@ -28,11 +27,11 @@ const getActivesFromQuery = (queryString, vSchema) => {
       const vSchemaField = vSchemaType.fields.find(field => field.fieldName === gqlSelection.name.value);
       const vSchemaNextType = vSchemaTypes.find(type => type.name === vSchemaField.relationship);
       for (const selection of gqlSelection.selectionSet.selections) {
-        // activeFieldIDs.add(`${vSchemaType.name}/${selection.name.value}`);
         addActives(vSchemaNextType, selection);
       }
     }
   }
+  // Starting from the top (at the Query/Root Type)
   if (gqlSelections) {
     for (const gqlSelection of gqlSelections) {
       addActives(queryType, gqlSelection);

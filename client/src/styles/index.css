@@ -52,21 +52,3 @@ main {
   width: 100%;
   height: 90vh;
 }
-
-
-.type-node {
-  display: flex;
-  flex-direction: column;
-  background-color: #fff;
-  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-  /* border: 0px solid #bbb; */
-  /* border: 5px solid gold; */
-  font-size: 10pt;
-  position: relative;
-  min-width: 150;
-};
-
-.type-node.active {
-  border: 5px solid gold;
-}
