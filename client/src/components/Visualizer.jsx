@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import ReactFlow,
-{ Background,
+import React, { useEffect, useRef } from "react";
+import ReactFlow, {
+  Background,
   Controls,
   MiniMap,
   useNodesState,
@@ -8,11 +8,12 @@ import ReactFlow,
   SelectionMode,
   useNodesInitialized,
   useStoreApi,
-  useReactFlow
-} from 'reactflow';
-import 'reactflow/dist/style.css';
-import TypeNode from './TypeNode';
-import createGraphLayout from '../utils/createGraphLayout';
+  useReactFlow,
+} from "reactflow";
+import "reactflow/dist/style.css";
+import TypeNode from "./TypeNode";
+import createGraphLayout from "../utils/createGraphLayout";
+import "../styles/Visualizer.css";
 
 /* Custom Node */
 // Declared outside of component to prevent re-declaration upon every render
@@ -83,31 +84,31 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs }) => {
       setNodes(graphedNodes);
       // Queue fitView to occur AFTER the graphed nodes have asynchronously been set
       setTimeout(() => flowInstance.fitView(), 0);
-    }
+    };
     generateGraph();
   }, [vSchema, nodesInitialized]);
 
   return (
     // React Flow instance needs a container that has explicit width and height
-    <div className='visualizer-container'>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          selectionOnDrag={true}
-          selectionMode={SelectionMode.Partial}
-          nodeTypes={nodeTypes}
-          fitView={true}
-          panOnScroll={true}
-          zoom={1}
-          minZoom={.1}
-          maxZoom={2}
-        >
-          <Background />
-          <Controls />
-          <MiniMap />
-        </ReactFlow>
+    <div className="visualizer-container">
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        selectionOnDrag={true}
+        selectionMode={SelectionMode.Partial}
+        nodeTypes={nodeTypes}
+        fitView={true}
+        panOnScroll={true}
+        zoom={1}
+        minZoom={0.1}
+        maxZoom={2}
+      >
+        <Background />
+        <Controls />
+        <MiniMap />
+      </ReactFlow>
     </div>
   );
 };

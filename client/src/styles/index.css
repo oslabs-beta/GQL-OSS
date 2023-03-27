@@ -43,12 +43,8 @@ main {
   flex-direction: row;
 }
 
-.visualizer-container {
-  width: 100%;
-  height: 100%;
-}
-
 .visualizer-section {
   width: 100%;
   height: 90vh;
+  margin-right: 1rem;
 }

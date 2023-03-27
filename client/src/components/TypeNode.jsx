@@ -20,7 +20,7 @@ const containerStyleActive = {
 const typeHeading = {
   padding: `8px 32px`,
   flexGrow: 1,
-  backgroundColor: '#eee',
+  backgroundColor: "#eee",
   textAlign: `center`,
 };
 
@@ -45,10 +45,16 @@ const TypeNode = ({ data }) => {
   }, [activeFieldIDs]);
 
   return (
-    <div style={active ? {...containerStyle, ...containerStyleActive} : containerStyle}>
-      { typeName !== 'Root' && typeName !== 'Query' &&
-        <Handle type="target" position="top" id={typeName} isConnectable={false}/>
-      }
+    <div className="type-node" style={active ? {...containerStyle, ...containerStyleActive} : containerStyle}>
+      {typeName !== "Root" && typeName !== "Query" && (
+        <Handle
+          type="target"
+          position="left"
+          id={typeName}
+          isConnectable={false}
+          className="type-node__handle-target"
+        />
+      )}
       <div className="type-node__container">
         <div style={typeHeading}>{typeName}</div>
         <div className="type-node__fields-container">{fieldElements}</div>
