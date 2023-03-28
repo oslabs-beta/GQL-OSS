@@ -2,6 +2,8 @@ import { gql } from 'graphql-tag';
 
 /* Create sets of active type ID's and active field ID's */
 const getActivesFromQuery = (queryString, vSchema) => {
+  if (queryString === '' || null) return {activeFieldIDs: null, activeTypeIDs: null};
+
   const queryObj = gql`${queryString}`;
   // console.log('queryObj: ', queryObj);
   // console.log('vSchema: ', vSchema);
