@@ -93,7 +93,12 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs, activeEdgeIDs}) =>
       return prevEdges.map(edge => {
         return {
           ...edge,
-          style: {stroke: activeEdgeIDs.has(edge.id) ? 'magenta' : 'cornflowerblue'}
+          markerEnd: {
+            ...edge.markerEnd,
+              color: activeEdgeIDs.has(edge.id) ? 'magenta' : 'cornflowerblue'
+          },
+          style: {stroke: activeEdgeIDs.has(edge.id) ? 'magenta' : 'cornflowerblue'},
+          zIndex: activeEdgeIDs.has(edge.id) ? 2 : -2
         }
       });
     });
