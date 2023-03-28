@@ -81,8 +81,29 @@ const Visualizer = ({
     });
   }, [activeTypeIDs]);
 
+  // // toggleTargetPosition
+  // function toggleTargetPosition(targetPosition) {
+  //   const newTargetPosition = { targetPosition };
+  //   setVisualizerOptions(newTargetPosition);
+  //   setNodes((nodes) =>
+  //     nodes.map((node) => {
+  //       const updatedNode = {
+  //         ...node,
+  //         data: {
+  //           ...node.data,
+  //           visualizerOptions: newTargetPosition,
+  //         },
+  //       };
+  //       updateNodeInternals(updatedNode.id);
+  //       return updatedNode;
+  //     })
+  //   );
+  // }
+
   // toggleTargetPosition
-  function toggleTargetPosition(targetPosition) {
+  function toggleTargetPosition() {
+    const targetPosition =
+      visualizerOptions.targetPosition === "left" ? "top" : "left";
     const newTargetPosition = { targetPosition };
     setVisualizerOptions(newTargetPosition);
     setNodes((nodes) =>

@@ -8,30 +8,18 @@ export function OptionsPanel({ visualizerOptions, toggleTargetPosition }) {
     <>
       <Panel position="top-left" className="options-panel__container">
         <p className="options-panel__name">target position:</p>
-        <input
-          type="radio"
-          id="target-left"
-          name="targetPosition"
-          value="left"
-          className="options-panel__radio-button"
-          checked={targetPosition === "left"}
-          onChange={(e) => toggleTargetPosition(e.target.value)}
-        ></input>
-        <label htmlFor="target-left" className="options-panel__label">
-          Left
-        </label>
-        <input
-          type="radio"
-          id="target-top"
-          name="targetPosition"
-          value="top"
-          className="options-panel__radio-button"
-          checked={targetPosition === "top"}
-          onChange={(e) => toggleTargetPosition(e.target.value)}
-        ></input>
-        <label htmlFor="target-top" className="options-panel__label">
-          Top
-        </label>
+        <div className="switch__container">
+          <p className="switch__label-left">left</p>
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={targetPosition === "top"}
+              onChange={toggleTargetPosition}
+            />
+            <span className="slider round"></span>
+          </label>
+          <p className="switch__label-right">top</p>
+        </div>
       </Panel>
     </>
   );
