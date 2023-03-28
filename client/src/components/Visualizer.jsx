@@ -27,6 +27,7 @@ const Visualizer = ({
   vSchema,
   activeTypeIDs,
   activeFieldIDs,
+  activeEdgeIDs,
   visualizerOptions,
   setVisualizerOptions,
 }) => {
