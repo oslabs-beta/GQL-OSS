@@ -21,7 +21,7 @@ const nodeTypes = {
   typeNode: TypeNode,
 };
 
-const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs }) => {
+const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs, activeEdgeIDs}) => {
   // State management for a controlled React Flow
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -87,6 +87,17 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs }) => {
     };
     generateGraph();
   }, [vSchema, nodesInitialized]);
+
+  useEffect(() => {
+    setEdges(prevEdges => {
+      return prevEdges.map(edge => {
+        return {
+          ...edge,
+          style: {stroke: activeEdgeIDs.has(edge.id) ? 'magenta' : 'cornflowerblue'}
+        }
+      });
+    });
+  }, [activeEdgeIDs]);
 
   return (
     // React Flow instance needs a container that has explicit width and height
