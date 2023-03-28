@@ -1,0 +1,14 @@
+.options-panel__container {
+  border: 1px lightgray solid;
+  background-color: white;
+  padding: .5rem;
+  border-radius: 3px;
+}
+
+.options-panel__name {
+  font-size: smaller;
+}
+
+.options-panel__radio-button {
+
+}

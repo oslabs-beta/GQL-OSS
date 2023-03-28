@@ -9,10 +9,12 @@ import ReactFlow, {
   useNodesInitialized,
   useStoreApi,
   useReactFlow,
+  useUpdateNodeInternals,
 } from "reactflow";
-import "reactflow/dist/style.css";
+import { OptionsPanel } from "./OptionsPanel";
 import TypeNode from "./TypeNode";
 import createGraphLayout from "../utils/createGraphLayout";
+import "reactflow/dist/style.css";
 import "../styles/Visualizer.css";
 
 /* Custom Node */
@@ -21,10 +23,17 @@ const nodeTypes = {
   typeNode: TypeNode,
 };
 
-const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs }) => {
+const Visualizer = ({
+  vSchema,
+  activeTypeIDs,
+  activeFieldIDs,
+  visualizerOptions,
+  setVisualizerOptions,
+}) => {
   // State management for a controlled React Flow
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const updateNodeInternals = useUpdateNodeInternals();
 
   // State relating to React Flow internals
   const store = useStoreApi();
@@ -35,7 +44,7 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs }) => {
   // If a schema is passed in, map each Object Type to a Type Node
   useEffect(() => {
     if (!vSchema) return;
-    const newNodes = vSchema.objectTypes.map(type => ({
+    const newNodes = vSchema.objectTypes.map((type) => ({
       id: type.name,
       // Initial positions are arbitary and will be overwritten by Elk positions.
       // React Flow nodes need to be initialized before processed by Elk.
@@ -47,7 +56,8 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs }) => {
           setEdges((prev) => [...prev, newEdge]);
         },
         active: false,
-        activeFieldIDs
+        activeFieldIDs,
+        visualizerOptions,
       },
       type: `typeNode`,
     }));
@@ -56,20 +66,39 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs }) => {
 
   // Whenever the active type ID's change, update the nodes' active properties to reflect the changes
   useEffect(() => {
-    setNodes(prevNodes => {
-      return prevNodes.map(node => {
+    setNodes((prevNodes) => {
+      return prevNodes.map((node) => {
         const newNode = {
           ...node,
           data: {
             ...node.data,
             active: activeTypeIDs?.has(node.id) ? true : false,
-            activeFieldIDs
-          }
-        }
+            activeFieldIDs,
+          },
+        };
         return newNode;
-      })
+      });
     });
   }, [activeTypeIDs]);
+
+  // toggleTargetPosition
+  function toggleTargetPosition(targetPosition) {
+    const newTargetPosition = { targetPosition };
+    setVisualizerOptions(newTargetPosition);
+    setNodes((nodes) =>
+      nodes.map((node) => {
+        const updatedNode = {
+          ...node,
+          data: {
+            ...node.data,
+            visualizerOptions: newTargetPosition,
+          },
+        };
+        updateNodeInternals(updatedNode.id);
+        return updatedNode;
+      })
+    );
+  }
 
   /* Process the initial nodes & edges through Elk Graph */
   useEffect(() => {
@@ -105,6 +134,10 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs }) => {
         minZoom={0.1}
         maxZoom={2}
       >
+        <OptionsPanel
+          visualizerOptions={visualizerOptions}
+          toggleTargetPosition={toggleTargetPosition}
+        />
         <Background />
         <Controls />
         <MiniMap />
