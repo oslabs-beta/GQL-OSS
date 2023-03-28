@@ -29,9 +29,9 @@ const App = () => {
     setActiveEdgeIDs(activeEdgeIDs);
   }, [query]);
 
-  console.log('ATIDs: ', activeTypeIDs );
-  console.log('AFIDs: ', activeFieldIDs );
-  console.log('AEIDs: ', activeEdgeIDs );
+  // console.log('ATIDs: ', activeTypeIDs );
+  // console.log('AFIDs: ', activeFieldIDs );
+  // console.log('AEIDs: ', activeEdgeIDs );
 
   return (
     <main>

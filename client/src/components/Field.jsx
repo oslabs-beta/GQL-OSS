@@ -50,7 +50,7 @@ const Field = ({ typeName, fieldName, returnType, updateEdge, relationship, acti
         },
         // animated: true,
         style: { stroke: 'cornflowerblue' },
-        hidden: displayMode === 'activeOnly'
+        hidden: false
       });
     }
   }, []);

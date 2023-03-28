@@ -97,12 +97,9 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs, activeEdgeIDs, dis
 
   // Whenever the active edge ID's change, update the edges' properties to reflect the changes
   useEffect(() => {
-    console.log('HERE')
-    console.log('edges: ', edges);
     setEdges(prevEdges => {
       return prevEdges.map(edge => {
         const isActive = activeEdgeIDs.has(edge.id);
-        console.log('edge: ', edge, 'isActive: ', isActive);
         return {
           ...edge,
           markerEnd: {
@@ -115,7 +112,7 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs, activeEdgeIDs, dis
         }
       });
     });
-  }, [activeEdgeIDs]);
+  }, [activeEdgeIDs, displayMode]);
 
   return (
     // React Flow instance needs a container that has explicit width and height
