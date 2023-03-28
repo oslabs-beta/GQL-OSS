@@ -1,7 +1,8 @@
 .visualizer-container {
   width: 100%;
-  height: 93%;
-  border: 3px double black;
+  height: 99vh;
+  /* border: 3px double black; */
+  padding-top: 5px;
 }
 
 .type-node__handle-target-left {
