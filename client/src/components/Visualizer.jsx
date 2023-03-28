@@ -177,7 +177,6 @@ const Visualizer = ({
         selectionOnDrag={true}
         selectionMode={SelectionMode.Partial}
         nodeTypes={nodeTypes}
-        fitView={true}
         panOnScroll={true}
         zoom={1}
         minZoom={0.1}

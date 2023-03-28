@@ -19,7 +19,7 @@ export function ToggleSwitch({
             checked={isChecked}
             onChange={(e) => handleChange(e)}
           />
-          <span className="slider round"></span>
+          <span className="toggle-slider round"></span>
         </label>
         <p className="toggle-switch__label-right">{labelRight}</p>
       </div>

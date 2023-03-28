@@ -42,7 +42,7 @@
 
 .toggle-switch__switch input {display:none;}
 
-.slider {
+.toggle-slider {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -54,7 +54,7 @@
   transition: .4s;
 }
 
-.slider:before {
+.toggle-slider:before {
   position: absolute;
   content: "";
   height: 26px;
@@ -68,21 +68,20 @@
   border: 1px gray solid;
 }
 
-input:checked + .slider {
+input:checked + .toggle-slider {
   background-color: #bbb;
 }
 
-input:checked + .slider:before {
+input:checked + .toggle-slider:before {
   -webkit-transform: translateX(16px);
   -ms-transform: translateX(16px);
   transform: translateX(16px) translateY(12px);
 }
 
 /* Rounded sliders */
-.slider.round {
+.toggle-slider.round {
   border-radius: 34px;
 }
 
-.slider.round:before {
+.toggle-slider.round:before {
   border-radius: 50%;}
-  

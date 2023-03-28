@@ -43,10 +43,10 @@ const App = () => {
   return (
     <main>
         <Split className='split' sizes={[25,75]} style={{height: "100vh", width: "100vw"}}>
-          <div class="seg-holder">
+          <div className="seg-holder">
             <Editor id='editor' schema={schema} endpoint={endpoint} setQuery={setQuery} ></Editor>
           </div>
-          <div class="seg-holder">
+          <div className="seg-holder">
             <section className="visualizer-section">
               <Endpoint
                 endpoint={endpoint}
