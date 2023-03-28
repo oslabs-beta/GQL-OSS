@@ -151,7 +151,7 @@ const Visualizer = ({
           style: {
             stroke: activeEdgeIDs.has(edge.id) ? "magenta" : "cornflowerblue",
           },
-          zIndex: activeEdgeIDs.has(edge.id) ? 2 : -2,
+          zIndex: activeEdgeIDs.has(edge.id) ? -1 : -2,
         };
       });
     });
