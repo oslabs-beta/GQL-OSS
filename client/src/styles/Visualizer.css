@@ -1,6 +1,7 @@
 .visualizer-container {
   width: 100%;
   height: 100%;
+  padding-top: 5px;
 }
 
 .type-node__handle-target {

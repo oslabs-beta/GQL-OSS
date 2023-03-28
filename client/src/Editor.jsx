@@ -133,6 +133,7 @@ export default function Editor({schema, endpoint}) {
           theme: 'vs-dark',
           model: queryModel,
           language: 'graphql',
+          automaticLayout: true
         })
       );
     variablesEditor ??
@@ -140,6 +141,7 @@ export default function Editor({schema, endpoint}) {
         createEditor(varsRef, {
           theme: 'vs-dark',
           model: variablesModel,
+          automaticLayout: true
         })
       );
     resultsViewer ??
@@ -149,6 +151,7 @@ export default function Editor({schema, endpoint}) {
           model: resultsModel,
           readOnly: true,
           smoothScrolling: true,
+          automaticLayout: true
         })
       );
 
