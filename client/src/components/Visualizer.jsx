@@ -9,10 +9,12 @@ import ReactFlow, {
   useNodesInitialized,
   useStoreApi,
   useReactFlow,
+  useUpdateNodeInternals,
 } from "reactflow";
-import "reactflow/dist/style.css";
+import { OptionsPanel } from "./OptionsPanel";
 import TypeNode from "./TypeNode";
 import createGraphLayout from "../utils/createGraphLayout";
+import "reactflow/dist/style.css";
 import "../styles/Visualizer.css";
 
 /* Custom Node */
@@ -21,10 +23,19 @@ const nodeTypes = {
   typeNode: TypeNode,
 };
 
-const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs, activeEdgeIDs, displayMode}) => {
+const Visualizer = ({
+  vSchema,
+  activeTypeIDs,
+  activeFieldIDs,
+  activeEdgeIDs,
+  displayMode,
+  visualizerOptions,
+  setVisualizerOptions,
+}) => {
   // State management for a controlled React Flow
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const updateNodeInternals = useUpdateNodeInternals();
 
   // State relating to React Flow internals
   const store = useStoreApi();
@@ -48,7 +59,7 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs, activeEdgeIDs, dis
   // If a schema is passed in, map each Object Type to a Type Node
   useEffect(() => {
     if (!vSchema) return;
-    const newNodes = vSchema.objectTypes.map(type => ({
+    const newNodes = vSchema.objectTypes.map((type) => ({
       id: type.name,
       // Initial positions are arbitary and will be overwritten by Elk positions.
       // React Flow nodes need to be initialized before processed by Elk.
@@ -61,7 +72,8 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs, activeEdgeIDs, dis
         },
         active: false,
         activeFieldIDs,
-        displayMode
+        displayMode,
+        visualizerOptions,
       },
       type: `typeNode`,
     }));
@@ -91,9 +103,49 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs, activeEdgeIDs, dis
           hidden: displayMode === 'activeOnly' && !isActive
         }
         return newNode;
-      })
+      });
     });
   }, [activeTypeIDs, displayMode]);
+
+  // // toggleTargetPosition
+  // function toggleTargetPosition(targetPosition) {
+  //   const newTargetPosition = { targetPosition };
+  //   setVisualizerOptions(newTargetPosition);
+  //   setNodes((nodes) =>
+  //     nodes.map((node) => {
+  //       const updatedNode = {
+  //         ...node,
+  //         data: {
+  //           ...node.data,
+  //           visualizerOptions: newTargetPosition,
+  //         },
+  //       };
+  //       updateNodeInternals(updatedNode.id);
+  //       return updatedNode;
+  //     })
+  //   );
+  // }
+
+  // toggleTargetPosition
+  function toggleTargetPosition() {
+    const targetPosition =
+      visualizerOptions.targetPosition === "left" ? "top" : "left";
+    const newTargetPosition = { targetPosition };
+    setVisualizerOptions(newTargetPosition);
+    setNodes((nodes) =>
+      nodes.map((node) => {
+        const updatedNode = {
+          ...node,
+          data: {
+            ...node.data,
+            visualizerOptions: newTargetPosition,
+          },
+        };
+        updateNodeInternals(updatedNode.id);
+        return updatedNode;
+      })
+    );
+  }
 
   // Whenever the active edge ID's change, update the edges' properties to reflect the changes
   useEffect(() => {
@@ -131,6 +183,10 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs, activeEdgeIDs, dis
         minZoom={0.1}
         maxZoom={2}
       >
+        <OptionsPanel
+          visualizerOptions={visualizerOptions}
+          toggleTargetPosition={toggleTargetPosition}
+        />
         <Background />
         <Controls />
         <MiniMap />

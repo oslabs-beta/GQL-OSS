@@ -1,0 +1,19 @@
+.options-panel__container {
+  border: 1px lightgray solid;
+  background-color: #fefefe;
+  padding: .5rem;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.options-panel__header {
+  margin: 0;
+  font-size: .8rem;
+  color: #444;
+}
+
+.options-panel__container hr {
+  width: 100%;
+}

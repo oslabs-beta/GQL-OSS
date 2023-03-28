@@ -22,7 +22,7 @@ body {
 
 .monaco-container {
   height: 100vh;
-  width: 40%;
+  width: 100%;
 }
 
 .editor-pane {
@@ -35,6 +35,7 @@ body {
   flex: 2;
   margin: 10px;
 }
+
 .vars-editor {
   flex: 1;
 }
@@ -45,6 +46,6 @@ main {
 
 .visualizer-section {
   width: 100%;
-  height: 90vh;
+  height: 100vh;
   margin-right: 1rem;
 }
