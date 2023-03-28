@@ -21,7 +21,7 @@ const nodeTypes = {
   typeNode: TypeNode,
 };
 
-const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs, activeEdgeIDs}) => {
+const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs, activeEdgeIDs, displayMode}) => {
   // State management for a controlled React Flow
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -30,6 +30,19 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs, activeEdgeIDs}) =>
   const store = useStoreApi();
   const nodesInitialized = useNodesInitialized();
   const flowInstance = useReactFlow();
+
+  /* Generate an Elk graph layout from a set of React Flow nodes and edges */
+  const generateGraph = async () => {
+    // Get accurate picture of nodes and edges from internal React Flow state
+    const { nodeInternals, edges } = store.getState();
+    const currNodes = Array.from(nodeInternals.values());
+    // Generate a graph layout from the nodes and edges using Elk
+    const graphedNodes = await createGraphLayout(currNodes, edges);
+    // Reset React Flow nodes to reflect the graph layout
+    setNodes(graphedNodes);
+    // Queue fitView to occur AFTER the graphed nodes have asynchronously been set
+    setTimeout(() => flowInstance.fitView(), 0);
+  };
 
   /* Create Initial Nodes & Edges */
   // If a schema is passed in, map each Object Type to a Type Node
@@ -47,58 +60,58 @@ const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs, activeEdgeIDs}) =>
           setEdges((prev) => [...prev, newEdge]);
         },
         active: false,
-        activeFieldIDs
+        activeFieldIDs,
+        displayMode
       },
       type: `typeNode`,
     }));
     setNodes(newNodes);
   }, [vSchema]);
 
-  // Whenever the active type ID's change, update the nodes' active properties to reflect the changes
+
+  // Process the initial nodes & edges through Elk Graph
+  // whenever the schema is reset or the nodes are fully reinitialized
+  useEffect(() => {
+    if (!nodesInitialized) return;
+    generateGraph();
+  }, [vSchema, nodesInitialized]);
+
+  // Whenever the active type ID's change, update the nodes' properties to reflect the changes
   useEffect(() => {
     setNodes(prevNodes => {
       return prevNodes.map(node => {
+        const isActive = activeTypeIDs?.has(node.id) ? true : false;
         const newNode = {
           ...node,
           data: {
             ...node.data,
-            active: activeTypeIDs?.has(node.id) ? true : false,
+            active: isActive,
             activeFieldIDs
-          }
+          },
+          hidden: displayMode === 'activeOnly' && !isActive
         }
         return newNode;
       })
     });
-  }, [activeTypeIDs]);
+  }, [activeTypeIDs, displayMode]);
 
-  /* Process the initial nodes & edges through Elk Graph */
+  // Whenever the active edge ID's change, update the edges' properties to reflect the changes
   useEffect(() => {
-    if (!nodesInitialized) return;
-    const generateGraph = async () => {
-      // Get accurate picture of nodes and edges from internal React Flow state
-      const { nodeInternals, edges } = store.getState();
-      const currNodes = Array.from(nodeInternals.values());
-      // Generate a graph layout from the nodes and edges using Elk
-      const graphedNodes = await createGraphLayout(currNodes, edges);
-      // Reset React Flow nodes to reflect the graph layout
-      setNodes(graphedNodes);
-      // Queue fitView to occur AFTER the graphed nodes have asynchronously been set
-      setTimeout(() => flowInstance.fitView(), 0);
-    };
-    generateGraph();
-  }, [vSchema, nodesInitialized]);
-
-  useEffect(() => {
+    console.log('HERE')
+    console.log('edges: ', edges);
     setEdges(prevEdges => {
       return prevEdges.map(edge => {
+        const isActive = activeEdgeIDs.has(edge.id);
+        console.log('edge: ', edge, 'isActive: ', isActive);
         return {
           ...edge,
           markerEnd: {
             ...edge.markerEnd,
-              color: activeEdgeIDs.has(edge.id) ? 'magenta' : 'cornflowerblue'
+              color: isActive ? 'magenta' : 'cornflowerblue'
           },
-          style: {stroke: activeEdgeIDs.has(edge.id) ? 'magenta' : 'cornflowerblue'},
-          zIndex: activeEdgeIDs.has(edge.id) ? 2 : -2
+          style: {stroke: isActive ? 'magenta' : 'cornflowerblue'},
+          zIndex: isActive ? -1 : -2,
+          hidden: displayMode === 'activeOnly' && !isActive
         }
       });
     });

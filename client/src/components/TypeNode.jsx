@@ -25,7 +25,7 @@ const typeHeading = {
 };
 
 const TypeNode = ({ data }) => {
-  const { typeName, fields, updateEdge, active, activeFieldIDs} =  data;
+  const { typeName, fields, updateEdge, active, activeFieldIDs, displayMode} =  data;
   const [fieldElements, setFieldElements] = useState();
 
   // Any time the active field ID's change, remap the fields
@@ -40,6 +40,7 @@ const TypeNode = ({ data }) => {
         updateEdge={updateEdge}
         relationship={field.relationship}
         active={activeFieldIDs?.has(`${typeName}/${field.fieldName}`) ? true : false}
+        displayMode={displayMode}
       />
     )));
   }, [activeFieldIDs]);

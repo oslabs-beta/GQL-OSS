@@ -18,6 +18,7 @@ const App = () => {
   const [activeTypeIDs, setActiveTypeIDs] = useState(null);
   const [activeFieldIDs, setActiveFieldIDs] = useState(null);
   const [activeEdgeIDs, setActiveEdgeIDs] = useState(null);
+  const [displayMode, setDisplayMode] = useState('activeOnly');
 
   // If the user executes a query, update the active ID's
   useEffect(() => {
@@ -27,6 +28,10 @@ const App = () => {
     setActiveFieldIDs(activeFieldIDs);
     setActiveEdgeIDs(activeEdgeIDs);
   }, [query]);
+
+  console.log('ATIDs: ', activeTypeIDs );
+  console.log('AFIDs: ', activeFieldIDs );
+  console.log('AEIDs: ', activeEdgeIDs );
 
   return (
     <main>
@@ -43,6 +48,7 @@ const App = () => {
           activeTypeIDs={activeTypeIDs}
           activeFieldIDs={activeFieldIDs}
           activeEdgeIDs={activeEdgeIDs}
+          displayMode={displayMode}
         />
       </section>
     </main>
