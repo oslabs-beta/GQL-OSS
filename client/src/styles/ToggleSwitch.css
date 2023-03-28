@@ -1,0 +1,88 @@
+
+/*  Slider from: https://alvarotrigo.com/blog/toggle-switch-css/ */
+.toggle-switch__switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 10px;
+}
+
+.toggle-switch p {
+  text-transform: capitalize;
+}
+
+.toggle-switch__name {
+  margin: 0;
+  padding: 0;
+  font-size: .8rem;
+  font-weight: 400;
+}
+
+.toggle-switch__container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-switch__label-left,
+.toggle-switch__label-right {
+  font-size: .7rem;
+  font-weight: 300;
+}
+
+.toggle-switch__label-left {
+  transform: translateX(-4px);
+}
+
+.toggle-switch__label-right {
+  transform: translateX(4px);
+}
+
+.toggle-switch__switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #bbb;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  transform: translateY(12px);
+  background-color: #fff;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border: 1px gray solid;
+}
+
+input:checked + .slider {
+  background-color: #bbb;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(16px);
+  -ms-transform: translateX(16px);
+  transform: translateX(16px) translateY(12px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;}
+  
