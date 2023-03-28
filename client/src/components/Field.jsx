@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
 import { Handle } from 'reactflow';
-import { MarkerType, useNodes, useUpdateNodeInternals } from 'reactflow';
+import { MarkerType, useNodes, useUpdateNodeInternals, useStoreApi } from 'reactflow';
 
 
 const field = {
@@ -20,16 +20,19 @@ const fieldData = {
   gap: 10,
 };
 
-const Field = ({ typeName, fieldName, returnType, updateEdge, relationship, active }) => {
+const Field = ({ typeName, fieldName, returnType, updateEdge, relationship, active, displayMode }) => {
   const nodes = useNodes();
   const updateNodeInternals = useUpdateNodeInternals();
   const [handlePosition, setHandlePosition] = useState('right');
+  const store = useStoreApi();
+
 
   useEffect(() => {
     // In vSchema:
     // 'Relationship' is a key on a field object that only exists if that field points to a type.
     // Its value corresponds 1:1 to the object type name and its node's id
-    if (relationship) {
+    if (relationship &&
+      !store.getState().edges.some(edge => edge.id === `${typeName}/${fieldName}-${relationship}`)) {
       const targetType = relationship;
       updateEdge({
         id: `${typeName}/${fieldName}-${targetType}`,
@@ -47,6 +50,7 @@ const Field = ({ typeName, fieldName, returnType, updateEdge, relationship, acti
         },
         // animated: true,
         style: { stroke: 'cornflowerblue' },
+        hidden: false
       });
     }
   }, []);

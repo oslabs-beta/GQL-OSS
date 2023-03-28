@@ -4,6 +4,7 @@ import { initializeMode } from 'monaco-graphql/esm/initializeMode';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
 import { debounce } from './utils/debounce';
+import validateBrackets from './utils/validateBrackets';
 
 // description that is displayed in request pane above actual code
 // indicate to the user what commands are available and defined
@@ -87,6 +88,12 @@ export default function Editor({schema, endpoint, setQuery}) {
     const variables = editor.getModel(Uri.file('variables.json')).getValue();
     // grab the operations from the operations pane
     const operations = editor.getModel(Uri.file('operation.graphql')).getValue();
+    if (!validateBrackets(operations)) {
+      alert('Invalid brackets');
+      // refactor later with better overall error handling when we decide the route to take
+      // obviously we don't want to alert, but simply show a message in the appropriate place
+      return;
+    };
     // update active ID's
     setQuery(operations);
     // create reference to the results pane

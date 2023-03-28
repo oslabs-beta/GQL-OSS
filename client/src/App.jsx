@@ -21,6 +21,7 @@ const App = () => {
   const [activeTypeIDs, setActiveTypeIDs] = useState(null);
   const [activeFieldIDs, setActiveFieldIDs] = useState(null);
   const [activeEdgeIDs, setActiveEdgeIDs] = useState(null);
+  const [displayMode, setDisplayMode] = useState('activeOnly');
   const [visualizerOptions, setVisualizerOptions] = useState(
     initialVisualizerOptions
   );
@@ -35,14 +36,17 @@ const App = () => {
     setActiveEdgeIDs(activeEdgeIDs);
   }, [query]);
 
+  // console.log('ATIDs: ', activeTypeIDs );
+  // console.log('AFIDs: ', activeFieldIDs );
+  // console.log('AEIDs: ', activeEdgeIDs );
 
   return (
     <main>
         <Split className='split' sizes={[25,75]} style={{height: "100vh", width: "100vw"}}>
-          <div class="seg-holder">
+          <div className="seg-holder">
             <Editor id='editor' schema={schema} endpoint={endpoint} setQuery={setQuery} ></Editor>
           </div>
-          <div class="seg-holder">
+          <div className="seg-holder">
             <section className="visualizer-section">
               <Endpoint
                 endpoint={endpoint}
@@ -56,8 +60,9 @@ const App = () => {
                 activeFieldIDs={activeFieldIDs}
                 activeEdgeIDs={activeEdgeIDs}
                 visualizerOptions={visualizerOptions}
-          setVisualizerOptions={setVisualizerOptions}
-        />
+                setVisualizerOptions={setVisualizerOptions}
+                displayMode={displayMode}
+              />
             </section>
           </div>
         </Split>

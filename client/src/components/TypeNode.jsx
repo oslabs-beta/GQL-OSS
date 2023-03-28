@@ -31,6 +31,7 @@ const TypeNode = ({ data }) => {
     updateEdge,
     active,
     activeFieldIDs,
+    displayMode,
     visualizerOptions,
   } = data;
   const [fieldElements, setFieldElements] = useState();
@@ -52,7 +53,8 @@ const TypeNode = ({ data }) => {
           active={
             activeFieldIDs?.has(`${typeName}/${field.fieldName}`) ? true : false
           }
-        />
+          displayMode={displayMode}
+      />
       ))
     );
   }, [activeFieldIDs]);
