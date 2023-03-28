@@ -21,7 +21,7 @@ const nodeTypes = {
   typeNode: TypeNode,
 };
 
-const Visualizer = ({ vSchema }) => {
+const Visualizer = ({ vSchema, activeTypeIDs, activeFieldIDs, activeEdgeIDs}) => {
   // State management for a controlled React Flow
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -35,8 +35,7 @@ const Visualizer = ({ vSchema }) => {
   // If a schema is passed in, map each Object Type to a Type Node
   useEffect(() => {
     if (!vSchema) return;
-    // graphed.current = false;
-    const newNodes = vSchema.objectTypes.map((type) => ({
+    const newNodes = vSchema.objectTypes.map(type => ({
       id: type.name,
       // Initial positions are arbitary and will be overwritten by Elk positions.
       // React Flow nodes need to be initialized before processed by Elk.
@@ -47,11 +46,30 @@ const Visualizer = ({ vSchema }) => {
         updateEdge: (newEdge) => {
           setEdges((prev) => [...prev, newEdge]);
         },
+        active: false,
+        activeFieldIDs
       },
       type: `typeNode`,
     }));
     setNodes(newNodes);
   }, [vSchema]);
+
+  // Whenever the active type ID's change, update the nodes' active properties to reflect the changes
+  useEffect(() => {
+    setNodes(prevNodes => {
+      return prevNodes.map(node => {
+        const newNode = {
+          ...node,
+          data: {
+            ...node.data,
+            active: activeTypeIDs?.has(node.id) ? true : false,
+            activeFieldIDs
+          }
+        }
+        return newNode;
+      })
+    });
+  }, [activeTypeIDs]);
 
   /* Process the initial nodes & edges through Elk Graph */
   useEffect(() => {
@@ -68,7 +86,23 @@ const Visualizer = ({ vSchema }) => {
       setTimeout(() => flowInstance.fitView(), 0);
     };
     generateGraph();
-  }, [vSchema, nodesInitialized, store]);
+  }, [vSchema, nodesInitialized]);
+
+  useEffect(() => {
+    setEdges(prevEdges => {
+      return prevEdges.map(edge => {
+        return {
+          ...edge,
+          markerEnd: {
+            ...edge.markerEnd,
+              color: activeEdgeIDs.has(edge.id) ? 'magenta' : 'cornflowerblue'
+          },
+          style: {stroke: activeEdgeIDs.has(edge.id) ? 'magenta' : 'cornflowerblue'},
+          zIndex: activeEdgeIDs.has(edge.id) ? 2 : -2
+        }
+      });
+    });
+  }, [activeEdgeIDs]);
 
   return (
     // React Flow instance needs a container that has explicit width and height
