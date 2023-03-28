@@ -2,6 +2,8 @@ import { gql } from 'graphql-tag';
 
 /* Create sets of active type ID's and active field ID's */
 const getActivesFromQuery = (queryString, vSchema) => {
+  if (queryString === '' || null) return {activeFieldIDs: null, activeTypeIDs: null};
+
   const queryObj = gql`${queryString}`;
   // console.log('queryObj: ', queryObj);
   // console.log('vSchema: ', vSchema);
@@ -11,6 +13,7 @@ const getActivesFromQuery = (queryString, vSchema) => {
 
   const activeTypeIDs = new Set();
   const activeFieldIDs = new Set();
+  const activeEdgeIDs = new Set();
 
   // The particular name that corresponds to the Query/Root Type in the vSchema
   // (The name is arbitrary)
@@ -26,6 +29,7 @@ const getActivesFromQuery = (queryString, vSchema) => {
     if (gqlSelection.selectionSet) {
       const vSchemaField = vSchemaType.fields.find(field => field.fieldName === gqlSelection.name.value);
       const vSchemaNextType = vSchemaTypes.find(type => type.name === vSchemaField.relationship);
+      activeEdgeIDs.add(`${vSchemaType.name}/${gqlSelection.name.value}-${vSchemaNextType.name}`);
       for (const selection of gqlSelection.selectionSet.selections) {
         addActives(vSchemaNextType, selection);
       }
@@ -39,7 +43,8 @@ const getActivesFromQuery = (queryString, vSchema) => {
   }
   return {
     activeTypeIDs,
-    activeFieldIDs
+    activeFieldIDs,
+    activeEdgeIDs
   };
 }
 

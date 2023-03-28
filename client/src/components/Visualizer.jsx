@@ -138,6 +138,24 @@ const Visualizer = ({
     generateGraph();
   }, [vSchema, nodesInitialized]);
 
+  useEffect(() => {
+    setEdges((prevEdges) => {
+      return prevEdges.map((edge) => {
+        return {
+          ...edge,
+          markerEnd: {
+            ...edge.markerEnd,
+            color: activeEdgeIDs.has(edge.id) ? "magenta" : "cornflowerblue",
+          },
+          style: {
+            stroke: activeEdgeIDs.has(edge.id) ? "magenta" : "cornflowerblue",
+          },
+          zIndex: activeEdgeIDs.has(edge.id) ? 2 : -2,
+        };
+      });
+    });
+  }, [activeEdgeIDs]);
+
   return (
     // React Flow instance needs a container that has explicit width and height
     <div className="visualizer-container">

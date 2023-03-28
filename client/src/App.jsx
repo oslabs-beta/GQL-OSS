@@ -18,19 +18,19 @@ const App = () => {
   const [query, setQuery] = useState(null);
   const [activeTypeIDs, setActiveTypeIDs] = useState(null);
   const [activeFieldIDs, setActiveFieldIDs] = useState(null);
+  const [activeEdgeIDs, setActiveEdgeIDs] = useState(null);
   const [visualizerOptions, setVisualizerOptions] = useState(
     initialVisualizerOptions
   );
 
   // If the user executes a query, update the active ID's
   useEffect(() => {
-    if (!query) return;
-    const { activeTypeIDs, activeFieldIDs } = getActivesFromQuery(
-      query,
-      vSchema
-    );
+    if (query === null) return;
+    const { activeTypeIDs, activeFieldIDs, activeEdgeIDs } =
+      getActivesFromQuery(query, vSchema);
     setActiveTypeIDs(activeTypeIDs);
     setActiveFieldIDs(activeFieldIDs);
+    setActiveEdgeIDs(activeEdgeIDs);
   }, [query]);
 
   return (
@@ -47,6 +47,7 @@ const App = () => {
           vSchema={vSchema}
           activeTypeIDs={activeTypeIDs}
           activeFieldIDs={activeFieldIDs}
+          activeEdgeIDs={activeEdgeIDs}
           visualizerOptions={visualizerOptions}
           setVisualizerOptions={setVisualizerOptions}
         />
