@@ -50,7 +50,8 @@ const Field = ({ typeName, fieldName, returnType, updateEdge, relationship, acti
         },
         // animated: true,
         style: { stroke: 'cornflowerblue' },
-        hidden: false
+        hidden: false,
+        active: false
       });
     }
   }, []);
@@ -62,19 +63,19 @@ const Field = ({ typeName, fieldName, returnType, updateEdge, relationship, acti
   // all sorts of unintended behavior
   // You'd think it'd be easier that way ... it seems 'references' got lost in state
   // So here, we're 'brute forcing' instead.
-  if (relationship) {
-    const targetNode = nodes.find(node => node.id === relationship);
-    const currNode = nodes.find(node => node.id === typeName);
-    const targetPosition = targetNode.position;
-    const currPosition = currNode.position;
-    if (currPosition.x > targetPosition.x && handlePosition !== 'left') {
-      setHandlePosition('left');
-      updateNodeInternals(typeName);
-    } else if (currPosition.x < targetPosition.x && handlePosition !== 'right') {
-      setHandlePosition('right');
-      updateNodeInternals(typeName);
-    }
-  }
+  // if (relationship) {
+  //   const targetNode = nodes.find(node => node.id === relationship);
+  //   const currNode = nodes.find(node => node.id === typeName);
+  //   const targetPosition = targetNode.position;
+  //   const currPosition = currNode.position;
+  //   if (currPosition.x > targetPosition.x && handlePosition !== 'left') {
+  //     setHandlePosition('left');
+  //     updateNodeInternals(typeName);
+  //   } else if (currPosition.x < targetPosition.x && handlePosition !== 'right') {
+  //     setHandlePosition('right');
+  //     updateNodeInternals(typeName);
+  //   }
+  // }
 
   return (
     <div style={active ? {...field, ...fieldActive} : field}>

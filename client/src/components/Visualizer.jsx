@@ -37,23 +37,14 @@ const Visualizer = ({
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const updateNodeInternals = useUpdateNodeInternals();
 
+  const allNodes = useRef(null);
+
   // State relating to React Flow internals
   const store = useStoreApi();
   const nodesInitialized = useNodesInitialized();
   const flowInstance = useReactFlow();
 
-  /* Generate an Elk graph layout from a set of React Flow nodes and edges */
-  const generateGraph = async () => {
-    // Get accurate picture of nodes and edges from internal React Flow state
-    const { nodeInternals, edges } = store.getState();
-    const currNodes = Array.from(nodeInternals.values());
-    // Generate a graph layout from the nodes and edges using Elk
-    const graphedNodes = await createGraphLayout(currNodes, edges);
-    // Reset React Flow nodes to reflect the graph layout
-    setNodes(graphedNodes);
-    // Queue fitView to occur AFTER the graphed nodes have asynchronously been set
-    setTimeout(() => flowInstance.fitView(), 0);
-  };
+  /**************************************** useEffects ****************************************/
 
   /* Create Initial Nodes & Edges */
   // If a schema is passed in, map each Object Type to a Type Node
@@ -78,6 +69,7 @@ const Visualizer = ({
       type: `typeNode`,
     }));
     setNodes(newNodes);
+    // allNodes.current = newNodes;
   }, [vSchema]);
 
 
@@ -85,7 +77,7 @@ const Visualizer = ({
   // whenever the schema is reset or the nodes are fully reinitialized
   useEffect(() => {
     if (!nodesInitialized) return;
-    generateGraph();
+    generateGraph(true);
   }, [vSchema, nodesInitialized]);
 
   // Whenever the active type ID's change, update the nodes' properties to reflect the changes
@@ -105,26 +97,63 @@ const Visualizer = ({
         return newNode;
       });
     });
+    if (displayMode === 'activeOnly') setTimeout(() => generateGraph(), 0)
   }, [activeTypeIDs, displayMode]);
 
-  // // toggleTargetPosition
-  // function toggleTargetPosition(targetPosition) {
-  //   const newTargetPosition = { targetPosition };
-  //   setVisualizerOptions(newTargetPosition);
-  //   setNodes((nodes) =>
-  //     nodes.map((node) => {
-  //       const updatedNode = {
-  //         ...node,
-  //         data: {
-  //           ...node.data,
-  //           visualizerOptions: newTargetPosition,
-  //         },
-  //       };
-  //       updateNodeInternals(updatedNode.id);
-  //       return updatedNode;
-  //     })
-  //   );
-  // }
+  // Whenever the active edge ID's change, update the edges' properties to reflect the changes
+  useEffect(() => {
+    setEdges(prevEdges => {
+      return prevEdges.map(edge => {
+        const isActive = activeEdgeIDs.has(edge.id);
+        return {
+          ...edge,
+          markerEnd: {
+            ...edge.markerEnd,
+              color: isActive ? 'magenta' : 'cornflowerblue'
+          },
+          style: {stroke: isActive ? 'magenta' : 'cornflowerblue'},
+          zIndex: isActive ? -1 : -2,
+          hidden: displayMode === 'activeOnly' && !isActive,
+          active: isActive
+        }
+      });
+    });
+    // if (displayMode === 'activeOnly') setTimeout(() => generateGraph(), 0)
+  }, [activeEdgeIDs, displayMode]);
+
+  /**************************************** Helper Functions ****************************************/
+  /* Generate an Elk graph layout from a set of React Flow nodes and edges */
+  const generateGraph = async (initial = false) => {
+    // Get accurate picture of nodes and edges from internal React Flow state
+    console.log('nodes init: ', nodesInitialized);
+    const { nodeInternals, edges } = store.getState();
+    const currNodes = Array.from(nodeInternals.values());
+    console.log('currNodes: ', currNodes);
+    console.log('nodes: ', nodes);
+    console.log('edges: ', edges);
+    const activeNodes = currNodes.filter(node =>  node.data.active);
+    const activeEdges = edges.filter(edge => edge.active);
+    console.log('active nodes: ', activeNodes);
+    console.log('active edges: ', activeEdges);
+    // Generate a graph layout from the nodes and edges using Elk
+    let graphedNodes;
+    if (initial) graphedNodes = await createGraphLayout(currNodes, edges);
+    else if (displayMode === 'activeOnly') graphedNodes = await createGraphLayout(activeNodes, activeEdges);
+
+    // Reset React Flow nodes to reflect the graph layout
+    if (initial) setNodes(graphedNodes)
+    else {
+      setNodes(prevNodes => {
+        return prevNodes.map(node => {
+          const matchingGraphedNode = graphedNodes.find(gNode => gNode.id === node.id)
+          if (matchingGraphedNode) return matchingGraphedNode;
+          return node;
+        })
+      }); // THE ISSUE IS HERE
+    }
+    // Queue fitView to occur AFTER the graphed nodes have asynchronously been set
+    setTimeout(() => flowInstance.fitView(), 0);
+  };
 
   // toggleTargetPosition
   function toggleTargetPosition() {
@@ -146,25 +175,6 @@ const Visualizer = ({
       })
     );
   }
-
-  // Whenever the active edge ID's change, update the edges' properties to reflect the changes
-  useEffect(() => {
-    setEdges(prevEdges => {
-      return prevEdges.map(edge => {
-        const isActive = activeEdgeIDs.has(edge.id);
-        return {
-          ...edge,
-          markerEnd: {
-            ...edge.markerEnd,
-              color: isActive ? 'magenta' : 'cornflowerblue'
-          },
-          style: {stroke: isActive ? 'magenta' : 'cornflowerblue'},
-          zIndex: isActive ? -1 : -2,
-          hidden: displayMode === 'activeOnly' && !isActive
-        }
-      });
-    });
-  }, [activeEdgeIDs, displayMode]);
 
   return (
     // React Flow instance needs a container that has explicit width and height
@@ -193,5 +203,24 @@ const Visualizer = ({
     </div>
   );
 };
+
+  // // toggleTargetPosition
+  // function toggleTargetPosition(targetPosition) {
+  //   const newTargetPosition = { targetPosition };
+  //   setVisualizerOptions(newTargetPosition);
+  //   setNodes((nodes) =>
+  //     nodes.map((node) => {
+  //       const updatedNode = {
+  //         ...node,
+  //         data: {
+  //           ...node.data,
+  //           visualizerOptions: newTargetPosition,
+  //         },
+  //       };
+  //       updateNodeInternals(updatedNode.id);
+  //       return updatedNode;
+  //     })
+  //   );
+  // }
 
 export default Visualizer;
