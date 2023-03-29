@@ -42,38 +42,32 @@ const App = () => {
 
   return (
     <main>
-      <Split
-        className="split"
-        sizes={[25, 75]}
-        style={{ height: "100vh", width: "100vw" }}
-      >
-        <div className="seg-holder">
+      <Split className="split" sizes={[25, 75]}>
+        <section className="seg-holder editor-section">
           <Editor
             id="editor"
             schema={schema}
             endpoint={endpoint}
             setQuery={setQuery}
           ></Editor>
-        </div>
-        <div className="seg-holder">
-          <section className="visualizer-section">
-            <Endpoint
-              endpoint={endpoint}
-              setEndpoint={setEndpoint}
-              setSchema={setSchema}
-              setVSchema={setVSchema}
-            />
-            <Visualizer
-              vSchema={vSchema}
-              activeTypeIDs={activeTypeIDs}
-              activeFieldIDs={activeFieldIDs}
-              activeEdgeIDs={activeEdgeIDs}
-              visualizerOptions={visualizerOptions}
-              setVisualizerOptions={setVisualizerOptions}
-              displayMode={displayMode}
-            />
-          </section>
-        </div>
+        </section>
+        <section className="seg-holder visualizer-section">
+          <Endpoint
+            endpoint={endpoint}
+            setEndpoint={setEndpoint}
+            setSchema={setSchema}
+            setVSchema={setVSchema}
+          />
+          <Visualizer
+            vSchema={vSchema}
+            activeTypeIDs={activeTypeIDs}
+            activeFieldIDs={activeFieldIDs}
+            activeEdgeIDs={activeEdgeIDs}
+            visualizerOptions={visualizerOptions}
+            setVisualizerOptions={setVisualizerOptions}
+            displayMode={displayMode}
+          />
+        </section>
       </Split>
     </main>
   );

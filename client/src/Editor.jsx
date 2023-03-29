@@ -5,6 +5,7 @@ import { createGraphiQLFetcher } from "@graphiql/toolkit";
 import * as JSONC from "jsonc-parser";
 import { debounce } from "./utils/debounce";
 import validateBrackets from "./utils/validateBrackets";
+import "./styles/Editor.css";
 
 // description that is displayed in request pane above actual code
 // indicate to the user what commands are available and defined
@@ -271,17 +272,40 @@ export default function Editor({ schema, endpoint, setQuery }) {
   };
 
   return (
-    <div className="monaco-container">
-      <section className="editor-pane">
-        <div ref={opsRef} className="editor" />
-        <button onClick={() => copyEditorField(opsRef)}>copy query</button>
-        <div ref={varsRef} className="editor vars-editor" />
-        <button onClick={() => copyEditorField(varsRef)}>copy variables</button>
-        <div ref={resultsRef} className="editor" />
-        <button onClick={() => copyEditorField(resultsRef)}>
-          copy results
-        </button>
-      </section>
-    </div>
+    <section className="editor-pane">
+      <div ref={opsRef} className="editor" />
+      <button onClick={() => copyEditorField(opsRef)}>copy query</button>
+      <div ref={varsRef} className="editor vars-editor" />
+      <button onClick={() => copyEditorField(varsRef)}>copy variables</button>
+      <div ref={resultsRef} className="editor" />
+      <button onClick={() => copyEditorField(resultsRef)}>copy results</button>
+    </section>
   );
 }
+
+// return (
+//   <div className="editor-pane">
+//     <section className="query-editor">
+//       <div ref={opsRef} className="editor" />
+//       <button onClick={() => copyEditorField(opsRef)}>copy query</button>
+//     </section>
+//     <section className="resultAndVars-editor">
+//       {/* some sort of conditional rendering here */}
+//       <div ref={varsRef} className="editor vars-editor" />
+//       <button onClick={() => copyEditorField(varsRef)}>copy variables</button>
+//       <div ref={resultsRef} className="editor" />
+//       <button onClick={() => copyEditorField(resultsRef)}>copy results</button>
+//     </section>
+//   </div>
+// );
+
+// <div class="editor-pane">
+//   <section class="queryEditor">
+//     <div ref={opsRef} className="editor" />
+//     <button onClick={() => copyEditorField(opsRef)}>copy query</button>
+//   </section>
+//   <section class="resultEditor">
+//     <div ref={resultsRef} className="editor" />
+//     <button onClick={() => copyEditorField(resultsRef)}>copy results</button>
+//   </section>
+// </div>;
