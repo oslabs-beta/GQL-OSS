@@ -272,40 +272,31 @@ export default function Editor({ schema, endpoint, setQuery }) {
   };
 
   return (
-    <section className="editor-pane">
-      <div ref={opsRef} className="editor" />
-      <button onClick={() => copyEditorField(opsRef)}>copy query</button>
-      <div ref={varsRef} className="editor vars-editor" />
-      <button onClick={() => copyEditorField(varsRef)}>copy variables</button>
-      <div ref={resultsRef} className="editor" />
-      <button onClick={() => copyEditorField(resultsRef)}>copy results</button>
-    </section>
+    <div className="monaco-container">
+      <section className="editor-pane">
+        <article className="editor-container query-editor">
+          <div ref={opsRef} className="editor" />
+          <button className="copy-btn" onClick={() => copyEditorField(opsRef)}>
+            copy
+          </button>
+          <button className="submit-btn">submit query (not hooked up)</button>
+        </article>
+        <article className="editor-container variables-editor">
+          <div ref={varsRef} className="editor vars-editor" />
+          <button className="copy-btn" onClick={() => copyEditorField(varsRef)}>
+            copy
+          </button>
+        </article>
+        <article className="editor-container results-editor">
+          <div ref={resultsRef} className="editor" />
+          <button
+            className="copy-btn"
+            onClick={() => copyEditorField(resultsRef)}
+          >
+            copy
+          </button>
+        </article>
+      </section>
+    </div>
   );
 }
-
-// return (
-//   <div className="editor-pane">
-//     <section className="query-editor">
-//       <div ref={opsRef} className="editor" />
-//       <button onClick={() => copyEditorField(opsRef)}>copy query</button>
-//     </section>
-//     <section className="resultAndVars-editor">
-//       {/* some sort of conditional rendering here */}
-//       <div ref={varsRef} className="editor vars-editor" />
-//       <button onClick={() => copyEditorField(varsRef)}>copy variables</button>
-//       <div ref={resultsRef} className="editor" />
-//       <button onClick={() => copyEditorField(resultsRef)}>copy results</button>
-//     </section>
-//   </div>
-// );
-
-// <div class="editor-pane">
-//   <section class="queryEditor">
-//     <div ref={opsRef} className="editor" />
-//     <button onClick={() => copyEditorField(opsRef)}>copy query</button>
-//   </section>
-//   <section class="resultEditor">
-//     <div ref={resultsRef} className="editor" />
-//     <button onClick={() => copyEditorField(resultsRef)}>copy results</button>
-//   </section>
-// </div>;
