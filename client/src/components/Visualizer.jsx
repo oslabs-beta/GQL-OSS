@@ -45,7 +45,13 @@ const Visualizer = ({
   const nodesInitialized = useNodesInitialized();
   const flowInstance = useReactFlow();
 
+  console.log('IN VIZ, AFIDS: ', activeFieldIDs);
+  const currentActiveFieldIDs = useRef(activeFieldIDs);
   /**************************************** useEffects ****************************************/
+
+  useEffect(() => {
+    currentActiveFieldIDs.current = activeFieldIDs;
+  }, [activeFieldIDs]);
 
   /* Create Initial Nodes & Edges */
   // If a schema is passed in, map each Object Type to a Type Node
@@ -53,7 +59,10 @@ const Visualizer = ({
     console.log('HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     console.log('vSchema: ', vSchema);
     if (!vSchema) return;
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+
     setEdges([]);
+    setNodes([]);
     setTimeout(() => setNodes(vSchema.objectTypes.map((type) => ({
       id: type.name,
       // Initial positions are arbitary and will be overwritten by Elk positions.
@@ -66,7 +75,7 @@ const Visualizer = ({
           setEdges((prev) => [...prev, newEdge]);
         },
         active: false,
-        activeFieldIDs,
+        activeFieldIDs: currentActiveFieldIDs.current,
         displayMode,
         visualizerOptions,
       },
@@ -105,7 +114,7 @@ const Visualizer = ({
           data: {
             ...node.data,
             active: isActive,
-            activeFieldIDs
+            activeFieldIDs: currentActiveFieldIDs.current
           },
           hidden: displayMode === 'activeOnly' && !isActive
         }
@@ -142,9 +151,9 @@ const Visualizer = ({
     // if (displayMode === 'activeOnly') setTimeout(() => generateGraph(), 0)
   }, [activeEdgeIDs, displayMode]);
 
-  // useEffect(() => {
-  //   setTimeout(() => flowInstance.fitView(), 0);
-  // }, [displayMode]);
+  useEffect(() => {
+    setTimeout(() => flowInstance.fitView(), 0);
+  }, [displayMode]);
 
   /**************************************** Helper Functions ****************************************/
   /* Generate an Elk graph layout from a set of React Flow nodes and edges */
@@ -177,7 +186,7 @@ const Visualizer = ({
       }); // THE ISSUE IS HERE
     }
     // Queue fitView to occur AFTER the graphed nodes have asynchronously been set
-    setTimeout(() => flowInstance.fitView(), 0);
+    if (displayMode === 'activeOnly' || initial) setTimeout(() => flowInstance.fitView(), 0);
   };
 
   // toggleTargetPosition

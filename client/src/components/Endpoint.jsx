@@ -10,7 +10,6 @@ export const Endpoint = ({ endpoint, setEndpoint, setSchema, setVSchema }) => {
 
   const setEPAndFetchSchema = async () => {
     setEndpoint(endpointText);
-
     // fetch and parse schema
     const schema = await request(endpointText, getIntrospectionQuery());
     setSchema(schema);

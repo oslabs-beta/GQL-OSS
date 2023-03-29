@@ -29,11 +29,20 @@ const App = () => {
   // If the user executes a query, update the active ID's
   useEffect(() => {
     if (query === null) return;
-    const { activeTypeIDs, activeFieldIDs, activeEdgeIDs } = getActivesFromQuery(query, vSchema);
+    console.log('QUERY SETTING');
+    const {queryString} = query;
+    const { activeTypeIDs, activeFieldIDs, activeEdgeIDs } = getActivesFromQuery(queryString, vSchema);
     setActiveTypeIDs(activeTypeIDs);
     setActiveFieldIDs(activeFieldIDs);
     setActiveEdgeIDs(activeEdgeIDs);
   }, [query]);
+
+  useEffect(() => {
+    console.log('RESETTING');
+    setActiveTypeIDs(null)
+    setActiveFieldIDs(null)
+    setActiveEdgeIDs(null)
+  }, [vSchema])
 
   // console.log('ATIDs: ', activeTypeIDs );
   // console.log('AFIDs: ', activeFieldIDs );

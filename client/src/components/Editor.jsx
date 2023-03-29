@@ -114,7 +114,7 @@ export default function Editor({schema, endpoint, setQuery}) {
       return;
     }
     // update active ID's
-    setQuery(operations);
+    setQuery({queryString: operations});
     // create reference to the results pane
     const resultsModel = editor.getModel(Uri.file('results.json'));
 
@@ -207,7 +207,7 @@ export default function Editor({schema, endpoint, setQuery}) {
             // alert('Empty query');
             return;
           }
-          setQuery(query);
+          setQuery({queryString: query});
           execOperation();
         }
         localStorage.setItem('operations', queryModel.getValue());
