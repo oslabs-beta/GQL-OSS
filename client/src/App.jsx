@@ -39,7 +39,7 @@ const App = () => {
   // console.log('AFIDs: ', activeFieldIDs );
   // console.log('AEIDs: ', activeEdgeIDs );
   // console.log('displayMode: ', displayMode);
-  // console.log('IN APP schema is: ', schema);
+  console.log('IN APP schema is: ', schema);
   return (
     <main>
         <Split className='split' sizes={[25,75]} style={{height: "100vh", width: "100vw"}}>

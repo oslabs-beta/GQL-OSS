@@ -87,10 +87,12 @@ const Visualizer = ({
     console.log('nodesInitialized: ', nodesInitialized);
     console.log('edges: ', edges);
     console.log('stateEdges: ', stateEdges);
+    console.log('nodes: ', nodes);
+    console.log('stateNodes: ', Array.from(store.getState().nodeInternals.values()));
     if (!nodesInitialized) return;
     console.log('IN USE EFFECT, NOT TIMED OUT - GOING TO GENERATE GRAPH');
     generateGraph(true);
-  }, [vSchema, nodesInitialized]);
+  }, [nodesInitialized]);
 
   // Whenever the active type ID's change, update the nodes' properties to reflect the changes
   useEffect(() => {

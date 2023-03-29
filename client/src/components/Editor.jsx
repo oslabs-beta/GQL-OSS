@@ -200,6 +200,9 @@ export default function Editor({schema, endpoint, setQuery}) {
         console.log('markers: ', markers);
         if (!markers.length) {
           const query = editor.getModel(Uri.file('operation.graphql')).getValue();
+           if (!validateBrackets(query)) {
+              return;
+            };
           if (query.trim() === '') {
             // alert('Empty query');
             return;
@@ -215,6 +218,8 @@ export default function Editor({schema, endpoint, setQuery}) {
         localStorage.setItem('variables', variablesModel.getValue());
       })
     );
+
+    initMonacoAPI();
 
     // only run once on mount
   }, []);
@@ -232,13 +237,29 @@ export default function Editor({schema, endpoint, setQuery}) {
   /**
    * Handle the initial schema load
    */
+  // useEffect(() => {
+  //   console.log('here')
+  //   if (schema) {
+  //     console.log('HERE');
+  //     initMonacoAPI();
+  //   }
+  // }, [schema, currentSchema.current]);
+
   useEffect(() => {
-    if (schema) initMonacoAPI();
+    // const opModelMode = editor.getModel(Uri.file('operation.graphql')).getMode();
+    console.log('schema changed, it is now: ', schema);
+    MonacoGQLAPI?.setSchemaConfig([
+      {
+        introspectionJSON: schema,
+      },
+  ]);
   }, [schema]);
 
   const initMonacoAPI = () => {
     // set up a way to interface with the monacoGQL api
     // configure settings
+    console.log('initMonacoAPI');
+    console.log('currentSchema: ', currentSchema.current);
     setMonacoGQLAPI(initializeMode({
       // match the request pane with variables pane for validation
       diagnosticSettings: {
@@ -257,13 +278,15 @@ export default function Editor({schema, endpoint, setQuery}) {
       },
       schemas: [
         {
-          introspectionJSON: schema, // this is all we're currently using
-          uri: 'myschema.graphql', // if such a file exists (you can load multiple schemas)
+          introspectionJSON: currentSchema.current, // this is all we're currently using
+          // uri: 'myschema.graphql', // if such a file exists (you can load multiple schemas)
         },
       ],
     }));
   }
 
+  console.log('in Editor: schema is: ', schema);
+  console.log('in Editor: currentSchema is: ', currentSchema.current);
   return (
     <div className="monaco-container">
       <section className="editor-pane">
