@@ -29,6 +29,7 @@ const Visualizer = ({
   activeFieldIDs,
   activeEdgeIDs,
   displayMode,
+  setDisplayMode,
   visualizerOptions,
   setVisualizerOptions,
 }) => {
@@ -49,8 +50,11 @@ const Visualizer = ({
   /* Create Initial Nodes & Edges */
   // If a schema is passed in, map each Object Type to a Type Node
   useEffect(() => {
+    console.log('HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    console.log('vSchema: ', vSchema);
     if (!vSchema) return;
-    const newNodes = vSchema.objectTypes.map((type) => ({
+    setEdges([]);
+    setTimeout(() => setNodes(vSchema.objectTypes.map((type) => ({
       id: type.name,
       // Initial positions are arbitary and will be overwritten by Elk positions.
       // React Flow nodes need to be initialized before processed by Elk.
@@ -67,8 +71,8 @@ const Visualizer = ({
         visualizerOptions,
       },
       type: `typeNode`,
-    }));
-    setNodes(newNodes);
+    }))), 0);
+
     // allNodes.current = newNodes;
   }, [vSchema]);
 
@@ -76,12 +80,21 @@ const Visualizer = ({
   // Process the initial nodes & edges through Elk Graph
   // whenever the schema is reset or the nodes are fully reinitialized
   useEffect(() => {
+
+    const stateEdges = store.getState().edges;
+    console.log('IN USE EFFECT');
+    console.log('vSchema: ', vSchema);
+    console.log('nodesInitialized: ', nodesInitialized);
+    console.log('edges: ', edges);
+    console.log('stateEdges: ', stateEdges);
     if (!nodesInitialized) return;
+    console.log('IN USE EFFECT, NOT TIMED OUT - GOING TO GENERATE GRAPH');
     generateGraph(true);
   }, [vSchema, nodesInitialized]);
 
   // Whenever the active type ID's change, update the nodes' properties to reflect the changes
   useEffect(() => {
+    if (!vSchema) return;
     setNodes(prevNodes => {
       return prevNodes.map(node => {
         const isActive = activeTypeIDs?.has(node.id) ? true : false;
@@ -97,14 +110,20 @@ const Visualizer = ({
         return newNode;
       });
     });
-    if (displayMode === 'activeOnly') setTimeout(() => generateGraph(), 0)
+    setTimeout(() => {
+      console.log('USEEFFECT SETTIMEOUT NOW GENERATING GRAPH');
+      generateGraph()
+    }, 0)
   }, [activeTypeIDs, displayMode]);
 
   // Whenever the active edge ID's change, update the edges' properties to reflect the changes
   useEffect(() => {
+    // if (!activeEdgeIDs) return;
     setEdges(prevEdges => {
+      // console.log('prevEdges: ', prevEdges);
+      // console.log('activeEdgeIDs: ', activeEdgeIDs);
       return prevEdges.map(edge => {
-        const isActive = activeEdgeIDs.has(edge.id);
+        const isActive = activeEdgeIDs?.has(edge.id) ? true : false;
         return {
           ...edge,
           markerEnd: {
@@ -121,23 +140,27 @@ const Visualizer = ({
     // if (displayMode === 'activeOnly') setTimeout(() => generateGraph(), 0)
   }, [activeEdgeIDs, displayMode]);
 
+  // useEffect(() => {
+  //   setTimeout(() => flowInstance.fitView(), 0);
+  // }, [displayMode]);
+
   /**************************************** Helper Functions ****************************************/
   /* Generate an Elk graph layout from a set of React Flow nodes and edges */
   const generateGraph = async (initial = false) => {
     // Get accurate picture of nodes and edges from internal React Flow state
-    console.log('nodes init: ', nodesInitialized);
+    console.log(' IN GEN GRAPH nodes init: ', nodesInitialized);
     const { nodeInternals, edges } = store.getState();
     const currNodes = Array.from(nodeInternals.values());
-    console.log('currNodes: ', currNodes);
-    console.log('nodes: ', nodes);
-    console.log('edges: ', edges);
+    console.log(' IN GEN GRAPH  currNodes: ', currNodes);
+    console.log('IN GEN GRAPH  nodes: ', nodes);
+    console.log('IN GEN GRAPH  edges: ', edges);
     const activeNodes = currNodes.filter(node =>  node.data.active);
     const activeEdges = edges.filter(edge => edge.active);
-    console.log('active nodes: ', activeNodes);
-    console.log('active edges: ', activeEdges);
+    console.log('IN GEN GRAPH  active nodes: ', activeNodes);
+    console.log('IN GEN GRAPH  active edges: ', activeEdges);
     // Generate a graph layout from the nodes and edges using Elk
     let graphedNodes;
-    if (initial) graphedNodes = await createGraphLayout(currNodes, edges);
+    if (initial || displayMode === 'all') graphedNodes = await createGraphLayout(currNodes, edges);
     else if (displayMode === 'activeOnly') graphedNodes = await createGraphLayout(activeNodes, activeEdges);
 
     // Reset React Flow nodes to reflect the graph layout
@@ -176,6 +199,10 @@ const Visualizer = ({
     );
   }
 
+  function toggleDisplayMode() {
+    setDisplayMode(prevDisplayMode => prevDisplayMode === 'activeOnly' ? 'all' : 'activeOnly');
+  }
+
   return (
     // React Flow instance needs a container that has explicit width and height
     <div className="visualizer-container">
@@ -195,6 +222,8 @@ const Visualizer = ({
         <OptionsPanel
           visualizerOptions={visualizerOptions}
           toggleTargetPosition={toggleTargetPosition}
+          displayMode={displayMode}
+          toggleDisplayMode={toggleDisplayMode}
         />
         <Background />
         <Controls />
@@ -203,24 +232,5 @@ const Visualizer = ({
     </div>
   );
 };
-
-  // // toggleTargetPosition
-  // function toggleTargetPosition(targetPosition) {
-  //   const newTargetPosition = { targetPosition };
-  //   setVisualizerOptions(newTargetPosition);
-  //   setNodes((nodes) =>
-  //     nodes.map((node) => {
-  //       const updatedNode = {
-  //         ...node,
-  //         data: {
-  //           ...node.data,
-  //           visualizerOptions: newTargetPosition,
-  //         },
-  //       };
-  //       updateNodeInternals(updatedNode.id);
-  //       return updatedNode;
-  //     })
-  //   );
-  // }
 
 export default Visualizer;

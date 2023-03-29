@@ -3,8 +3,8 @@ import { Uri, editor, KeyMod, KeyCode, languages } from 'monaco-editor';
 import { initializeMode } from 'monaco-graphql/esm/initializeMode';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
-import { debounce } from './utils/debounce';
-import validateBrackets from './utils/validateBrackets';
+import { debounce } from '../utils/debounce';
+import validateBrackets from '../utils/validateBrackets';
 
 // description that is displayed in request pane above actual code
 // indicate to the user what commands are available and defined
@@ -81,19 +81,38 @@ export default function Editor({schema, endpoint, setQuery}) {
     url: endpoint
   }) : null;
 
+  const currentSchema = useRef(schema);
+
+  useEffect(() => {
+    currentSchema.current = schema;
+  }, [schema]);
+
 
   // this function gets called when the user hits cmd + enter to run the operation they typed
   const execOperation = async function () {
+    console.log('currentSchema: ', currentSchema.current);
+    if (!currentSchema.current) {
+      alert('Please load a valid schema'); // TODO: refactor error handling
+      return;
+    }
+    const markers = editor.getModelMarkers({resource: Uri.file('operation.graphql')});
+    console.log('in exec, markers: ', markers);
+    if (markers.length) {
+      alert('Syntax error :)'); // Refactor later
+      return;
+    }
     // grab the code from the variables pane
     const variables = editor.getModel(Uri.file('variables.json')).getValue();
     // grab the operations from the operations pane
     const operations = editor.getModel(Uri.file('operation.graphql')).getValue();
     if (!validateBrackets(operations)) {
-      alert('Invalid brackets');
-      // refactor later with better overall error handling when we decide the route to take
-      // obviously we don't want to alert, but simply show a message in the appropriate place
+      alert('Invalid brackets'); // Refactor
       return;
     };
+    if (operations.trim() === '') {
+      alert('Empty query'); // Refactor
+      return;
+    }
     // update active ID's
     setQuery(operations);
     // create reference to the results pane
@@ -174,9 +193,17 @@ export default function Editor({schema, endpoint, setQuery}) {
 
     queryModel.onDidChangeContent(
       debounce(300, () => {
+        if (!currentSchema.current) {
+          return;
+        };
         const markers = editor.getModelMarkers({resource: Uri.file('operation.graphql')});
+        console.log('markers: ', markers);
         if (!markers.length) {
           const query = editor.getModel(Uri.file('operation.graphql')).getValue();
+          if (query.trim() === '') {
+            // alert('Empty query');
+            return;
+          }
           setQuery(query);
           execOperation();
         }

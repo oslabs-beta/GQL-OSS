@@ -4,8 +4,10 @@ const elk = new Elk({
   defaultLayoutOptions: {
     'elk.algorithm': 'layered',
     'elk.direction': 'RIGHT',
-    'elk.spacing.nodeNode': '150',
-    'elk.layered.spacing.nodeNodeBetweenLayers': '100',
+    'elk.spacing.nodeNode': '130',
+    'elk.layered.spacing.nodeNodeBetweenLayers': '110',
+    'elk.layered.noOverlap': true,
+    // 'elk.padding': '[top=50, bottom=50, left=50, right=50]',
     'elk.edgeRouting': 'SPLINES',
     'elk.layered.nodePlacement.strategy': 'SIMPLE',
     // 'elk.edgeRouting.splines.mode': 'CONSERVATIVE',
