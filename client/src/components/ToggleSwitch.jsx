@@ -1,4 +1,3 @@
-import react from "react";
 import "../styles/ToggleSwitch.css";
 
 export function ToggleSwitch({
