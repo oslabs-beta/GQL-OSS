@@ -3,9 +3,9 @@ import { Uri, editor, KeyMod, KeyCode, languages } from "monaco-editor";
 import { initializeMode } from "monaco-graphql/esm/initializeMode";
 import { createGraphiQLFetcher } from "@graphiql/toolkit";
 import * as JSONC from "jsonc-parser";
-import { debounce } from "./utils/debounce";
-import validateBrackets from "./utils/validateBrackets";
-import { defaultEditorOptions } from "./utils/defaultEditorOptions";
+import { debounce } from "../utils/debounce";
+import validateBrackets from "../utils/validateBrackets";
+import { defaultEditorOptions } from "../utils/defaultEditorOptions";
 import Split from "react-split";
 import "./styles/Editor.css";
 
