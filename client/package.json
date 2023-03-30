@@ -12,6 +12,7 @@
     "@tisoap/react-flow-smart-edge": "^3.0.0",
     "axios": "^0.26.0",
     "elkjs": "^0.8.2",
+    "framer-motion": "^6.3.3",
     "graphql": "^16.6.0",
     "graphql-request": "^5.2.0",
     "graphql-tag": "^2.12.6",
