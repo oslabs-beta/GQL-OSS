@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Endpoint } from "./components/Endpoint";
-import Editor from "./Editor";
+import Editor from "./components/Editor";
 import Visualizer from "./components/Visualizer";
 import Split from "react-split";
 import "./styles/App.css";
