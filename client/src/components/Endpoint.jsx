@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { getIntrospectionQuery } from "graphql";
 import { request } from "graphql-request";
 import parseReceivedSchema from "../utils/parseIntrospectionQueryResponse";
@@ -6,6 +6,7 @@ import "../styles/Endpoint.css";
 
 export const Endpoint = ({ endpoint, setEndpoint, setSchema, setVSchema }) => {
   // state for controlled input
+  const epInputRef = useRef();
   const [endpointText, setEndpointText] = useState(endpoint);
 
   const setEPAndFetchSchema = async () => {
@@ -24,6 +25,7 @@ export const Endpoint = ({ endpoint, setEndpoint, setSchema, setVSchema }) => {
       </label>
       <input
         type="text"
+        ref={epInputRef}
         id="endpoint-input"
         className="endpoint__input"
         placeholder="GraphQL Endpoint..."
