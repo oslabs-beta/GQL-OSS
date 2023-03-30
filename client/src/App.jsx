@@ -5,22 +5,21 @@ import Visualizer from "./components/Visualizer";
 import Split from "react-split";
 import "./styles/App.css";
 import getActivesFromQuery from "./utils/getActivesFromQuery";
-import { initialVisualizerOptions } from "./utils/initialVisualizerOptions";
 
 const App = () => {
-
   /********************************************** State & Refs *************************************************/
 
   // TODO: redux refactor (for only the necessary global pieces)
-  const [endpoint, setEndpoint] = useState("https://countries.trevorblades.com/");
+  const [endpoint, setEndpoint] = useState(
+    "https://countries.trevorblades.com/"
+  );
   const [schema, setSchema] = useState(null);
   const [vSchema, setVSchema] = useState(null);
   const [query, setQuery] = useState(null);
   const [activeTypeIDs, setActiveTypeIDs] = useState(null);
   const [activeFieldIDs, setActiveFieldIDs] = useState(null);
   const [activeEdgeIDs, setActiveEdgeIDs] = useState(null);
-  const [displayMode, setDisplayMode] = useState('all');
-  const [visualizerOptions, setVisualizerOptions] = useState(initialVisualizerOptions);
+  const [displayMode, setDisplayMode] = useState("all");
 
   /********************************************** useEFfect's *************************************************/
 
@@ -28,8 +27,9 @@ const App = () => {
   // If the user executes a query, update the active ID's for Types, Fields, & Edges
   useEffect(() => {
     if (query === null) return;
-    const {queryString} = query;
-    const { activeTypeIDs, activeFieldIDs, activeEdgeIDs } = getActivesFromQuery(queryString, vSchema);
+    const { queryString } = query;
+    const { activeTypeIDs, activeFieldIDs, activeEdgeIDs } =
+      getActivesFromQuery(queryString, vSchema);
     setActiveTypeIDs(activeTypeIDs);
     setActiveFieldIDs(activeFieldIDs);
     setActiveEdgeIDs(activeEdgeIDs);
@@ -38,10 +38,10 @@ const App = () => {
   /* Reset Actives */
   // If the schema is changed or reset, then reset all active ID's back to null
   useEffect(() => {
-    setActiveTypeIDs(null)
-    setActiveFieldIDs(null)
-    setActiveEdgeIDs(null)
-  }, [vSchema])
+    setActiveTypeIDs(null);
+    setActiveFieldIDs(null);
+    setActiveEdgeIDs(null);
+  }, [vSchema]);
 
   /************************************************ Render ******************************************************/
 
@@ -68,8 +68,6 @@ const App = () => {
             activeTypeIDs={activeTypeIDs}
             activeFieldIDs={activeFieldIDs}
             activeEdgeIDs={activeEdgeIDs}
-            visualizerOptions={visualizerOptions}
-            setVisualizerOptions={setVisualizerOptions}
             displayMode={displayMode}
             setDisplayMode={setDisplayMode}
           />
