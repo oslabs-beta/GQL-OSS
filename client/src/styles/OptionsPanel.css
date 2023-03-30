@@ -23,6 +23,16 @@
   flex-direction: row;
   gap: 10px;
 }
+.options-panel__expand-button::after{
+  content: '';
+  border: 1px rgba(0, 0, 0, .8)  solid;
+  background-color: rgba(0, 0, 0, 0.1); ;
+  height: 17px;
+  width: 17px;
+  position: absolute;
+  right: 10px;
+  border-radius: 50%;
+}
 
 .options-panel__container hr {
   width: 100%;

@@ -27,7 +27,7 @@ export function OptionsPanel({
           >
             Display Options{" "}
             <motion.div
-              animate={{ rotate: collapsed ? 180 : 0 }}
+              animate={{ rotate: collapsed ? 0 : 180 }}
               id="options-panel__rotating-button"
             >
               {"\u25be"}
