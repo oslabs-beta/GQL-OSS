@@ -7,14 +7,12 @@ import "./styles/App.css"
 import getActivesFromQuery from "./utils/getActivesFromQuery";
 import { initialVisualizerOptions } from "./utils/initialVisualizerOptions";
 
-// backend endpoint: /api/
-//graphql tests endpoint: http://localhost:4000/
-
 const App = () => {
-  // global state - eventually to be moved to redux
-  const [endpoint, setEndpoint] = useState(
-    "https://countries.trevorblades.com/"
-  );
+
+  /********************************************** State & Refs *************************************************/
+
+  // TODO: redux refactor (for only the necessary global pieces)
+  const [endpoint, setEndpoint] = useState("https://countries.trevorblades.com/");
   const [schema, setSchema] = useState(null);
   const [vSchema, setVSchema] = useState(null);
   const [query, setQuery] = useState(null);
@@ -22,14 +20,14 @@ const App = () => {
   const [activeFieldIDs, setActiveFieldIDs] = useState(null);
   const [activeEdgeIDs, setActiveEdgeIDs] = useState(null);
   const [displayMode, setDisplayMode] = useState('all');
-  const [visualizerOptions, setVisualizerOptions] = useState(
-    initialVisualizerOptions
-  );
+  const [visualizerOptions, setVisualizerOptions] = useState(initialVisualizerOptions);
 
-  // If the user executes a query, update the active ID's
+  /********************************************** useEFfect's *************************************************/
+
+  /* Highlight Active Query */
+  // If the user executes a query, update the active ID's for Types, Fields, & Edges
   useEffect(() => {
     if (query === null) return;
-    console.log('QUERY SETTING');
     const {queryString} = query;
     const { activeTypeIDs, activeFieldIDs, activeEdgeIDs } = getActivesFromQuery(queryString, vSchema);
     setActiveTypeIDs(activeTypeIDs);
@@ -37,18 +35,16 @@ const App = () => {
     setActiveEdgeIDs(activeEdgeIDs);
   }, [query]);
 
+  /* Reset Actives */
+  // If the schema is changed or reset, then reset all active ID's back to null
   useEffect(() => {
-    console.log('RESETTING');
     setActiveTypeIDs(null)
     setActiveFieldIDs(null)
     setActiveEdgeIDs(null)
   }, [vSchema])
 
-  // console.log('ATIDs: ', activeTypeIDs );
-  // console.log('AFIDs: ', activeFieldIDs );
-  // console.log('AEIDs: ', activeEdgeIDs );
-  // console.log('displayMode: ', displayMode);
-  console.log('IN APP schema is: ', schema);
+  /************************************************ Render ******************************************************/
+
   return (
     <main>
         <Split className='split' sizes={[25,75]} style={{height: "100vh", width: "100vw"}}>

@@ -23,6 +23,8 @@ const nodeTypes = {
   typeNode: TypeNode,
 };
 
+/* VISUALIZER COMPONENT */
+
 const Visualizer = ({
   vSchema,
   activeTypeIDs,
@@ -33,36 +35,36 @@ const Visualizer = ({
   visualizerOptions,
   setVisualizerOptions,
 }) => {
+
+  /********************************************** State & Refs *************************************************/
+
   // State management for a controlled React Flow
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const updateNodeInternals = useUpdateNodeInternals();
 
-  const allNodes = useRef(null);
-
-  // State relating to React Flow internals
+  // React Flow hooks for managing flow instance internals
+  const flowInstance = useReactFlow();
   const store = useStoreApi();
   const nodesInitialized = useNodesInitialized();
-  const flowInstance = useReactFlow();
+  const updateNodeInternals = useUpdateNodeInternals();
 
-  console.log('IN VIZ, AFIDS: ', activeFieldIDs);
+  // Ref for maintaining accurate picture of current active field ID's in listeners & callbacks
   const currentActiveFieldIDs = useRef(activeFieldIDs);
-  /**************************************** useEffects ****************************************/
 
+  /********************************************** useEFfect's *************************************************/
+
+  /* Update Active Field ID Reference to Accurate State Upon Change */
   useEffect(() => {
     currentActiveFieldIDs.current = activeFieldIDs;
   }, [activeFieldIDs]);
 
   /* Create Initial Nodes & Edges */
-  // If a schema is passed in, map each Object Type to a Type Node
+  // If a valid vSchema is passed in, map each Object Type to a Type Node
   useEffect(() => {
-    console.log('HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    console.log('vSchema: ', vSchema);
     if (!vSchema) return;
-    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-
     setEdges([]);
     setNodes([]);
+    // Queue new node setting to explicitly occur AFTER edges & nodes reset
     setTimeout(() => setNodes(vSchema.objectTypes.map((type) => ({
       id: type.name,
       // Initial positions are arbitary and will be overwritten by Elk positions.
@@ -81,29 +83,18 @@ const Visualizer = ({
       },
       type: `typeNode`,
     }))), 0);
-
-    // allNodes.current = newNodes;
   }, [vSchema]);
 
 
-  // Process the initial nodes & edges through Elk Graph
-  // whenever the schema is reset or the nodes are fully reinitialized
+  /* Process Initial Nodes & Edges Through Elk */
+  // Whenever the initialization state of the nodes changes from false to true, regraph them
   useEffect(() => {
-
-    const stateEdges = store.getState().edges;
-    console.log('IN USE EFFECT');
-    console.log('vSchema: ', vSchema);
-    console.log('nodesInitialized: ', nodesInitialized);
-    console.log('edges: ', edges);
-    console.log('stateEdges: ', stateEdges);
-    console.log('nodes: ', nodes);
-    console.log('stateNodes: ', Array.from(store.getState().nodeInternals.values()));
     if (!nodesInitialized) return;
-    console.log('IN USE EFFECT, NOT TIMED OUT - GOING TO GENERATE GRAPH');
     generateGraph(true);
   }, [nodesInitialized]);
 
-  // Whenever the active type ID's change, update the nodes' properties to reflect the changes
+  /* Update Active Type Nodes */
+  // Whenever the display mode or active type ID's change, update the nodes' properties to reflect the changes
   useEffect(() => {
     if (!vSchema) return;
     setNodes(prevNodes => {
@@ -114,6 +105,7 @@ const Visualizer = ({
           data: {
             ...node.data,
             active: isActive,
+            // Always update active fields reference to avoid stale state
             activeFieldIDs: currentActiveFieldIDs.current
           },
           hidden: displayMode === 'activeOnly' && !isActive
@@ -121,75 +113,77 @@ const Visualizer = ({
         return newNode;
       });
     });
+    // Queue graph generation (async) to explicitly occur AFTER nodes are set
     setTimeout(() => {
-      console.log('USEEFFECT SETTIMEOUT NOW GENERATING GRAPH');
       generateGraph()
     }, 0)
   }, [activeTypeIDs, displayMode]);
 
-  // Whenever the active edge ID's change, update the edges' properties to reflect the changes
+  /* Update Active Edges  */
+  // Whenever the display mode or active edge ID's change, update the edges' properties to reflect the changes
   useEffect(() => {
-    // if (!activeEdgeIDs) return;
     setEdges(prevEdges => {
-      // console.log('prevEdges: ', prevEdges);
-      // console.log('activeEdgeIDs: ', activeEdgeIDs);
       return prevEdges.map(edge => {
         const isActive = activeEdgeIDs?.has(edge.id) ? true : false;
         return {
           ...edge,
           markerEnd: {
             ...edge.markerEnd,
+            // TODO: refactor colors (many different paths you can take here)
+            // e.g. global variables, color pickers, color schemes, dynamic color mappings
               color: isActive ? 'magenta' : 'cornflowerblue'
           },
           style: {stroke: isActive ? 'magenta' : 'cornflowerblue'},
           zIndex: isActive ? -1 : -2,
           hidden: displayMode === 'activeOnly' && !isActive,
-          active: isActive
+          active: isActive,
+          animated: isActive
         }
       });
     });
-    // if (displayMode === 'activeOnly') setTimeout(() => generateGraph(), 0)
   }, [activeEdgeIDs, displayMode]);
 
+  /* When Display Mode Changes, Fit Nodes to View */
   useEffect(() => {
     setTimeout(() => flowInstance.fitView(), 0);
   }, [displayMode]);
 
   /**************************************** Helper Functions ****************************************/
-  /* Generate an Elk graph layout from a set of React Flow nodes and edges */
+
+  /* Generate Elk Graph Layout From React Flow Nodes & Edges */
   const generateGraph = async (initial = false) => {
     // Get accurate picture of nodes and edges from internal React Flow state
-    console.log(' IN GEN GRAPH nodes init: ', nodesInitialized);
     const { nodeInternals, edges } = store.getState();
     const currNodes = Array.from(nodeInternals.values());
-    console.log(' IN GEN GRAPH  currNodes: ', currNodes);
-    console.log('IN GEN GRAPH  nodes: ', nodes);
-    console.log('IN GEN GRAPH  edges: ', edges);
-    const activeNodes = currNodes.filter(node =>  node.data.active);
-    const activeEdges = edges.filter(edge => edge.active);
-    console.log('IN GEN GRAPH  active nodes: ', activeNodes);
-    console.log('IN GEN GRAPH  active edges: ', activeEdges);
-    // Generate a graph layout from the nodes and edges using Elk
-    let graphedNodes;
+    let graphedNodes, activeNodes, activeEdges;
+    if (displayMode === 'activeOnly') {
+      activeNodes = currNodes.filter(node =>  node.data.active);
+      activeEdges = edges.filter(edge => edge.active);
+    }
+    // Generate graph layout from React Flow nodes & edges by processing through Elk
     if (initial || displayMode === 'all') graphedNodes = await createGraphLayout(currNodes, edges);
     else if (displayMode === 'activeOnly') graphedNodes = await createGraphLayout(activeNodes, activeEdges);
 
-    // Reset React Flow nodes to reflect the graph layout
-    if (initial) setNodes(graphedNodes)
+    // Remap React Flow nodes to reflect the graph layout
+    if (initial) setNodes(graphedNodes) // Just map to initial state
+    // Otherwise, do not overwrite existing state, but alter it accordingly
     else {
       setNodes(prevNodes => {
         return prevNodes.map(node => {
+          // Account for dynamic shifting between display modes and permutations of active status
           const matchingGraphedNode = graphedNodes.find(gNode => gNode.id === node.id)
           if (matchingGraphedNode) return matchingGraphedNode;
           return node;
         })
-      }); // THE ISSUE IS HERE
+      });
     }
-    // Queue fitView to occur AFTER the graphed nodes have asynchronously been set
+    // Queue fitView to explicitly occur AFTER the graphed nodes have asynchronously been set
     if (displayMode === 'activeOnly' || initial) setTimeout(() => flowInstance.fitView(), 0);
+    // You can configure this to fitView after every change when displayMode === 'all' as well,
+    // however that UX feels slightly worse
   };
 
-  // toggleTargetPosition
+  /* Toggle Target Position */
   function toggleTargetPosition() {
     const targetPosition =
       visualizerOptions.targetPosition === "left" ? "top" : "left";
@@ -210,9 +204,12 @@ const Visualizer = ({
     );
   }
 
+  /* Toggle Display Mode */
   function toggleDisplayMode() {
     setDisplayMode(prevDisplayMode => prevDisplayMode === 'activeOnly' ? 'all' : 'activeOnly');
   }
+
+  /************************************************ Render ******************************************************/
 
   return (
     // React Flow instance needs a container that has explicit width and height

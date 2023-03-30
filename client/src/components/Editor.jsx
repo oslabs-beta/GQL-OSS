@@ -6,9 +6,7 @@ import * as JSONC from 'jsonc-parser';
 import { debounce } from '../utils/debounce';
 import validateBrackets from '../utils/validateBrackets';
 
-// description that is displayed in request pane above actual code
-// indicate to the user what commands are available and defined
-// see below: 'queryAction'
+/* Default Initial Display for Query Operations */
 const defaultOperations =
   localStorage.getItem('operations') ??
   `
@@ -21,7 +19,7 @@ query {
 }
 `;
 
-// same as above but for the variables pane
+/* Default Initial Display for Variables */
 const defaultVariables =
   localStorage.getItem('variables') ??
   `
@@ -34,12 +32,7 @@ Format your variables as valid JSON */
 }
 `;
 
-// docs here are sparse
-// i believe that the URI here is *internally* looking into monaco config files
-// to find the proper model which is specified as an argument.
-// if a URI such as 'operation/graphql' is passed in and is resolved to a real model,
-// then that model will be returned. (model being the document utilized in the editor)
-// otherwise, the model is created
+/* Get Model at URI, or Create One at URI with Given Value */
 const getOrCreateModel = (uri, value,) => {
   return (
     editor.getModel(Uri.file(uri)) ??
@@ -47,110 +40,53 @@ const getOrCreateModel = (uri, value,) => {
   );
 };
 
-
-// set these early on so that initial variables with comments don't flash an error
-// NOTE: This may set up options for the variables being cross checked across the schema
-// may need more here
+/* Config: Set this early on so that initial variables with comments don't flash an error */
 languages.json.jsonDefaults.setDiagnosticsOptions({
   allowComments: true,
   trailingCommas: 'ignore',
 });
 
-
-// add editor to DOM
-// ref is the element the editor will hook onto
+/* Add Editor to DOM Via its Ref */
 const createEditor = (
   ref,
   options,
 ) => editor.create(ref.current, options);
 
+/** EDITOR COMPONENT **/
 
 export default function Editor({schema, endpoint, setQuery}) {
-  /* STATE AND REFS */
-  // setting up refs to DOM nodes, one for each pane (operations, variables, results)
+
+  /********************************************** State & Refs *************************************************/
+
   const opsRef = useRef(null);
   const varsRef = useRef(null);
   const resultsRef = useRef(null);
-  // state of each pane's monaco (i believe) instance/interface/api
+
   const [queryEditor, setQueryEditor] = useState(null);
   const [variablesEditor, setVariablesEditor] = useState(null);
   const [resultsViewer, setResultsViewer] = useState(null);
 
   const [MonacoGQLAPI, setMonacoGQLAPI] = useState(null);
+  // TODO: don't reassign fetcher upon every render
   const fetcher = endpoint ? createGraphiQLFetcher({
     url: endpoint
   }) : null;
 
+  // Need always accurate reference to schema for listeners and callbacks
   const currentSchema = useRef(schema);
 
+  /********************************************** useEFfect's *************************************************/
+
+  /* Update Current Schema Ref for Callbacks and Listeners */
   useEffect(() => {
     currentSchema.current = schema;
   }, [schema]);
 
-
-  // this function gets called when the user hits cmd + enter to run the operation they typed
-  const execOperation = async function () {
-    console.log('currentSchema: ', currentSchema.current);
-    if (!currentSchema.current) {
-      alert('Please load a valid schema'); // TODO: refactor error handling
-      return;
-    }
-    const markers = editor.getModelMarkers({resource: Uri.file('operation.graphql')});
-    console.log('in exec, markers: ', markers);
-    if (markers.length) {
-      alert('Syntax error :)'); // Refactor later
-      return;
-    }
-    // grab the code from the variables pane
-    const variables = editor.getModel(Uri.file('variables.json')).getValue();
-    // grab the operations from the operations pane
-    const operations = editor.getModel(Uri.file('operation.graphql')).getValue();
-    if (!validateBrackets(operations)) {
-      alert('Invalid brackets'); // Refactor
-      return;
-    };
-    if (operations.trim() === '') {
-      alert('Empty query'); // Refactor
-      return;
-    }
-    // update active ID's
-    setQuery({queryString: operations});
-    // create reference to the results pane
-    const resultsModel = editor.getModel(Uri.file('results.json'));
-
-    if (!fetcher) return;
-    // make GQL request with given operations, passing in the variables
-    const result = await fetcher({
-      query: operations,
-      variables: JSON.stringify(JSONC.parse(variables)),
-    });
-    // Note: this app only supports a single iteration for http GET/POST,
-    // no multipart or subscriptions yet.
-    const data = await result.next();
-
-    // display the results in results pane
-    resultsModel?.setValue(JSON.stringify(data.value, null, 2));
-  };
-
-  // this is the 'run operation' action which is bound to cmd+enter
-  // execOperation function will be called
-  const queryAction = {
-    id: 'graphql-run',
-    label: 'Run Operation',
-    contextMenuOrder: 0,
-    contextMenuGroupId: 'graphql',
-    keybindings: [
-      // eslint-disable-next-line no-bitwise
-      KeyMod.CtrlCmd | KeyCode.Enter,
-    ],
-    run: execOperation,
-  };
-
-  /**
-   * Create the models & editors
-   * Models represent the 'files' loaded in each editor
-   * Editors are the actual editor instances
-   */
+  /* Instantiate: Once on Mount */
+  /* Create the Models & Editors */
+  /* Assign Listeners */
+    // Models represent the 'virtual files' loaded in each editor
+    // Editors are the actual editor instances
   useEffect(() => {
     const queryModel = getOrCreateModel('operation.graphql', defaultOperations);
     const variablesModel = getOrCreateModel('variables.json', defaultVariables);
@@ -184,29 +120,16 @@ export default function Editor({schema, endpoint, setQuery}) {
         })
       );
 
-    /*
-    Debouncing is a programming pattern or a technique to restrict the calling of a time-consuming function frequently, by delaying the execution of the function until a specified time to avoid unnecessary CPU cycles, and API calls and improve performance.
-    Defining our own debounce in debounce.js (imported)
-    Goal: Only refresh the local storage values of queries and variables 300ms after user stops typing
-    instead of immediately after each keypress
-    */
-
+    // Assign Change Listeners
+    // Debounce to wait 300ms after user stops typing before executing
+    // Ref used here for non-stale state
     queryModel.onDidChangeContent(
       debounce(300, () => {
-        if (!currentSchema.current) {
-          return;
-        };
+        if (!currentSchema.current) return;
         const markers = editor.getModelMarkers({resource: Uri.file('operation.graphql')});
-        console.log('markers: ', markers);
         if (!markers.length) {
           const query = editor.getModel(Uri.file('operation.graphql')).getValue();
-           if (!validateBrackets(query)) {
-              return;
-            };
-          if (query.trim() === '') {
-            // alert('Empty query');
-            return;
-          }
+           if (!validateBrackets(query) || query.trim() === '') return;
           setQuery({queryString: query});
           execOperation();
         }
@@ -218,50 +141,82 @@ export default function Editor({schema, endpoint, setQuery}) {
         localStorage.setItem('variables', variablesModel.getValue());
       })
     );
-
     initMonacoAPI();
-
-    // only run once on mount
   }, []);
 
-
-
-
-  // Actions execute functionality based on events (in this case it's keybindings)
-  // Wait until variables editor is actually instantiated before adding these keybindings
+  /* Assign Keybindings */
+  // Wait until editors are actually instantiated before assigning
   useEffect(() => {
     queryEditor?.addAction(queryAction);
     variablesEditor?.addAction(queryAction);
   }, [variablesEditor]);
 
-  /**
-   * Handle the initial schema load
-   */
-  // useEffect(() => {
-  //   console.log('here')
-  //   if (schema) {
-  //     console.log('HERE');
-  //     initMonacoAPI();
-  //   }
-  // }, [schema, currentSchema.current]);
-
+  /* Update Schema Configuration */
   useEffect(() => {
-    // const opModelMode = editor.getModel(Uri.file('operation.graphql')).getMode();
-    console.log('schema changed, it is now: ', schema);
-    MonacoGQLAPI?.setSchemaConfig([
-      {
-        introspectionJSON: schema,
-      },
-  ]);
+    MonacoGQLAPI?.setSchemaConfig([{ introspectionJSON: schema }]);
   }, [schema]);
 
+  /****************************************** Helper Functions ********************************************/
+
+    /* Execute Current Operation in Query Pane (cmd + enter OR auto) */
+  const execOperation = async function () {
+    if (!currentSchema.current) {
+      alert('Please load a valid schema'); // TODO: refactor error handling
+      return;
+    }
+    const markers = editor.getModelMarkers({resource: Uri.file('operation.graphql')});
+    if (markers.length) {
+      alert('Syntax error :)'); // TODO: refactor error handling
+      return;
+    }
+    // Grab the code from the variables pane
+    const variables = editor.getModel(Uri.file('variables.json')).getValue();
+    // Grab the operations from the operations pane
+    const operations = editor.getModel(Uri.file('operation.graphql')).getValue();
+    if (!validateBrackets(operations)) {
+      alert('Invalid brackets'); // TODO: refactor error handling
+      return;
+    };
+    if (operations.trim() === '') {
+      alert('Empty query'); // TODO: refactor error handling
+      return;
+    }
+    // Update query state at top level in order to update active ID's
+    // Note, this went from string -> object for strict equality reasons (Always catch new instance)
+    setQuery({queryString: operations});
+    // Create reference to the results pane
+    const resultsModel = editor.getModel(Uri.file('results.json'));
+    if (!fetcher) return;
+    // Make GQL request with given operations, passing in the variables
+    const result = await fetcher({
+      query: operations,
+      variables: JSON.stringify(JSONC.parse(variables)),
+    });
+    // Note: this app only supports a single iteration for http GET/POST,
+    // no multipart or subscriptions yet.
+    const data = await result.next();
+
+    // Display the results in results pane
+    resultsModel?.setValue(JSON.stringify(data.value, null, 2));
+  };
+
+ /* Keyboard Action For Executing Operation (cmd + enter) */
+  const queryAction = {
+    id: 'graphql-run',
+    label: 'Run Operation',
+    contextMenuOrder: 0,
+    contextMenuGroupId: 'graphql',
+    keybindings: [
+      // eslint-disable-next-line no-bitwise
+      KeyMod.CtrlCmd | KeyCode.Enter,
+    ],
+    run: execOperation,
+  };
+
+  /* Configure Monaco API & Connect to GraphQL Validation */
   const initMonacoAPI = () => {
-    // set up a way to interface with the monacoGQL api
-    // configure settings
-    console.log('initMonacoAPI');
-    console.log('currentSchema: ', currentSchema.current);
     setMonacoGQLAPI(initializeMode({
-      // match the request pane with variables pane for validation
+      // Pair request pane with variables pane for validation
       diagnosticSettings: {
         validateVariablesJSON: {
           [Uri.file('operation.graphql').toString()]: [
@@ -278,15 +233,15 @@ export default function Editor({schema, endpoint, setQuery}) {
       },
       schemas: [
         {
-          introspectionJSON: currentSchema.current, // this is all we're currently using
-          // uri: 'myschema.graphql', // if such a file exists (you can load multiple schemas)
+          introspectionJSON: currentSchema.current,
+          // uri: 'myschema.graphql', // You can have multiple schemas if you want
         },
       ],
     }));
   }
 
-  console.log('in Editor: schema is: ', schema);
-  console.log('in Editor: currentSchema is: ', currentSchema.current);
+  /************************************************ Render ******************************************************/
+
   return (
     <div className="monaco-container">
       <section className="editor-pane">
