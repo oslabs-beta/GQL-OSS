@@ -9,6 +9,8 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
+  padding: 5px;
 }
 
 .editor {

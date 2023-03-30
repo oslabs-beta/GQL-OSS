@@ -5,6 +5,8 @@ import { createGraphiQLFetcher } from "@graphiql/toolkit";
 import * as JSONC from "jsonc-parser";
 import { debounce } from "./utils/debounce";
 import validateBrackets from "./utils/validateBrackets";
+import { defaultEditorOptions } from "./utils/defaultEditorOptions";
+import Split from "react-split";
 import "./styles/Editor.css";
 
 // description that is displayed in request pane above actual code
@@ -70,6 +72,8 @@ export default function Editor({ schema, endpoint, setQuery }) {
   const [queryEditor, setQueryEditor] = useState(null);
   const [variablesEditor, setVariablesEditor] = useState(null);
   const [resultsViewer, setResultsViewer] = useState(null);
+  // state for monacoEditorOptions.  initialized using settings from defaultEditorOptions.js
+  const [editorOptions, setEditorOptions] = useState(defaultEditorOptions);
 
   const [MonacoGQLAPI, setMonacoGQLAPI] = useState(null);
   const fetcher = endpoint
@@ -125,21 +129,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
     run: execOperation,
   };
 
-  // // Functionality for copying the contents of a monaco query editor
-  // async function copyQueryField(ref) {
-  //   // grab the operations from the textarea of the operations pane
-  //   try {
-  //     const editorInstance = await ref.current;
-  //     const query = editorInstance.querySelector("textarea").value;
-  //     console.log(query);
-  //     await navigator.clipboard.writeText(query);
-  //     console.log("Query copied to clipboard");
-  //   } catch (err) {
-  //     console.error("Failed to copy: ", err);
-  //   }
-  // }
-
-  // Copies the
+  // Copies the ENTIRE contents of an editor field (based on it's uri.file)
   async function copyEditorField(ref) {
     try {
       let uriFile;
@@ -158,6 +148,13 @@ export default function Editor({ schema, endpoint, setQuery }) {
     }
   }
 
+  function toggleMinimap() {
+    return setEditorOptions({
+      ...editorOptions,
+      enableMiniMap: !editorOptions.enableMiniMap,
+    });
+  }
+
   /**
    * Create the models & editors
    * Models represent the 'files' loaded in each editor
@@ -168,6 +165,17 @@ export default function Editor({ schema, endpoint, setQuery }) {
     const variablesModel = getOrCreateModel("variables.json", defaultVariables);
     const resultsModel = getOrCreateModel("results.json", "{}");
 
+    const {
+      enableMiniMap,
+      verticalScrollbar,
+      horizontalScrollbar,
+      glyphMargin,
+      folding,
+      lineNumbersMinChars,
+      lineDecorationsWidth,
+      lineNumbers,
+    } = editorOptions;
+
     queryEditor ??
       setQueryEditor(
         createEditor(opsRef, {
@@ -175,6 +183,16 @@ export default function Editor({ schema, endpoint, setQuery }) {
           model: queryModel,
           language: "graphql",
           automaticLayout: true,
+          minimap: { enabled: enableMiniMap },
+          scrollbar: {
+            vertical: verticalScrollbar,
+            horizontal: horizontalScrollbar,
+          },
+          glyphMargin,
+          folding,
+          lineNumbersMinChars,
+          lineDecorationsWidth,
+          lineNumbers,
         })
       );
     variablesEditor ??
@@ -183,6 +201,16 @@ export default function Editor({ schema, endpoint, setQuery }) {
           theme: "vs-dark",
           model: variablesModel,
           automaticLayout: true,
+          minimap: { enabled: enableMiniMap },
+          scrollbar: {
+            vertical: verticalScrollbar,
+            horizontal: horizontalScrollbar,
+          },
+          glyphMargin,
+          folding,
+          lineNumbersMinChars,
+          lineDecorationsWidth,
+          lineNumbers,
         })
       );
     resultsViewer ??
@@ -193,6 +221,16 @@ export default function Editor({ schema, endpoint, setQuery }) {
           readOnly: true,
           smoothScrolling: true,
           automaticLayout: true,
+          minimap: { enabled: enableMiniMap },
+          scrollbar: {
+            vertical: verticalScrollbar,
+            horizontal: horizontalScrollbar,
+          },
+          glyphMargin,
+          folding,
+          lineNumbersMinChars,
+          lineDecorationsWidth,
+          lineNumbers,
         })
       );
 
@@ -225,7 +263,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
     );
 
     // only run once on mount
-  }, []);
+  }, [editorOptions]);
 
   // Actions execute functionality based on events (in this case it's keybindings)
   // Wait until variables editor is actually instantiated before adding these keybindings
@@ -271,32 +309,80 @@ export default function Editor({ schema, endpoint, setQuery }) {
     );
   };
 
+  // RETURN THAT INCLUDES <SPLIT>
   return (
-    <div className="monaco-container">
+    <Split
+      className="monaco-container"
+      sizes={[45, 10, 45]}
+      minSize={100}
+      direction="vertical"
+      dragInterval={10}
+    >
       <section className="editor-pane">
-        <article className="editor-container query-editor">
-          <div ref={opsRef} className="editor" />
-          <button className="copy-btn" onClick={() => copyEditorField(opsRef)}>
-            copy
-          </button>
-          <button className="submit-btn">submit query (not hooked up)</button>
-        </article>
-        <article className="editor-container variables-editor">
-          <div ref={varsRef} className="editor vars-editor" />
-          <button className="copy-btn" onClick={() => copyEditorField(varsRef)}>
-            copy
-          </button>
-        </article>
-        <article className="editor-container results-editor">
-          <div ref={resultsRef} className="editor" />
-          <button
-            className="copy-btn"
-            onClick={() => copyEditorField(resultsRef)}
-          >
-            copy
-          </button>
-        </article>
+        <div ref={opsRef} className="editor" />
+        <button className="copy-btn" onClick={() => copyEditorField(opsRef)}>
+          copy
+        </button>
+        <button className="submit-btn">submit query (not hooked up)</button>
       </section>
-    </div>
+      <section className="editor-pane">
+        <div ref={varsRef} className="editor vars-editor" />
+        <button className="copy-btn" onClick={() => copyEditorField(varsRef)}>
+          copy
+        </button>
+      </section>
+      <section className="editor-pane">
+        <div ref={resultsRef} className="editor" />
+        <button
+          className="copy-btn"
+          onClick={() => copyEditorField(resultsRef)}
+        >
+          copy
+        </button>
+      </section>
+    </Split>
   );
 }
+
+// PRE-SLIDING EDITOR PANELS
+//   return (
+//     <div className="monaco-container">
+//       <section className="editor-pane">
+//         <article>
+//           <p>Queries</p>
+//           <button onClick={() => alert("query info on click")}>?</button>
+//           <label>
+//             <input
+//               type="checkbox"
+//               onChange={toggleMinimap}
+//               checked={editorOptions.enableMiniMap}
+//             ></input>
+//             minimap
+//           </label>
+//         </article>
+//         <article className="editor-container query-editor">
+//           <div ref={opsRef} className="editor" />
+//           <button className="copy-btn" onClick={() => copyEditorField(opsRef)}>
+//             copy
+//           </button>
+//           <button className="submit-btn">submit query (not hooked up)</button>
+//         </article>
+//         <article className="editor-container variables-editor">
+//           <div ref={varsRef} className="editor vars-editor" />
+//           <button className="copy-btn" onClick={() => copyEditorField(varsRef)}>
+//             copy
+//           </button>
+//         </article>
+//         <article className="editor-container results-editor">
+//           <div ref={resultsRef} className="editor" />
+//           <button
+//             className="copy-btn"
+//             onClick={() => copyEditorField(resultsRef)}
+//           >
+//             copy
+//           </button>
+//         </article>
+//       </section>
+//     </div>
+//   );
+// }
