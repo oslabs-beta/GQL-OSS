@@ -232,16 +232,14 @@ const Visualizer = ({
   function toggleMinimap() {
     const showMinimap = !visualizerOptions.showMinimap;
     const updatedVisualizerOptions = { ...visualizerOptions, showMinimap };
-    setVisualizerOptions(updatedVisualizerOptions);
-    return updatedNode;
+    return setVisualizerOptions(updatedVisualizerOptions);
   }
 
   // /* Toggle Controls */
   function toggleControls() {
     const showControls = !visualizerOptions.showControls;
     const updatedVisualizerOptions = { ...visualizerOptions, showControls };
-    setVisualizerOptions(updatedVisualizerOptions);
-    return updatedNode;
+    return setVisualizerOptions(updatedVisualizerOptions);
   }
 
   /************************************************ Render ******************************************************/
