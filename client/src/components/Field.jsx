@@ -39,8 +39,6 @@ const Field = ({ typeName, fieldName, returnType, updateEdge, relationship, acti
         source: typeName,
         sourceHandle: `${typeName}/${fieldName}`,
         target: targetType,
-        // smooth: true,
-        // type: 'smart',
         markerEnd: {
           type: MarkerType.ArrowClosed,
           color: 'cornflowerblue',
@@ -48,8 +46,7 @@ const Field = ({ typeName, fieldName, returnType, updateEdge, relationship, acti
           height: 20,
           strokeWidth: .3
         },
-        // animated: true,
-        style: { stroke: 'cornflowerblue' },
+        style: { stroke: 'cornflowerblue', strokeWidth: '1.1'},
         hidden: false,
         active: false
       });

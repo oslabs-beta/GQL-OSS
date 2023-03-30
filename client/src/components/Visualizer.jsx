@@ -133,7 +133,10 @@ const Visualizer = ({
             // e.g. global variables, color pickers, color schemes, dynamic color mappings
               color: isActive ? 'magenta' : 'cornflowerblue'
           },
-          style: {stroke: isActive ? 'magenta' : 'cornflowerblue'},
+          style: {
+            stroke: isActive ? 'magenta' : 'cornflowerblue',
+            strokeWidth: isActive ? '1.5' : '1.1'
+          },
           zIndex: isActive ? -1 : -2,
           hidden: displayMode === 'activeOnly' && !isActive,
           active: isActive,

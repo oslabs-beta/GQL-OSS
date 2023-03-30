@@ -5,6 +5,7 @@ import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
 import { debounce } from '../utils/debounce';
 import validateBrackets from '../utils/validateBrackets';
+import "../styles/Editor.css";
 
 /* Default Initial Display for Query Operations */
 const defaultOperations =
@@ -240,15 +241,53 @@ export default function Editor({schema, endpoint, setQuery}) {
     }));
   }
 
+  /* Copy the Editor Contents */
+  async function copyEditorField(ref) {
+    try {
+      let uriFile;
+      // set the uriFile name based on ref
+      if (ref === opsRef) uriFile = "operation.graphql";
+      else if (ref === varsRef) uriFile = "variables.json";
+      else if (ref === resultsRef) uriFile = "results.json";
+      else return;
+      // retrieve the contents of the uriFile
+      const operations = editor.getModel(Uri.file(uriFile)).getValue().trim();
+      // copy to clipboard
+      await navigator.clipboard.writeText(operations);
+      console.log("Editor contents copied to clipboard");
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+    }
+  }
+
   /************************************************ Render ******************************************************/
 
   return (
     <div className="monaco-container">
       <section className="editor-pane">
-        <div ref={opsRef} className="editor" />
-        <div ref={varsRef} className="editor vars-editor" />
-        <div ref={resultsRef} className="editor" />
+        <article className="editor-container query-editor">
+          <div ref={opsRef} className="editor" />
+          <button className="copy-btn" onClick={() => copyEditorField(opsRef)}>
+            copy
+          </button>
+          <button className="submit-btn">submit query (not hooked up)</button>
+        </article>
+        <article className="editor-container variables-editor">
+          <div ref={varsRef} className="editor vars-editor" />
+          <button className="copy-btn" onClick={() => copyEditorField(varsRef)}>
+            copy
+          </button>
+        </article>
+        <article className="editor-container results-editor">
+          <div ref={resultsRef} className="editor" />
+          <button
+            className="copy-btn"
+            onClick={() => copyEditorField(resultsRef)}
+          >
+            copy
+          </button>
+        </article>
       </section>
     </div>
-  );
+  )
 }
