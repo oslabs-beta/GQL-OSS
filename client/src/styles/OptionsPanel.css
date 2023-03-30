@@ -3,7 +3,7 @@
   border: 1px lightgray solid;
   background-color: #fefefe;
   padding: .5rem;
-  border-radius: 3px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -14,6 +14,14 @@
   margin: 0;
   font-size: .8rem;
   color: #444;
+}
+
+.options-panel__expand-button {
+  background-color: transparent;
+  border: none;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 
 .options-panel__container hr {

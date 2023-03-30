@@ -59,6 +59,27 @@ const TypeNode = ({ data }) => {
     );
   }, [activeFieldIDs]);
 
+
+  // creating "altHandles" -- a collection of source handles with the EXACT same ID as field source handles, rendered whenever the field collapses (edges automatically snap to them)
+  const [altHandles, setAltHandles] = useState()
+  useEffect(() => {
+    setAltHandles(
+      fields.map((field) => (
+        <Handle 
+          type="source"
+          position="right"
+          id={`${typeName}/${field.fieldName}`}
+          isConnectable={false}
+          style={{position: 'absolute'}}
+        />
+      ))
+    );
+  }, []);
+      
+    
+
+  const [collapsed, setCollapsed] = useState(false)
+
   return (
     <div
       className="type-node"
@@ -79,9 +100,10 @@ const TypeNode = ({ data }) => {
           }
         />
       )}
+      {collapsed && altHandles}
       <div className="type-node__container">
-        <div style={typeHeading}>{typeName}</div>
-        <div className="type-node__fields-container">{fieldElements}</div>
+        <div onClick={() => setCollapsed(!collapsed)} style={typeHeading}>{typeName}</div>
+        {!collapsed && <div className="type-node__fields-container">{fieldElements}</div>}
       </div>
     </div>
   );
