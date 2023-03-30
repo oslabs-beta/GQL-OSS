@@ -1,12 +1,12 @@
 import {useState} from "react";
-import ReactFlow, { Panel } from "reactflow";
+import { Panel } from "reactflow";
 import "../styles/OptionsPanel.css";
 import { ToggleSwitch } from "./ToggleSwitch";
 import { motion } from "framer-motion"
 
 
 
-export function OptionsPanel({ visualizerOptions, toggleTargetPosition }) {
+export function OptionsPanel({ visualizerOptions, toggleTargetPosition, displayMode, toggleDisplayMode }) {
   const { targetPosition } = visualizerOptions;
 
   const [collapsed, setCollapsed] = useState(false);
@@ -35,6 +35,13 @@ export function OptionsPanel({ visualizerOptions, toggleTargetPosition }) {
               isChecked={targetPosition === "top"}
               handleChange={toggleTargetPosition}
             />
+            <ToggleSwitch
+          toggleName="Display Mode"
+          labelLeft="All"
+          labelRight="Active"
+          isChecked={displayMode === "activeOnly"}
+          handleChange={toggleDisplayMode}
+        />
           </div>  
           }
       </Panel>
