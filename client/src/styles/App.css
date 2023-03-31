@@ -2,6 +2,11 @@
   display: flex;
   flex-direction: row;
 } */
+.query-results-split {
+  height: 100vh;
+  width: 100%;
+  /* border: 10px solid red; */
+}
 
 .split {
   display: flex;
@@ -19,8 +24,12 @@
 }
 
 .gutter.gutter-horizontal {
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+  background-image: url('../images/gutter-handle-vertical.png');
   cursor: col-resize;
+}
+.gutter.gutter-vertical {
+  background-image: url('../images/gutter-handle-horizontal.png');
+  cursor: row-resize;
 }
 /* .seg-holder{
   display: flex;

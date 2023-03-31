@@ -47,7 +47,12 @@ const App = () => {
 
   return (
     <main>
-      <Split className="split" sizes={[25, 75]}>
+      <Split
+        className="split"
+        sizes={[28, 72]}
+        minSize={0}
+      >
+
         <section className="seg-holder editor-section">
           <Editor
             id="editor"

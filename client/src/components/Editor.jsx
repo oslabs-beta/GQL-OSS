@@ -7,6 +7,7 @@ import { debounce } from '../utils/debounce';
 import validateBrackets from '../utils/validateBrackets';
 import "../styles/Editor.css";
 import { gql } from 'graphql-tag';
+import Split from 'react-split';
 
 /* Default Initial Display for Query Operations */
 const defaultOperations =
@@ -291,28 +292,42 @@ export default function Editor({schema, endpoint, setQuery}) {
   return (
     <div className="monaco-container">
       <section className="editor-pane">
-        <article className="editor-container query-editor">
-          <div ref={opsRef} className="editor" />
-          <button className="copy-btn" onClick={() => copyEditorField(opsRef)}>
-            copy
-          </button>
-          {/* <button className="submit-btn">submit query (not hooked up)</button> */}
-        </article>
-        <article className="editor-container variables-editor">
-          <div ref={varsRef} className="editor vars-editor" />
-          <button className="copy-btn" onClick={() => copyEditorField(varsRef)}>
-            copy
-          </button>
-        </article>
-        <article className="editor-container results-editor">
-          <div ref={resultsRef} className="editor" />
-          <button
-            className="copy-btn"
-            onClick={() => copyEditorField(resultsRef)}
+          <Split
+            sizes={[40, 20, 40]}
+            minSize={0}
+            expandToMin={false}
+            gutterSize={10}
+            gutterAlign="center"
+            snapOffset={30}
+            dragInterval={1}
+            direction="vertical"
+            cursor="row-resize"
+            className="query-results-split"
           >
-            copy
-          </button>
-        </article>
+
+          <article className="editor-container query-editor">
+            <div ref={opsRef} className="editor" />
+            <button className="copy-btn" onClick={() => copyEditorField(opsRef)}>
+              copy
+            </button>
+            {/* <button className="submit-btn">submit query (not hooked up)</button> */}
+          </article>
+          <article className="editor-container variables-editor">
+            <div ref={varsRef} className="editor vars-editor" />
+            <button className="copy-btn" onClick={() => copyEditorField(varsRef)}>
+              copy
+            </button>
+          </article>
+          <article className="editor-container results-editor">
+            <div ref={resultsRef} className="editor" />
+            <button
+              className="copy-btn"
+              onClick={() => copyEditorField(resultsRef)}
+            >
+              copy
+            </button>
+          </article>
+        </Split>
       </section>
     </div>
   )
