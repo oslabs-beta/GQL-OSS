@@ -6,6 +6,7 @@ import * as JSONC from 'jsonc-parser';
 import { debounce } from '../utils/debounce';
 import validateBrackets from '../utils/validateBrackets';
 import "../styles/Editor.css";
+import { gql } from 'graphql-tag';
 
 /* Default Initial Display for Query Operations */
 const defaultOperations =
@@ -143,9 +144,18 @@ export default function Editor({schema, endpoint, setQuery}) {
       debounce(300, () => {
         if (!currentSchema.current) return;
         const markers = editor.getModelMarkers({resource: Uri.file('operation.graphql')});
+        const query = editor.getModel(Uri.file('operation.graphql')).getValue();
+        // This try-catch block addresses the one crash-bug where you load a schema,
+        // already have whitespace between brackets, and hit backspace
+        try {
+          gql`${query}`;
+          // console.log('queryObj: ', queryObj);
+        } catch (e) {
+          // console.log('ERROR: ', e);
+          return;
+        }
         if (!markers.length) {
-          const query = editor.getModel(Uri.file('operation.graphql')).getValue();
-           if (!validateBrackets(query) || query.trim() === '') return;
+          if (!validateBrackets(query) || query.trim() === '') return;
           setQuery({queryString: query});
           execOperation();
         }
@@ -176,6 +186,7 @@ export default function Editor({schema, endpoint, setQuery}) {
 
     /* Execute Current Operation in Query Pane (cmd + enter OR auto) */
   const execOperation = async function () {
+    console.log('HERELOL');
     if (!currentSchema.current) {
       alert('Please load a valid schema'); // TODO: refactor error handling
       return;
