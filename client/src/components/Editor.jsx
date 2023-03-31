@@ -6,14 +6,14 @@ import * as JSONC from 'jsonc-parser';
 import { debounce } from '../utils/debounce';
 import validateBrackets from '../utils/validateBrackets';
 import "../styles/Editor.css";
+import { gql } from 'graphql-tag';
 
 /* Default Initial Display for Query Operations */
 const defaultOperations =
   localStorage.getItem('operations') ??
-  `
-# GQL Request Pane
-# cmd/ctrl + return/enter will execute the operation
-# Also available via context menu & f1 command palette
+
+`
+# GQL Request Pane #
 
 query {
 
@@ -23,14 +23,11 @@ query {
 /* Default Initial Display for Variables */
 const defaultVariables =
   localStorage.getItem('variables') ??
-  `
-/* Variables Pane
-cmd/ctrl + return/enter will execute the operation
-Format your variables as valid JSON */
 
-{
+`
+/* Variables Pane */
 
-}
+{}
 `;
 
 /* Get Model at URI, or Create One at URI with Given Value */
@@ -68,20 +65,27 @@ export default function Editor({schema, endpoint, setQuery}) {
   const [resultsViewer, setResultsViewer] = useState(null);
 
   const [MonacoGQLAPI, setMonacoGQLAPI] = useState(null);
-  // TODO: don't reassign fetcher upon every render
-  const fetcher = endpoint ? createGraphiQLFetcher({
-    url: endpoint
-  }) : null;
 
-  // Need always accurate reference to schema for listeners and callbacks
+  // Refs for accurate updates
   const currentSchema = useRef(schema);
+  const fetcher = useRef(endpoint ? createGraphiQLFetcher({
+    url: endpoint
+  }) : null);
 
   /********************************************** useEFfect's *************************************************/
 
   /* Update Current Schema Ref for Callbacks and Listeners */
   useEffect(() => {
     currentSchema.current = schema;
+    if (schema) initMonacoAPI();
   }, [schema]);
+
+  /* Update fetcher upon endpoint change */
+  useEffect(() => {
+    fetcher.current = createGraphiQLFetcher({
+      url: endpoint
+    })
+  }, [endpoint]);
 
   /* Instantiate: Once on Mount */
   /* Create the Models & Editors */
@@ -91,7 +95,7 @@ export default function Editor({schema, endpoint, setQuery}) {
   useEffect(() => {
     const queryModel = getOrCreateModel('operation.graphql', defaultOperations);
     const variablesModel = getOrCreateModel('variables.json', defaultVariables);
-    const resultsModel = getOrCreateModel('results.json', '{}');
+    const resultsModel = getOrCreateModel('results.json', '\n/* Results Pane */ \n\n{}');
 
     queryEditor ??
       setQueryEditor(
@@ -99,7 +103,10 @@ export default function Editor({schema, endpoint, setQuery}) {
           theme: 'vs-dark',
           model: queryModel,
           language: 'graphql',
-          automaticLayout: true
+          automaticLayout: true,
+          scrollbar: {
+            horizontal: "hidden",
+          }
         })
       );
     variablesEditor ??
@@ -107,7 +114,12 @@ export default function Editor({schema, endpoint, setQuery}) {
         createEditor(varsRef, {
           theme: 'vs-dark',
           model: variablesModel,
-          automaticLayout: true
+          automaticLayout: true,
+          minimap: {enabled: false},
+          scrollbar: {
+            vertical:"hidden",
+            horizontal: "hidden",
+          }
         })
       );
     resultsViewer ??
@@ -117,7 +129,11 @@ export default function Editor({schema, endpoint, setQuery}) {
           model: resultsModel,
           readOnly: true,
           smoothScrolling: true,
-          automaticLayout: true
+          automaticLayout: true,
+          minimap: {enabled: true},
+          scrollbar: {
+            horizontal: "hidden",
+          }
         })
       );
 
@@ -128,9 +144,18 @@ export default function Editor({schema, endpoint, setQuery}) {
       debounce(300, () => {
         if (!currentSchema.current) return;
         const markers = editor.getModelMarkers({resource: Uri.file('operation.graphql')});
+        const query = editor.getModel(Uri.file('operation.graphql')).getValue();
+        // This try-catch block addresses the one crash-bug where you load a schema,
+        // already have whitespace between brackets, and hit backspace
+        try {
+          gql`${query}`;
+          // console.log('queryObj: ', queryObj);
+        } catch (e) {
+          // console.log('ERROR: ', e);
+          return;
+        }
         if (!markers.length) {
-          const query = editor.getModel(Uri.file('operation.graphql')).getValue();
-           if (!validateBrackets(query) || query.trim() === '') return;
+          if (!validateBrackets(query) || query.trim() === '') return;
           setQuery({queryString: query});
           execOperation();
         }
@@ -142,7 +167,7 @@ export default function Editor({schema, endpoint, setQuery}) {
         localStorage.setItem('variables', variablesModel.getValue());
       })
     );
-    initMonacoAPI();
+
   }, []);
 
   /* Assign Keybindings */
@@ -161,6 +186,7 @@ export default function Editor({schema, endpoint, setQuery}) {
 
     /* Execute Current Operation in Query Pane (cmd + enter OR auto) */
   const execOperation = async function () {
+    console.log('HERELOL');
     if (!currentSchema.current) {
       alert('Please load a valid schema'); // TODO: refactor error handling
       return;
@@ -187,18 +213,18 @@ export default function Editor({schema, endpoint, setQuery}) {
     setQuery({queryString: operations});
     // Create reference to the results pane
     const resultsModel = editor.getModel(Uri.file('results.json'));
-    if (!fetcher) return;
+    if (!fetcher.current) return;
     // Make GQL request with given operations, passing in the variables
-    const result = await fetcher({
+    const result = await fetcher.current({
       query: operations,
-      variables: JSON.stringify(JSONC.parse(variables)),
+      variables: JSONC.parse(variables),
     });
     // Note: this app only supports a single iteration for http GET/POST,
     // no multipart or subscriptions yet.
     const data = await result.next();
 
     // Display the results in results pane
-    resultsModel?.setValue(JSON.stringify(data.value, null, 2));
+    resultsModel?.setValue('\n/* Results Pane */ \n\n' + JSON.stringify(data.value, null, 2));
   };
 
  /* Keyboard Action For Executing Operation (cmd + enter) */
@@ -270,7 +296,7 @@ export default function Editor({schema, endpoint, setQuery}) {
           <button className="copy-btn" onClick={() => copyEditorField(opsRef)}>
             copy
           </button>
-          <button className="submit-btn">submit query (not hooked up)</button>
+          {/* <button className="submit-btn">submit query (not hooked up)</button> */}
         </article>
         <article className="editor-container variables-editor">
           <div ref={varsRef} className="editor vars-editor" />

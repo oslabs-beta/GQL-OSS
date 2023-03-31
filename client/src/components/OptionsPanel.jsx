@@ -45,13 +45,6 @@ export function OptionsPanel({
               handleChange={toggleTargetPosition}
             />
             <ToggleSwitch
-              toggleName="Display Mode"
-              labelLeft="All"
-              labelRight="Active"
-              isChecked={displayMode === "activeOnly"}
-              handleChange={toggleDisplayMode}
-            />
-            <ToggleSwitch
               toggleName="show minimap"
               labelLeft="off"
               labelRight="on"
@@ -64,6 +57,13 @@ export function OptionsPanel({
               labelRight="on"
               isChecked={showControls}
               handleChange={toggleControls}
+            />
+            <ToggleSwitch
+              toggleName="Active Only"
+              labelLeft="Off"
+              labelRight="On"
+              isChecked={displayMode === "activeOnly"}
+              handleChange={toggleDisplayMode}
             />
           </div>
         )}
