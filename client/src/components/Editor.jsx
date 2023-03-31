@@ -151,10 +151,15 @@ export default function Editor({ schema, endpoint, setQuery }) {
         // This try-catch block addresses the one crash-bug where you load a schema,
         // already have whitespace between brackets, and hit backspace
         try {
-          gql`
+          const queryObj = gql`
             ${query}
           `;
-          // console.log('queryObj: ', queryObj);
+
+          if (queryObj.definitions[0].operation === `mutation`) {
+            const validOperations = getOperationsAndValidate();
+            setQuery({ queryString: validOperations });
+            return;
+          }
         } catch (e) {
           // console.log('ERROR: ', e);
           return;
@@ -188,6 +193,22 @@ export default function Editor({ schema, endpoint, setQuery }) {
 
   /****************************************** Helper Functions ********************************************/
 
+  /* Get operations pane content and checks its validation */
+  const getOperationsAndValidate = () => {
+    const operations = editor
+      .getModel(Uri.file('operation.graphql'))
+      .getValue();
+    if (!validateBrackets(operations)) {
+      alert('Invalid brackets'); // TODO: refactor error handling
+      return;
+    }
+    if (operations.trim() === '') {
+      alert('Empty query'); // TODO: refactor error handling
+      return;
+    }
+    return operations;
+  };
+
   /* Execute Current Operation in Query Pane (cmd + enter OR auto) */
   const execOperation = async function () {
     console.log('HERELOL');
@@ -205,32 +226,16 @@ export default function Editor({ schema, endpoint, setQuery }) {
     // Grab the code from the variables pane
     const variables = editor.getModel(Uri.file('variables.json')).getValue();
     // Grab the operations from the operations pane
-    const operations = editor
-      .getModel(Uri.file('operation.graphql'))
-      .getValue();
-    if (!validateBrackets(operations)) {
-      alert('Invalid brackets'); // TODO: refactor error handling
-      return;
-    }
-    if (operations.trim() === '') {
-      alert('Empty query'); // TODO: refactor error handling
-      return;
-    }
-    //BIG TO DO: Creation mutation queries should only occur when
-    //the user is fully done with their mutation query, ie when
-    //they click submit button or press command enter. Only then
-    //should this type of query be allowed to run. Currently,
-    //the below line doesn't allow it to run at all
-    if (operations.includes(`mutation`)) return;
+    const validOperations = getOperationsAndValidate();
     // Update query state at top level in order to update active ID's
     // Note, this went from string -> object for strict equality reasons (Always catch new instance)
-    setQuery({ queryString: operations });
+    setQuery({ queryString: validOperations });
     // Create reference to the results pane
     const resultsModel = editor.getModel(Uri.file('results.json'));
     if (!fetcher.current) return;
     // Make GQL request with given operations, passing in the variables
     const result = await fetcher.current({
-      query: operations,
+      query: validOperations,
       variables: JSONC.parse(variables),
     });
     // Note: this app only supports a single iteration for http GET/POST,
