@@ -11,10 +11,10 @@
 }
 
 .gutter {
-  background-color: #eee;
+  background-color: #f3f3f3;
   background-repeat: no-repeat;
   background-position: 50%;
-  margin-left: 5px;
+  /* margin-left: 5px; */
   margin-right: 5px;
 }
 
