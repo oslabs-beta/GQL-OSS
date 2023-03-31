@@ -134,7 +134,8 @@ const Visualizer = ({
     setEdges((prevEdges) => {
       return prevEdges.map((edge) => {
         const isActive = activeEdgeIDs?.has(edge.id) ? true : false;
-        return {
+
+        const newEdge = {
           ...edge,
           markerEnd: {
             ...edge.markerEnd,
@@ -151,6 +152,7 @@ const Visualizer = ({
           active: isActive,
           animated: isActive,
         };
+        return newEdge;
       });
     });
   }, [activeEdgeIDs, displayMode]);
@@ -233,7 +235,6 @@ const Visualizer = ({
     const showMinimap = !visualizerOptions.showMinimap;
     const updatedVisualizerOptions = { ...visualizerOptions, showMinimap };
     setVisualizerOptions(updatedVisualizerOptions);
-    return updatedNode;
   }
 
   // /* Toggle Controls */
@@ -241,7 +242,6 @@ const Visualizer = ({
     const showControls = !visualizerOptions.showControls;
     const updatedVisualizerOptions = { ...visualizerOptions, showControls };
     setVisualizerOptions(updatedVisualizerOptions);
-    return updatedNode;
   }
 
   /************************************************ Render ******************************************************/
