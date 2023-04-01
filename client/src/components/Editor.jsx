@@ -1,19 +1,18 @@
-import React, { useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Uri, editor, KeyMod, KeyCode, languages } from 'monaco-editor';
 import { initializeMode } from 'monaco-graphql/esm/initializeMode';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
 import { debounce } from '../utils/debounce';
 import validateBrackets from '../utils/validateBrackets';
-import "../styles/Editor.css";
+import '../styles/Editor.css';
 import { gql } from 'graphql-tag';
 import Split from 'react-split';
 
 /* Default Initial Display for Query Operations */
 const defaultOperations =
   localStorage.getItem('operations') ??
-
-`
+  `
 # GQL Request Pane #
 
 query {
@@ -24,15 +23,14 @@ query {
 /* Default Initial Display for Variables */
 const defaultVariables =
   localStorage.getItem('variables') ??
-
-`
+  `
 /* Variables Pane */
 
 {}
 `;
 
 /* Get Model at URI, or Create One at URI with Given Value */
-const getOrCreateModel = (uri, value,) => {
+const getOrCreateModel = (uri, value) => {
   return (
     editor.getModel(Uri.file(uri)) ??
     editor.createModel(value, uri.split('.').pop(), Uri.file(uri))
@@ -46,15 +44,11 @@ languages.json.jsonDefaults.setDiagnosticsOptions({
 });
 
 /* Add Editor to DOM Via its Ref */
-const createEditor = (
-  ref,
-  options,
-) => editor.create(ref.current, options);
+const createEditor = (ref, options) => editor.create(ref.current, options);
 
 /** EDITOR COMPONENT **/
 
-export default function Editor({schema, endpoint, setQuery}) {
-
+export default function Editor({ schema, endpoint, setQuery }) {
   /********************************************** State & Refs *************************************************/
 
   const opsRef = useRef(null);
@@ -72,10 +66,13 @@ export default function Editor({schema, endpoint, setQuery}) {
 
   // Refs for accurate updates
   const currentSchema = useRef(schema);
-  const fetcher = useRef(endpoint ? createGraphiQLFetcher({
-    url: endpoint
-  }) : null);
-
+  const fetcher = useRef(
+    endpoint
+      ? createGraphiQLFetcher({
+          url: endpoint,
+        })
+      : null
+  );
 
   /********************************************** useEFfect's *************************************************/
 
@@ -88,19 +85,22 @@ export default function Editor({schema, endpoint, setQuery}) {
   /* Update fetcher upon endpoint change */
   useEffect(() => {
     fetcher.current = createGraphiQLFetcher({
-      url: endpoint
-    })
+      url: endpoint,
+    });
   }, [endpoint]);
 
   /* Instantiate: Once on Mount */
   /* Create the Models & Editors */
   /* Assign Listeners */
-    // Models represent the 'virtual files' loaded in each editor
-    // Editors are the actual editor instances
+  // Models represent the 'virtual files' loaded in each editor
+  // Editors are the actual editor instances
   useEffect(() => {
     const queryModel = getOrCreateModel('operation.graphql', defaultOperations);
     const variablesModel = getOrCreateModel('variables.json', defaultVariables);
-    const resultsModel = getOrCreateModel('results.json', '\n/* Results Pane */ \n\n{}');
+    const resultsModel = getOrCreateModel(
+      'results.json',
+      '\n/* Results Pane */ \n\n{}'
+    );
 
     queryEditor ??
       setQueryEditor(
@@ -113,8 +113,8 @@ export default function Editor({schema, endpoint, setQuery}) {
             enabled: false
           },
           scrollbar: {
-            horizontal: "hidden",
-          }
+            horizontal: 'hidden',
+          },
         })
       );
     variablesEditor ??
@@ -143,8 +143,8 @@ export default function Editor({schema, endpoint, setQuery}) {
             enabled: false
           },
           scrollbar: {
-            horizontal: "hidden",
-          }
+            horizontal: 'hidden',
+          },
         })
       );
 
@@ -154,20 +154,33 @@ export default function Editor({schema, endpoint, setQuery}) {
     queryModel.onDidChangeContent(
       debounce(300, () => {
         if (!currentSchema.current) return;
-        const markers = editor.getModelMarkers({resource: Uri.file('operation.graphql')});
+        const markers = editor.getModelMarkers({
+          resource: Uri.file('operation.graphql'),
+        });
         const query = editor.getModel(Uri.file('operation.graphql')).getValue();
         // This try-catch block addresses the one crash-bug where you load a schema,
         // already have whitespace between brackets, and hit backspace
         try {
-          gql`${query}`;
-          // console.log('queryObj: ', queryObj);
+          gql`
+            ${query}
+          `;
         } catch (e) {
           // console.log('ERROR: ', e);
           return;
         }
         if (!markers.length) {
           if (!validateBrackets(query) || query.trim() === '') return;
-          setQuery({queryString: query});
+          if (query.includes(`mutation`)) {
+            const validOperations = getOperationsAndValidate();
+            console.log(`in useEffect: `, validOperations);
+            console.log(`equality check:`, validOperations === null);
+            if (validOperations === null) return;
+
+            setQuery({ queryString: validOperations });
+            return;
+          } else {
+            setQuery({ queryString: query });
+          }
           execOperation();
         }
         localStorage.setItem('operations', queryModel.getValue());
@@ -198,13 +211,31 @@ export default function Editor({schema, endpoint, setQuery}) {
 
   /****************************************** Helper Functions ********************************************/
 
-    /* Execute Current Operation in Query Pane (cmd + enter OR auto) */
+  /* Get operations pane content and checks its validation */
+  const getOperationsAndValidate = () => {
+    const operations = editor
+      .getModel(Uri.file('operation.graphql'))
+      .getValue();
+    if (!validateBrackets(operations)) {
+      alert('Invalid brackets'); // TODO: refactor error handling
+      return null;
+    }
+    if (operations.trim() === '') {
+      alert('Empty query'); // TODO: refactor error handling
+      return null;
+    }
+    return operations;
+  };
+
+  /* Execute Current Operation in Query Pane (cmd + enter OR auto) */
   const execOperation = async function () {
     if (!currentSchema.current) {
       alert('Please load a valid schema'); // TODO: refactor error handling
       return;
     }
-    const markers = editor.getModelMarkers({resource: Uri.file('operation.graphql')});
+    const markers = editor.getModelMarkers({
+      resource: Uri.file('operation.graphql'),
+    });
     if (markers.length) {
       alert('Syntax error :)'); // TODO: refactor error handling
       return;
@@ -212,24 +243,17 @@ export default function Editor({schema, endpoint, setQuery}) {
     // Grab the code from the variables pane
     const variables = editor.getModel(Uri.file('variables.json')).getValue();
     // Grab the operations from the operations pane
-    const operations = editor.getModel(Uri.file('operation.graphql')).getValue();
-    if (!validateBrackets(operations)) {
-      alert('Invalid brackets'); // TODO: refactor error handling
-      return;
-    };
-    if (operations.trim() === '') {
-      alert('Empty query'); // TODO: refactor error handling
-      return;
-    }
+    const validOperations = getOperationsAndValidate();
+    if (validOperations === null) return;
     // Update query state at top level in order to update active ID's
     // Note, this went from string -> object for strict equality reasons (Always catch new instance)
-    setQuery({queryString: operations});
+    setQuery({ queryString: validOperations });
     // Create reference to the results pane
     const resultsModel = editor.getModel(Uri.file('results.json'));
     if (!fetcher.current) return;
     // Make GQL request with given operations, passing in the variables
     const result = await fetcher.current({
-      query: operations,
+      query: validOperations,
       variables: JSONC.parse(variables),
     });
     // Note: this app only supports a single iteration for http GET/POST,
@@ -237,10 +261,12 @@ export default function Editor({schema, endpoint, setQuery}) {
     const data = await result.next();
 
     // Display the results in results pane
-    resultsModel?.setValue('\n/* Results Pane */ \n\n' + JSON.stringify(data.value, null, 2));
+    resultsModel?.setValue(
+      '\n/* Results Pane */ \n\n' + JSON.stringify(data.value, null, 2)
+    );
   };
 
- /* Keyboard Action For Executing Operation (cmd + enter) */
+  /* Keyboard Action For Executing Operation (cmd + enter) */
   const queryAction = {
     id: 'graphql-run',
     label: 'Run Operation',
@@ -255,39 +281,41 @@ export default function Editor({schema, endpoint, setQuery}) {
 
   /* Configure Monaco API & Connect to GraphQL Validation */
   const initMonacoAPI = () => {
-    setMonacoGQLAPI(initializeMode({
-      // Pair request pane with variables pane for validation
-      diagnosticSettings: {
-        validateVariablesJSON: {
-          [Uri.file('operation.graphql').toString()]: [
-            Uri.file('variables.json').toString(),
-          ],
+    setMonacoGQLAPI(
+      initializeMode({
+        // Pair request pane with variables pane for validation
+        diagnosticSettings: {
+          validateVariablesJSON: {
+            [Uri.file('operation.graphql').toString()]: [
+              Uri.file('variables.json').toString(),
+            ],
+          },
+          jsonDiagnosticSettings: {
+            validate: true,
+            schemaValidation: 'error',
+            // set these again, because we are entirely re-setting them here
+            allowComments: true,
+            trailingCommas: 'ignore',
+          },
         },
-        jsonDiagnosticSettings: {
-          validate: true,
-          schemaValidation: 'error',
-          // set these again, because we are entirely re-setting them here
-          allowComments: true,
-          trailingCommas: 'ignore',
-        },
-      },
-      schemas: [
-        {
-          introspectionJSON: currentSchema.current,
-          // uri: 'myschema.graphql', // You can have multiple schemas if you want
-        },
-      ],
-    }));
-  }
+        schemas: [
+          {
+            introspectionJSON: currentSchema.current,
+            // uri: 'myschema.graphql', // You can have multiple schemas if you want
+          },
+        ],
+      })
+    );
+  };
 
   /* Copy the Editor Contents */
   async function copyEditorField(e, ref) {
     try {
       let uriFile;
       // set the uriFile name based on ref
-      if (ref === opsRef) uriFile = "operation.graphql";
-      else if (ref === varsRef) uriFile = "variables.json";
-      else if (ref === resultsRef) uriFile = "results.json";
+      if (ref === opsRef) uriFile = 'operation.graphql';
+      else if (ref === varsRef) uriFile = 'variables.json';
+      else if (ref === resultsRef) uriFile = 'results.json';
       else return;
       // retrieve the contents of the uriFile
       const operations = editor.getModel(Uri.file(uriFile)).getValue().trim();
@@ -362,5 +390,5 @@ export default function Editor({schema, endpoint, setQuery}) {
         </Split>
       </section>
     </div>
-  )
+  );
 }
