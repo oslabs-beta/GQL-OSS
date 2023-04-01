@@ -151,22 +151,26 @@ export default function Editor({ schema, endpoint, setQuery }) {
         // This try-catch block addresses the one crash-bug where you load a schema,
         // already have whitespace between brackets, and hit backspace
         try {
-          const queryObj = gql`
+          gql`
             ${query}
           `;
-
-          if (queryObj.definitions[0].operation === `mutation`) {
-            const validOperations = getOperationsAndValidate();
-            setQuery({ queryString: validOperations });
-            return;
-          }
         } catch (e) {
           // console.log('ERROR: ', e);
           return;
         }
         if (!markers.length) {
           if (!validateBrackets(query) || query.trim() === '') return;
-          setQuery({ queryString: query });
+          if (query.includes(`mutation`)) {
+            const validOperations = getOperationsAndValidate();
+            console.log(`in useEffect: `, validOperations);
+            console.log(`equality check:`, validOperations === null);
+            if (validOperations === null) return;
+
+            setQuery({ queryString: validOperations });
+            return;
+          } else {
+            setQuery({ queryString: query });
+          }
           execOperation();
         }
         localStorage.setItem('operations', queryModel.getValue());
@@ -200,11 +204,11 @@ export default function Editor({ schema, endpoint, setQuery }) {
       .getValue();
     if (!validateBrackets(operations)) {
       alert('Invalid brackets'); // TODO: refactor error handling
-      return;
+      return null;
     }
     if (operations.trim() === '') {
       alert('Empty query'); // TODO: refactor error handling
-      return;
+      return null;
     }
     return operations;
   };
@@ -227,6 +231,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
     const variables = editor.getModel(Uri.file('variables.json')).getValue();
     // Grab the operations from the operations pane
     const validOperations = getOperationsAndValidate();
+    if (validOperations === null) return;
     // Update query state at top level in order to update active ID's
     // Note, this went from string -> object for strict equality reasons (Always catch new instance)
     setQuery({ queryString: validOperations });
