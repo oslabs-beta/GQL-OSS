@@ -7,6 +7,7 @@ import { debounce } from '../utils/debounce';
 import validateBrackets from '../utils/validateBrackets';
 import '../styles/Editor.css';
 import { gql } from 'graphql-tag';
+import Split from 'react-split';
 
 /* Default Initial Display for Query Operations */
 const defaultOperations =
@@ -53,10 +54,13 @@ export default function Editor({ schema, endpoint, setQuery }) {
   const opsRef = useRef(null);
   const varsRef = useRef(null);
   const resultsRef = useRef(null);
+  const verticalGutterRef = useRef(null);
+  const upperCopyButton = useRef(null);
 
   const [queryEditor, setQueryEditor] = useState(null);
   const [variablesEditor, setVariablesEditor] = useState(null);
   const [resultsViewer, setResultsViewer] = useState(null);
+  const [activeLowerEditor, setActiveLowerEditor] = useState('results');
 
   const [MonacoGQLAPI, setMonacoGQLAPI] = useState(null);
 
@@ -105,6 +109,9 @@ export default function Editor({ schema, endpoint, setQuery }) {
           model: queryModel,
           language: 'graphql',
           automaticLayout: true,
+          minimap: {
+            enabled: false
+          },
           scrollbar: {
             horizontal: 'hidden',
           },
@@ -116,11 +123,12 @@ export default function Editor({ schema, endpoint, setQuery }) {
           theme: 'vs-dark',
           model: variablesModel,
           automaticLayout: true,
-          minimap: { enabled: false },
-          scrollbar: {
-            vertical: 'hidden',
-            horizontal: 'hidden',
+          minimap: {
+            enabled: false
           },
+          scrollbar: {
+            horizontal: "hidden",
+          }
         })
       );
     resultsViewer ??
@@ -131,7 +139,9 @@ export default function Editor({ schema, endpoint, setQuery }) {
           readOnly: true,
           smoothScrolling: true,
           automaticLayout: true,
-          minimap: { enabled: true },
+          minimap: {
+            enabled: false
+          },
           scrollbar: {
             horizontal: 'hidden',
           },
@@ -181,6 +191,10 @@ export default function Editor({ schema, endpoint, setQuery }) {
         localStorage.setItem('variables', variablesModel.getValue());
       })
     );
+
+    verticalGutterRef.current = document.querySelector('.gutter-vertical');
+    upperCopyButton.current = document.querySelector('.upper-copy-btn');
+
   }, []);
 
   /* Assign Keybindings */
@@ -215,7 +229,6 @@ export default function Editor({ schema, endpoint, setQuery }) {
 
   /* Execute Current Operation in Query Pane (cmd + enter OR auto) */
   const execOperation = async function () {
-    console.log('HERELOL');
     if (!currentSchema.current) {
       alert('Please load a valid schema'); // TODO: refactor error handling
       return;
@@ -296,7 +309,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
   };
 
   /* Copy the Editor Contents */
-  async function copyEditorField(ref) {
+  async function copyEditorField(e, ref) {
     try {
       let uriFile;
       // set the uriFile name based on ref
@@ -308,39 +321,73 @@ export default function Editor({ schema, endpoint, setQuery }) {
       const operations = editor.getModel(Uri.file(uriFile)).getValue().trim();
       // copy to clipboard
       await navigator.clipboard.writeText(operations);
-      console.log('Editor contents copied to clipboard');
+      const copyButton = e.target;
+      copyButton.innerText = 'copied!';
+      setTimeout(() => copyButton.innerText = 'copy', 800);
     } catch (err) {
-      console.error('Failed to copy: ', err);
+      copyButton.innerText = 'error!';
+      setTimeout(() => copyButton.innerText = 'copy', 800);
     }
   }
+
+  /* Hide Upper Copy Button Before Overlap Occurs */
+  const handleVerticalDrag = () => {
+    const viewportOffset = verticalGutterRef.current.getBoundingClientRect();
+    if (viewportOffset.top < 100) upperCopyButton.current.classList.add('hidden')
+    else upperCopyButton.current.classList.remove('hidden')
+  }
+
 
   /************************************************ Render ******************************************************/
 
   return (
     <div className="monaco-container">
       <section className="editor-pane">
-        <article className="editor-container query-editor">
-          <div ref={opsRef} className="editor" />
-          <button className="copy-btn" onClick={() => copyEditorField(opsRef)}>
-            copy
-          </button>
-          {/* <button className="submit-btn">submit query (not hooked up)</button> */}
-        </article>
-        <article className="editor-container variables-editor">
-          <div ref={varsRef} className="editor vars-editor" />
-          <button className="copy-btn" onClick={() => copyEditorField(varsRef)}>
-            copy
-          </button>
-        </article>
-        <article className="editor-container results-editor">
-          <div ref={resultsRef} className="editor" />
-          <button
-            className="copy-btn"
-            onClick={() => copyEditorField(resultsRef)}
+          <Split
+            sizes={[47, 53]}
+            minSize={5}
+            expandToMin={false}
+            gutterSize={10}
+            gutterAlign="center"
+            dragInterval={1}
+            direction="vertical"
+            cursor="row-resize"
+            className="query-results-split"
+            onDrag={handleVerticalDrag}
           >
-            copy
-          </button>
-        </article>
+          <article className="editor-container query-editor">
+            <div ref={opsRef} className="editor" />
+            <button className="copy-btn upper-copy-btn" onClick={(e) => copyEditorField(e, opsRef)}>
+              copy
+            </button>
+            <button onClick={execOperation} className="submit-query-button">Submit</button>
+          </article>
+          <section className="lower-editor-section">
+            <header className="lower-editor-tabs">
+              <button className={`lower-editor-button results-button ${activeLowerEditor === 'results' ? 'active-tab' : ''}`} onClick={() => setActiveLowerEditor('results')}>
+                Results
+              </button>
+              <button className={`lower-editor-button variables-button ${activeLowerEditor === 'variables' ? 'active-tab' : ''}`} onClick={() => setActiveLowerEditor('variables')}>
+                Variables
+              </button>
+            </header>
+            <article className={`editor-container ${activeLowerEditor === 'results' ? 'hidden' : ''}`}>
+              <div ref={varsRef} className="editor vars-editor" />
+              <button className="copy-btn" onClick={(e) => copyEditorField(e, varsRef)}>
+                copy
+              </button>
+            </article>
+            <article className={`editor-container ${activeLowerEditor === 'variables' ? 'hidden' : ''}`}>
+              <div ref={resultsRef} className="editor" />
+              <button
+                className="copy-btn"
+                onClick={(e) => copyEditorField(e, resultsRef)}
+              >
+                copy
+              </button>
+            </article>
+          </section>
+        </Split>
       </section>
     </div>
   );
