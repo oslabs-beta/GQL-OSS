@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef} from "react";
 import { Endpoint } from "./components/Endpoint";
 import Editor from "./components/Editor";
 import Visualizer from "./components/Visualizer";
@@ -50,9 +50,9 @@ const App = () => {
       <Split
         className="split"
         sizes={[28, 72]}
-        minSize={0}
+        minSize={5}
+        snapOffset={50}
       >
-
         <section className="seg-holder editor-section">
           <Editor
             id="editor"

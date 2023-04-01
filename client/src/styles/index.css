@@ -16,6 +16,13 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* background-color: #1e1e1e; */
   height: 100vh;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
 }
