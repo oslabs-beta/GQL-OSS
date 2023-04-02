@@ -1,8 +1,8 @@
-import { gql } from 'graphql-tag';
+import { gql } from "graphql-tag";
 
 /* Create sets of active type ID's and active field ID's */
 const getActivesFromQuery = (queryString, vSchema) => {
-  if (queryString === '' || null)
+  if (queryString === "" || null)
     return { activeFieldIDs: null, activeTypeIDs: null };
 
   const queryObj = gql`
@@ -22,6 +22,7 @@ const getActivesFromQuery = (queryString, vSchema) => {
   // (The name is arbitrary)
   let queryName;
   if (queryObj.definitions[0].operation === `mutation`) {
+    if (!vSchema.mutationName) return null;
     queryName = vSchema.mutationName.name;
   } else {
     queryName = vSchema.queryName.name;
