@@ -43,9 +43,9 @@ const Field = ({
         markerEnd: {
           type: MarkerType.ArrowClosed,
           color: "cornflowerblue",
-          width: 20,
-          height: 20,
-          strokeWidth: 0.3,
+          width: 22,
+          height: 22,
+          strokeWidth: 1.5,
         },
         style: { stroke: "cornflowerblue", strokeWidth: "1.1" },
         hidden: false,

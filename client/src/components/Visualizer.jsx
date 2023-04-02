@@ -10,6 +10,7 @@ import ReactFlow, {
   useStoreApi,
   useReactFlow,
   useUpdateNodeInternals,
+  MarkerType,
 } from "reactflow";
 import { OptionsPanel } from "./OptionsPanel";
 import TypeNode from "./TypeNode";
@@ -144,10 +145,10 @@ const Visualizer = ({
             ...edge.markerEnd,
             // TODO: refactor colors (many different paths you can take here)
             // e.g. global variables, color pickers, color schemes, dynamic color mappings
-            color: isActive ? "magenta" : "cornflowerblue",
+            color: isActive ? "#1DBD7A" : "cornflowerblue",
           },
           style: {
-            stroke: isActive ? "magenta" : "cornflowerblue",
+            stroke: isActive ? "rgb(29, 189, 122)" : "cornflowerblue",
             strokeWidth: isActive ? "1.5" : "1.1",
           },
           zIndex: isActive ? -1 : -2,
