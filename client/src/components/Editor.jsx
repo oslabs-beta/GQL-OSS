@@ -122,6 +122,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
           },
           scrollbar: {
             horizontal: "hidden",
+            vertical: "hidden",
           },
         })
       );
@@ -136,6 +137,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
           },
           scrollbar: {
             horizontal: "hidden",
+            vertical: "hidden",
           },
         })
       );
@@ -152,6 +154,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
           },
           scrollbar: {
             horizontal: "hidden",
+            vertical: "hidden",
           },
         })
       );
@@ -346,7 +349,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
           className="query-results-split"
           onDrag={handleVerticalDrag}
         >
-          <article className="editor-container query-editor">
+          <section className="editor-container query-editor">
             <div ref={opsRef} className="editor" />
             <button
               className="copy-btn upper-copy-btn"
@@ -361,7 +364,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
               Submit
             </button>
             <span className="operation-error-msg"></span>
-          </article>
+          </section>
           <section className="lower-editor-section">
             <header className="lower-editor-tabs">
               <button

@@ -21,6 +21,7 @@
   position: relative;
   overflow: hidden;
   white-space: nowrap;
+  background: #1e1e1e;
 }
 
 .lower-editor-section {
@@ -38,7 +39,7 @@
 .lower-editor-tabs {
   border-bottom: 1px solid #737373;
   margin-bottom: 10px;
-  padding-top: 3px;
+  padding-top: 2px;
   overflow: clip;
   overflow-clip-margin: 1px;
   white-space: nowrap;
@@ -60,8 +61,8 @@
 }
 
 .lower-editor-button.active-tab {
-  border-top: 2px solid white;
-  color: white;
+  border-top: 2px solid rgb(233, 233, 233);
+  color: rgb(233, 233, 233);
   background: #383838;
   border-bottom: 1px solid #383838;
   margin-bottom: -1px;

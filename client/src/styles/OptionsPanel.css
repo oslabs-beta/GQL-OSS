@@ -1,8 +1,8 @@
-
 .options-panel__container {
   border: 1px lightgray solid;
-  background-color: #fefefe;
-  padding: .5rem;
+  /* background-color: #fefefe; */
+  color: whitesmoke;
+  padding: 0.5rem;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -12,26 +12,31 @@
 
 .options-panel__header {
   margin: 0;
-  font-size: .8rem;
-  color: #444;
+  font-size: 0.8rem;
+  /* color: #444; */
+  color: whitesmoke;
 }
 
 .options-panel__expand-button {
+  user-select: none;
+  color: whitesmoke;
   background-color: transparent;
   border: none;
   display: flex;
   flex-direction: row;
   gap: 10px;
 }
-.options-panel__expand-button::after{
-  content: '';
-  border: 1px rgba(0, 0, 0, .8)  solid;
-  background-color: rgba(0, 0, 0, 0.1); ;
+.options-panel__expand-button::after {
+  content: "";
+  /* border: 1px rgba(0, 0, 0, 0.8) solid; */
+  border: 1px solid whitesmoke;
+
   height: 17px;
   width: 17px;
   position: absolute;
   right: 10px;
   border-radius: 50%;
+  border-radius: 5px;
 }
 
 .options-panel__container hr {

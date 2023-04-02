@@ -11,17 +11,17 @@
 }
 
 .gutter {
-  background-color: #f3f3f3;
+  background-color: #413c45;
   background-repeat: no-repeat;
   background-position: 50%;
-  margin-right: 5px;
+  /* margin-right: 5px; */
 }
 
 .gutter.gutter-horizontal {
-  background-image: url('../images/gutter-handle-vertical.png');
+  background-image: url("../images/gutter-handle-vertical.png");
   cursor: col-resize;
 }
 .gutter.gutter-vertical {
-  background-image: url('../images/gutter-handle-horizontal.png');
+  background-image: url("../images/gutter-handle-horizontal.png");
   cursor: row-resize;
 }
