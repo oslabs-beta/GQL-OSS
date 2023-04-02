@@ -45,8 +45,8 @@
 }
 
 .lower-editor-button {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   background: #1e1e1e;
   color: #979797;
@@ -54,10 +54,9 @@
   border-right: 1px solid #737373;
   border-top: 1px solid #737373;
   padding: 10px 17px;
-  transition: background-color .1s ease;
-  border-top-left-radius : 3px;
-  border-top-right-radius : 3px;
-
+  transition: background-color 0.1s ease;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
 }
 
 .lower-editor-button.active-tab {
@@ -77,11 +76,11 @@
   color: white;
 }
 
-
-.copy-btn, .submit-query-button {
-  margin: .5rem;
+.copy-btn,
+.submit-query-button {
+  margin: 0.5rem;
   position: absolute;
-  padding: .5rem;
+  padding: 0.5rem;
   top: 5px;
   right: 5px;
   border: none;
@@ -89,20 +88,22 @@
   background-color: rgba(255, 255, 255, 0.05);
   color: rgba(255, 255, 255, 0.6);
   outline: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all .1s ease;
+  transition: all 0.1s ease;
 }
 
-.copy-btn:hover, .submit-query-button:hover {
-  background-color: rgba(0, 0, 0, .5);
+.copy-btn:hover,
+.submit-query-button:hover {
+  background-color: rgba(0, 0, 0, 0.5);
   color: rgba(255, 255, 255, 0.6);
   outline: 2px solid rgba(255, 255, 255, 0.5);
   outline-offset: 3px;
 }
 
-.copy-btn:active, .submit-query-button:active {
+.copy-btn:active,
+.submit-query-button:active {
   outline-offset: 2px;
   background-color: rgba(255, 255, 255, 0.4);
-  color: rgba(0, 0, 0, .8);
+  color: rgba(0, 0, 0, 0.8);
 }
 
 .submit-query-button {
@@ -110,4 +111,30 @@
   top: auto;
   bottom: 5px;
   padding: 10px 20px;
+}
+
+.operation-error-msg {
+  position: absolute;
+  bottom: 0;
+  color: white;
+  top: 50%;
+  left: 50%;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 5px;
+  background-color: rgba(193, 81, 81, 0.211);
+  color: rgba(255, 255, 255, 0.758);
+  outline: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 12px;
+  transition: all 0.2s ease;
+  opacity: 0;
+  height: max-content;
+  transform: translate(-50%, -50%) scale(0);
+  overflow: hidden;
+}
+
+.operation-error-msg.active {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
