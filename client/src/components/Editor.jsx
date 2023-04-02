@@ -90,7 +90,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
     MonacoGQLAPI?.setSchemaConfig([{ introspectionJSON: schema }]);
     editor.getModel(Uri.file("operation.graphql"))?.setValue(defaultOperations);
     editor.getModel(Uri.file("variables.json"))?.setValue(defaultVariables);
-    editor.getModel(Uri.file("results.json"))?.setValue(defaultResults + "{}");
+    editor.getModel(Uri.file("results.json"))?.setValue(defaultResults);
   }, [schema]);
 
   /* Update fetcher upon endpoint change */
