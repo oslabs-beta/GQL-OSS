@@ -145,11 +145,11 @@ const Visualizer = ({
             ...edge.markerEnd,
             // TODO: refactor colors (many different paths you can take here)
             // e.g. global variables, color pickers, color schemes, dynamic color mappings
-            color: isActive ? "#1DBD7A" : "cornflowerblue",
+            color: isActive ? "#FF00A2" : "cornflowerblue",
           },
           style: {
-            stroke: isActive ? "rgb(29, 189, 122)" : "cornflowerblue",
-            strokeWidth: isActive ? "1.5" : "1.1",
+            stroke: isActive ? "rgb(255 0 161)" : "cornflowerblue",
+            strokeWidth: isActive ? "1.4" : "1.1",
           },
           zIndex: isActive ? -1 : -2,
           hidden: displayMode === "activeOnly" && !isActive,
@@ -265,6 +265,7 @@ const Visualizer = ({
         zoom={1}
         minZoom={0.1}
         maxZoom={2}
+        proOptions={{ hideAttribution: true }}
       >
         <Background variant={"dots"} size={1.5} gap={55} color={"#a28a8a"} />
         <OptionsPanel

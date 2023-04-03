@@ -57,7 +57,7 @@ const TypeNode = ({ data }) => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className={`type-node ${active ? "active" : ""}`}>
+    <div className={`type-node ${active ? "gradient-border2" : ""}`}>
       {typeName !== "Root" && typeName !== "Query" && (
         <Handle
           type="target"
