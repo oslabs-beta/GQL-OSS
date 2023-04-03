@@ -22,6 +22,10 @@ const Field = ({
   const [handlePosition, setHandlePosition] = useState("right");
   const store = useStoreApi();
 
+  const fieldActive = {
+    background: fieldHighlightColor,
+  };
+
   useEffect(() => {
     // In vSchema:
     // 'Relationship' is a key on a field object that only exists if that field points to a type.
@@ -42,12 +46,12 @@ const Field = ({
         target: targetType,
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: "cornflowerblue",
+          color: edgeDefaultColor,
           width: 22,
           height: 22,
           strokeWidth: 1.5,
         },
-        style: { stroke: "cornflowerblue", strokeWidth: "1.1" },
+        style: { stroke: edgeDefaultColor, strokeWidth: "1.1" },
         hidden: false,
         active: false,
       });

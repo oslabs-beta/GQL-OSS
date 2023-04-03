@@ -12,10 +12,16 @@ const TypeNode = ({ data }) => {
     activeFieldIDs,
     displayMode,
     visualizerOptions,
+    customColors,
+    isGhost,
   } = data;
   const [fieldElements, setFieldElements] = useState();
 
   const { targetPosition } = visualizerOptions;
+
+  const containerStyleActive = {
+    border: `2px solid ${customColors["nodeHighlight"]}`,
+  };
 
   // Any time the active field ID's change, remap the fields
   useEffect(() => {
@@ -29,6 +35,8 @@ const TypeNode = ({ data }) => {
           returnType={field.returnType}
           updateEdge={updateEdge}
           relationship={field.relationship}
+          fieldHighlightColor={customColors["fieldHighlight"]}
+          edgeDefaultColor={customColors["edgeDefault"]}
           active={
             activeFieldIDs?.has(`${typeName}/${field.fieldName}`) ? true : false
           }
@@ -36,7 +44,7 @@ const TypeNode = ({ data }) => {
         />
       ))
     );
-  }, [activeFieldIDs]);
+  }, [activeFieldIDs, customColors]);
 
   // creating "altHandles" -- a collection of source handles with the EXACT same ID as field source handles, rendered whenever the field collapses (edges automatically snap to them)
   const [altHandles, setAltHandles] = useState();

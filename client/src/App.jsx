@@ -13,6 +13,15 @@ const App = () => {
 
   // TODO: redux refactor (for only the necessary global pieces)
   const [endpoint, setEndpoint] = useState(DEFAULT_ENDPOINT);
+
+  /* Setting default highlight/edge colors */
+  const colors = {
+    nodeHighlight: "#91EECF",
+    fieldHighlight: "#add8e6",
+    edgeDefault: "#6495ed",
+    edgeHighlight: "#FAD000",
+  };
+
   const [schema, setSchema] = useState(null);
   const [vSchema, setVSchema] = useState(null);
   const [query, setQuery] = useState(null);
@@ -21,6 +30,10 @@ const App = () => {
   const [activeEdgeIDs, setActiveEdgeIDs] = useState(null);
   const [displayMode, setDisplayMode] = useState("all");
   const editorVizSplit = useRef(null);
+  const [customColors, setCustomColors] = useState(colors);
+  const [ghostMode, setGhostMode] = useState("off");
+  const [ghostNodeIDs, setGhostNodeIDs] = useState(null);
+  const [ghostEdgeIDs, setGhostEdgeIDs] = useState(null);
 
   /********************************************** useEFfect's *************************************************/
 
@@ -29,6 +42,7 @@ const App = () => {
   useEffect(() => {
     if (query === null) return;
     const { queryString } = query;
+    console.log("vSchema : ", vSchema);
     const activeIDs = getActivesFromQuery(queryString, vSchema);
     if (activeIDs === null) return;
     const { activeTypeIDs, activeFieldIDs, activeEdgeIDs } = activeIDs;
@@ -53,10 +67,25 @@ const App = () => {
     }
   };
 
+  const fullscreenVisualizer = () => {
+    const el = document.querySelector(".visualizer-container");
+    el.requestFullscreen();
+  };
+
   /************************************************ Render ******************************************************/
 
   return (
     <main>
+      <section className="toolbar">
+        <Endpoint
+          endpoint={endpoint}
+          setEndpoint={setEndpoint}
+          setSchema={setSchema}
+          setVSchema={setVSchema}
+        />
+        <button onClick={fullscreenVisualizer}>Fullscreen</button>
+      </section>
+
       <Split
         ref={editorVizSplit}
         className="editor-visualizer-split"
@@ -74,12 +103,6 @@ const App = () => {
           ></Editor>
         </section>
         <section className="seg-holder visualizer-section">
-          <Endpoint
-            endpoint={endpoint}
-            setEndpoint={setEndpoint}
-            setSchema={setSchema}
-            setVSchema={setVSchema}
-          />
           <Visualizer
             vSchema={vSchema}
             activeTypeIDs={activeTypeIDs}
@@ -87,6 +110,14 @@ const App = () => {
             activeEdgeIDs={activeEdgeIDs}
             displayMode={displayMode}
             setDisplayMode={setDisplayMode}
+            customColors={customColors}
+            setCustomColors={setCustomColors}
+            ghostMode={ghostMode}
+            setGhostMode={setGhostMode}
+            ghostNodeIDs={ghostNodeIDs}
+            setGhostNodeIDs={setGhostNodeIDs}
+            ghostEdgeIDs={ghostEdgeIDs}
+            setGhostEdgeIDs={setGhostEdgeIDs}
           />
         </section>
       </Split>
