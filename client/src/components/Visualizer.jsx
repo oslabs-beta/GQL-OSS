@@ -174,12 +174,15 @@ const Visualizer = ({
             color: isActive
               ? customColors["edgeHighlight"]
               : customColors["edgeDefault"],
+            width: isActive ? 20 : 28,
+            height: isActive ? 20 : 28,
+            strokeWidth: isActive ? 0.5 : 0.7,
           },
           style: {
             stroke: isActive
               ? customColors["edgeHighlight"]
               : customColors["edgeDefault"],
-            strokeWidth: isActive ? "1.4" : "1.1",
+            strokeWidth: isActive ? "2" : "1.1",
           },
           zIndex: isActive ? -1 : -2,
           hidden: isHidden,
@@ -340,11 +343,19 @@ const Visualizer = ({
       edges.map((edge) => {
         const updatedEdge = {
           ...edge,
+          markerEnd: {
+            width: edge.active ? 20 : 28,
+            height: edge.active ? 20 : 28,
+            strokeWidth: edge.active ? 0.5 : 0.7,
+            color: edge.active
+              ? customColors["edgeHighlight"]
+              : customColors["edgeDefault"],
+          },
           style: {
             stroke: edge.active
               ? customColors["edgeHighlight"]
               : customColors["edgeDefault"],
-            strokeWidth: edge.active ? "1.5" : "1.1",
+            strokeWidth: edge.active ? "2" : "1.1",
           },
         };
         return updatedEdge;
@@ -366,7 +377,7 @@ const Visualizer = ({
         selectionOnDrag={true}
         selectionMode={SelectionMode.Partial}
         nodeTypes={nodeTypes}
-        panOnScroll={true}
+        panOnScroll={false}
         minZoom={0.1}
         maxZoom={2}
         zoom={1}

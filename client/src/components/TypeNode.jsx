@@ -19,9 +19,9 @@ const TypeNode = ({ data }) => {
 
   const { targetPosition } = visualizerOptions;
 
-  const containerStyleActive = {
-    border: `2px solid ${customColors["nodeHighlight"]}`,
-  };
+  // const containerStyleActive = {
+  //   border: `2px solid ${customColors["nodeHighlight"]}`,
+  // };
 
   // Any time the active field ID's change, remap the fields
   useEffect(() => {

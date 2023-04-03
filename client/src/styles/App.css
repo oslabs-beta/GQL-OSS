@@ -42,13 +42,43 @@ main {
 }
 
 .toolbar {
-  background-color: lightgray;
+  /* background-color: #585662; */
+  /* background-color: #2a2c33; */
+  /* background-color: #2a2e33; */
+  background-image: url("../images/nav-background.jpeg");
+  background-size: contain;
+  /* #2a2c33   #2a2e33*/
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   width: 100vw;
   height: 5.5vh;
+  border-bottom: 2px double #413c45;
+}
+
+.fullscreen-btn {
+  font-family: "Poppins", sans-serif;
+  padding: 7px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: whitesmoke;
+  outline: 1px solid rgb(188, 183, 204);
+  transition: all 0.1s ease;
+  font-weight: 200;
+}
+
+.fullscreen-btn:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.6);
+  outline: 2px solid rgb(188, 183, 204);
+  outline-offset: 1px;
+}
+
+.fullscreen-btn:active {
+  outline-offset: 2px;
+  background-color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.8);
 }
 
 /* .editor-section{

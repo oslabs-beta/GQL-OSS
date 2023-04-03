@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Panel } from "reactflow";
 import "../styles/OptionsPanel.css";
 import { ToggleSwitch } from "./ToggleSwitch";
-import { ColorPicker  } from "./ColorPicker";
+import { ColorPicker } from "./ColorPicker";
 import { motion } from "framer-motion";
 
 export function OptionsPanel({
@@ -78,32 +78,30 @@ export function OptionsPanel({
               handleChange={toggleControls}
             />
 
-            
-            <ColorPicker 
+            {/* <ColorPicker
               pickerName="Node Highlight"
               handleChange={setCustomColors}
               target='nodeHighlight'
               defaultColor={customColors}
-            />
-            <ColorPicker 
+            /> */}
+            <ColorPicker
               pickerName="Field Highlight"
               handleChange={setCustomColors}
-              target='fieldHighlight'
+              target="fieldHighlight"
               defaultColor={customColors}
             />
-            <ColorPicker 
+            <ColorPicker
               pickerName="Edge Default"
               handleChange={setCustomColors}
-              target='edgeDefault'
+              target="edgeDefault"
               defaultColor={customColors}
             />
-            <ColorPicker 
+            <ColorPicker
               pickerName="Edge Highlight"
               handleChange={setCustomColors}
-              target='edgeHighlight'
+              target="edgeHighlight"
               defaultColor={customColors}
             />
-            
           </div>
         )}
       </Panel>

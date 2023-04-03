@@ -16,6 +16,8 @@ const Field = ({
   relationship,
   active,
   displayMode,
+  fieldHighlightColor,
+  edgeDefaultColor,
 }) => {
   const nodes = useNodes();
   const updateNodeInternals = useUpdateNodeInternals();
@@ -23,7 +25,7 @@ const Field = ({
   const store = useStoreApi();
 
   const fieldActive = {
-    background: fieldHighlightColor,
+    backgroundColor: fieldHighlightColor + "ca",
   };
 
   useEffect(() => {
@@ -47,9 +49,9 @@ const Field = ({
         markerEnd: {
           type: MarkerType.ArrowClosed,
           color: edgeDefaultColor,
-          width: 22,
-          height: 22,
-          strokeWidth: 1.5,
+          width: 28,
+          height: 28,
+          strokeWidth: 0.7,
         },
         style: { stroke: edgeDefaultColor, strokeWidth: "1.1" },
         hidden: false,
@@ -82,7 +84,10 @@ const Field = ({
   }
 
   return (
-    <div className={`field ${active ? "active" : ""}`}>
+    <div
+      className={`field ${active ? "active" : ""}`}
+      style={active ? fieldActive : {}}
+    >
       <div className="field-data">
         <p className="field-name">{fieldName}</p>
         <p className="return-type">{returnType}</p>

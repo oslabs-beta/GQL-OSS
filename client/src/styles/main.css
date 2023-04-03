@@ -17,7 +17,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: "Poppins", sans-serif; /* A little more readable than -apple-system but in the same vein */
+  /* A little more readable than -apple-system but in the same vein */
+  /* font-family: "Poppins", sans-serif; */
 }
 
 button:hover {

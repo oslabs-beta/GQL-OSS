@@ -328,7 +328,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
   /* Hide Upper Copy Button Before Overlap Occurs */
   const handleVerticalDrag = () => {
     const viewportOffset = verticalGutterRef.current.getBoundingClientRect();
-    if (viewportOffset.top < 100)
+    if (viewportOffset.top < 145)
       upperCopyButton.current.classList.add("hidden");
     else upperCopyButton.current.classList.remove("hidden");
   };
@@ -339,7 +339,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
     <div className="monaco-container">
       <section className="editor-pane">
         <Split
-          sizes={[47, 53]}
+          sizes={[49, 51]}
           minSize={5}
           expandToMin={false}
           gutterSize={10}

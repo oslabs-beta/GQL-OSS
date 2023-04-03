@@ -16,10 +16,12 @@ const App = () => {
 
   /* Setting default highlight/edge colors */
   const colors = {
-    nodeHighlight: "#91EECF",
-    fieldHighlight: "#add8e6",
-    edgeDefault: "#6495ed",
-    edgeHighlight: "#FAD000",
+    // nodeHighlight: "#91EECF",
+    fieldHighlight: "#283145",
+    // fieldHighlight: "#262B36",
+    // #262B36
+    edgeDefault: "#6495ED",
+    edgeHighlight: "#FF00A2",
   };
 
   const [schema, setSchema] = useState(null);
@@ -35,7 +37,7 @@ const App = () => {
   const [ghostNodeIDs, setGhostNodeIDs] = useState(null);
   const [ghostEdgeIDs, setGhostEdgeIDs] = useState(null);
 
-  /********************************************** useEFfect's *************************************************/
+  /********************************************** useEffect's *************************************************/
 
   /* Highlight Active Query */
   // If the user executes a query, update the active ID's for Types, Fields, & Edges
@@ -61,7 +63,6 @@ const App = () => {
 
   /* Prevent Left Pane From Forcing Overflow */
   const handleHorizontalDrag = (sizes) => {
-    console.log("sizes: ", sizes);
     if (sizes[0] > 49) {
       editorVizSplit.current.split.setSizes([49, 51]);
     }
@@ -76,20 +77,23 @@ const App = () => {
 
   return (
     <main>
-      <section className="toolbar">
+      <nav className="toolbar">
+        {/* TODO: Make the fullscreen button a custom control input component that goes with the other buttons */}
+        <button className="fullscreen-btn" onClick={fullscreenVisualizer}>
+          Fullscreen
+        </button>
         <Endpoint
           endpoint={endpoint}
           setEndpoint={setEndpoint}
           setSchema={setSchema}
           setVSchema={setVSchema}
         />
-        <button onClick={fullscreenVisualizer}>Fullscreen</button>
-      </section>
+      </nav>
 
       <Split
         ref={editorVizSplit}
         className="editor-visualizer-split"
-        sizes={[28, 72]}
+        sizes={[27, 73]}
         minSize={5}
         snapOffset={50}
         onDrag={handleHorizontalDrag}

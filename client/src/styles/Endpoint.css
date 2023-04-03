@@ -17,10 +17,10 @@
   border-radius: 5px;
   margin-left: 10px;
   color: whitesmoke;
-  padding: 10px;
+  padding: 7px;
   font-family: "Poppins", sans-serif;
   text-align: center;
-  font-weight: 300;
+  font-weight: 200;
 }
 
 .endpoint__input::placeholder {
@@ -42,21 +42,21 @@
 .endpoint__button {
   font-family: "Poppins", sans-serif;
   margin-left: 5px;
-  padding: 10px;
+  padding: 7px;
   border: none;
   border-radius: 5px;
   background-color: rgba(255, 255, 255, 0.05);
   color: whitesmoke;
   outline: 1px solid rgb(188, 183, 204);
   transition: all 0.1s ease;
-  font-weight: 300;
+  font-weight: 200;
 }
 
 .endpoint__button:hover {
   background-color: rgba(0, 0, 0, 0.5);
   color: rgba(255, 255, 255, 0.6);
   outline: 2px solid rgb(188, 183, 204);
-  outline-offset: 3px;
+  outline-offset: 1px;
 }
 
 .endpoint__button:active {

@@ -6,8 +6,8 @@
   /* background: #1e1f26; */
   background-color: #202125dd;
   /* transition: transform 0.2s ease; */
-  transition: background-color 0.15s ease;
-  transition: box-shadow 0.15s ease;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  /* transition: box-shadow 0.15s ease; */
   font-size: 16px;
   position: relative;
   min-width: 150px;
@@ -19,11 +19,12 @@
 .type-node:hover {
   box-shadow: 0 12px 22px rgba(97, 97, 106, 0.19),
     0 8px 8px rgba(102, 104, 111, 0.23);
-  /* background-color: #222329dd; */
   /* transform: scale(1.01); */
   /* background-color: #202125; */
   /* background-color: #202125; */
-  background-color: #212227dd;
+  /* background-color: #222329dd; */
+  background-color: rgba(34, 35, 40, 0.871);
+  /* background-color: #232429dd; */
 }
 
 /* .type-node.active {
@@ -31,12 +32,12 @@
 } */
 
 .type-heading {
-  padding: 20px 40px;
+  padding: 15px 40px;
   font-size: 19px;
   /* font-style: italic; */
   /* font-weight: bold; */
   font-weight: 300;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   text-align: center;
   /* border-bottom: 1px solid rgb(188, 183, 204); */
   border-bottom: 1px solid rgb(111, 107, 123);
