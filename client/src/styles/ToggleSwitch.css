@@ -27,7 +27,7 @@
 
 .toggle-switch__label-left,
 .toggle-switch__label-right {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 300;
 }
 
@@ -51,6 +51,8 @@
   right: 0;
   bottom: 0;
   background-color: #bbb;
+  background-color: #4a4a54;
+  background-color: #333337;
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
@@ -64,12 +66,18 @@
   bottom: 4px;
   transform: translateY(12px);
   background-color: #fff;
+  background-color: #262431;
+  background-color: #262735;
+  background-color: #26262ff3;
+  /* #262735 */
   -webkit-transition: 0.4s;
   transition: 0.4s;
-  border: 1px gray solid;
+  /* border: 1px gray solid; */
+  border: 1px #43434d solid;
 }
 
 input:checked + .toggle-slider {
+  background-color: #bbb;
   background-color: #bbb;
 }
 

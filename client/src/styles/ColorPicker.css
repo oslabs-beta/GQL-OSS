@@ -1,10 +1,10 @@
 /*  Slider from: https://alvarotrigo.com/blog/toggle-switch-css/ */
-.color-picker__switch {
+/* .color-picker__switch {
   position: relative;
   display: inline-block;
   width: 50px;
   height: 10px;
-}
+} */
 
 .color-picker p {
   text-transform: capitalize;
@@ -16,7 +16,6 @@
   background: none;
   border: none;
   outline: none;
-  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -33,56 +32,12 @@
   display: flex;
   flex-direction: row;
   width: 100%;
+
   align-items: center;
   justify-content: center;
   margin-bottom: 3px;
 }
 
-.color-picker__switch input {
+/* .color-picker__switch input {
   display: none;
-}
-
-.toggle-slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #bbb;
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
-}
-
-.toggle-slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  transform: translateY(12px);
-  background-color: #fff;
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
-  border: 1px gray solid;
-}
-
-input:checked + .toggle-slider {
-  background-color: #bbb;
-}
-
-input:checked + .toggle-slider:before {
-  -webkit-transform: translateX(16px);
-  -ms-transform: translateX(16px);
-  transform: translateX(16px) translateY(12px);
-}
-
-/* Rounded sliders */
-.toggle-slider.round {
-  border-radius: 34px;
-}
-
-.toggle-slider.round:before {
-  border-radius: 50%;
-}
+} */
