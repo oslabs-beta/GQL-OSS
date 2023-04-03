@@ -174,9 +174,9 @@ const Visualizer = ({
             color: isActive
               ? customColors["edgeHighlight"]
               : customColors["edgeDefault"],
-            width: isActive ? 20 : 28,
-            height: isActive ? 20 : 28,
-            strokeWidth: isActive ? 0.5 : 0.7,
+            width: isActive ? 18 : 28,
+            height: isActive ? 18 : 28,
+            strokeWidth: isActive ? 0.6 : 0.7,
           },
           style: {
             stroke: isActive
@@ -344,9 +344,9 @@ const Visualizer = ({
         const updatedEdge = {
           ...edge,
           markerEnd: {
-            width: edge.active ? 20 : 28,
-            height: edge.active ? 20 : 28,
-            strokeWidth: edge.active ? 0.5 : 0.7,
+            width: edge.active ? 18 : 28,
+            height: edge.active ? 18 : 28,
+            strokeWidth: edge.active ? 0.6 : 0.7,
             color: edge.active
               ? customColors["edgeHighlight"]
               : customColors["edgeDefault"],
