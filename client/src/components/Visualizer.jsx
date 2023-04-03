@@ -248,6 +248,11 @@ const Visualizer = ({
     setVisualizerOptions(updatedVisualizerOptions);
   }
 
+  const nodeColor = (node) => {
+    if (node.data.active) return "rgb(129 120 200 / 45%)";
+    return "rgba(188, 183, 204, .5)";
+  };
+
   /************************************************ Render ******************************************************/
 
   return (
@@ -278,7 +283,7 @@ const Visualizer = ({
         />
         <Background />
         {showControls && <Controls />}
-        {showMinimap && <MiniMap />}
+        {showMinimap && <MiniMap nodeColor={nodeColor} pannable={true} />}
       </ReactFlow>
     </div>
   );

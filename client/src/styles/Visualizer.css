@@ -29,3 +29,33 @@
   font-size: 5px;
   color: #3e3f46;
 }
+
+.react-flow__minimap {
+  background: #3e4e741f;
+}
+
+.react-flow__minimap-mask {
+  fill: #5b55774d;
+}
+
+.react-flow__controls button {
+  background: #5b55774d;
+  padding: 8px;
+  border-color: #9994aa;
+  fill: #9994aa;
+  /* background: #3e4e741f; */
+  border-bottom: 1px solid #9994aa;
+  transition: background-color 0.15s ease;
+}
+
+.react-flow__controls button:hover {
+  background: #746d944d;
+}
+
+.react-flow__controls button:active {
+  fill: #bfbbcd;
+}
+
+.react-flow__controls button:last-of-type {
+  border-bottom: none;
+}
