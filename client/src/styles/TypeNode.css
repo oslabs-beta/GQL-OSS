@@ -10,7 +10,7 @@
   /* transition: box-shadow 0.15s ease; */
   font-size: 16px;
   position: relative;
-  min-width: 150px;
+  min-width: 190px;
   color: whitesmoke;
   border-radius: 5px;
   border: 2px solid rgb(188, 183, 204);
@@ -32,8 +32,8 @@
 } */
 
 .type-heading {
-  padding: 15px 40px;
-  font-size: 19px;
+  padding: 13px 40px;
+  font-size: 17px;
   /* font-style: italic; */
   /* font-weight: bold; */
   font-weight: 300;
