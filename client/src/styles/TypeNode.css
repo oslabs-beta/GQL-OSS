@@ -20,7 +20,8 @@
 .type-node:hover {
   box-shadow: 0 12px 22px rgba(97, 97, 106, 0.19),
     0 8px 8px rgba(102, 104, 111, 0.23);
-  background-color: #222329dd;
+  /* background-color: #222329dd; */
+  background-color: #212227dd;
   /* transform: scale(1.01); */
   /* background-color: #202125; */
   /* background-color: #202125; */

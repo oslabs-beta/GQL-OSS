@@ -1,6 +1,9 @@
 .options-panel__container {
-  border: 1px lightgray solid;
+  --offwhite: rgb(188, 183, 204);
+  /* border: 1px lightgray solid; */
+  border: 1px solid var(--offwhite);
   /* background-color: #fefefe; */
+  background-color: #202125dd;
   color: whitesmoke;
   padding: 0.5rem;
   border-radius: 10px;
@@ -13,8 +16,6 @@
 .options-panel__header {
   margin: 0;
   font-size: 0.8rem;
-  /* color: #444; */
-  color: whitesmoke;
 }
 
 .options-panel__expand-button {
@@ -28,9 +29,7 @@
 }
 .options-panel__expand-button::after {
   content: "";
-  /* border: 1px rgba(0, 0, 0, 0.8) solid; */
-  border: 1px solid whitesmoke;
-
+  border: 1px solid var(--offwhite);
   height: 17px;
   width: 17px;
   position: absolute;
@@ -41,4 +40,5 @@
 
 .options-panel__container hr {
   width: 100%;
+  border-top: none;
 }

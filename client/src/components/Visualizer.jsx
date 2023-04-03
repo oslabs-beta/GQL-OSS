@@ -249,8 +249,10 @@ const Visualizer = ({
   }
 
   const nodeColor = (node) => {
-    if (node.data.active) return "rgb(129 120 200 / 45%)";
-    return "rgba(188, 183, 204, .5)";
+    // if (node.data.active) return "rgb(129 120 200 / 45%)";
+    if (node.data.active) return "rgb(108 102 159 / 45%)";
+    return "rgb(60 57 86 / 57%)";
+    // return "rgba(188, 183, 204, .5)";
   };
 
   /************************************************ Render ******************************************************/
