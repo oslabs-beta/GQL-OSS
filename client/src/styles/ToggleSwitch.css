@@ -73,7 +73,8 @@
   -webkit-transition: 0.4s;
   transition: 0.4s;
   /* border: 1px gray solid; */
-  border: 1px #43434d solid;
+  /* border: 1px #43434d solid; */
+  border: 1px #61616c solid;
 }
 
 input:checked + .toggle-slider {
