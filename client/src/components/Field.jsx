@@ -6,6 +6,7 @@ import {
   useUpdateNodeInternals,
   useStoreApi,
 } from "reactflow";
+import ReverseContext from "../context/ReverseContext";
 
 import "../styles/Field.css";
 
@@ -27,6 +28,7 @@ const Field = ({
 
   const { setRevClickedField, revActiveTypesNFields } =
     useContext(ReverseContext);
+
   const fieldActive = {
     backgroundColor: fieldHighlightColor + "ca",
   };
@@ -99,6 +101,7 @@ const Field = ({
     <div
       className={`field ${active ? "active" : ""}`}
       style={active ? fieldActive : {}}
+      onClick={reverseClickHandler}
     >
       <div className="field-data">
         <p className="field-name">{fieldName}</p>
