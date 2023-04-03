@@ -1,7 +1,13 @@
-import React, { memo, useEffect, useState } from 'react';
-import { Handle } from 'reactflow';
-import { MarkerType, useNodes, useUpdateNodeInternals, useStoreApi } from 'reactflow';
+import React, { memo, useEffect, useState, useContext, useRef } from "react";
+import { Handle } from "reactflow";
+import {
+  MarkerType,
+  useNodes,
+  useUpdateNodeInternals,
+  useStoreApi,
+} from "reactflow";
 
+import ReverseContext from "../context/ReverseContext";
 
 const field = {
   position: `relative`,
@@ -10,29 +16,45 @@ const field = {
   textAlign: `center`,
 };
 const fieldActive = {
-  background: 'lightblue'
+  background: "lightblue",
 };
 
 const fieldData = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
   gap: 10,
 };
 
-const Field = ({ typeName, fieldName, returnType, updateEdge, relationship, active, displayMode }) => {
+const Field = ({
+  typeName,
+  fieldName,
+  returnType,
+  updateEdge,
+  relationship,
+  active,
+  displayMode,
+}) => {
   const nodes = useNodes();
   const updateNodeInternals = useUpdateNodeInternals();
-  const [handlePosition, setHandlePosition] = useState('right');
+  const [handlePosition, setHandlePosition] = useState("right");
   const store = useStoreApi();
 
+  const { setRevClickedField, revActiveTypesNFields } =
+    useContext(ReverseContext);
 
   useEffect(() => {
     // In vSchema:
     // 'Relationship' is a key on a field object that only exists if that field points to a type.
     // Its value corresponds 1:1 to the object type name and its node's id
-    if (relationship &&
-      !store.getState().edges.some(edge => edge.id === `${typeName}/${fieldName}-${relationship}`)) {
+    if (
+      relationship &&
+      !store
+        .getState()
+        .edges.some(
+          (edge) => edge.id === `${typeName}/${fieldName}-${relationship}`
+        )
+    ) {
       const targetType = relationship;
       updateEdge({
         id: `${typeName}/${fieldName}-${targetType}`,
@@ -41,18 +63,17 @@ const Field = ({ typeName, fieldName, returnType, updateEdge, relationship, acti
         target: targetType,
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: 'cornflowerblue',
+          color: "cornflowerblue",
           width: 20,
           height: 20,
-          strokeWidth: .3
+          strokeWidth: 0.3,
         },
-        style: { stroke: 'cornflowerblue', strokeWidth: '1.1'},
+        style: { stroke: "cornflowerblue", strokeWidth: "1.1" },
         hidden: false,
-        active: false
+        active: false,
       });
     }
   }, []);
-
 
   /* Dynamically shift around the handles */
   // I originally tried to store curr and target nodes in state
@@ -61,28 +82,48 @@ const Field = ({ typeName, fieldName, returnType, updateEdge, relationship, acti
   // You'd think it'd be easier that way ... it seems 'references' got lost in state
   // So here, we're 'brute forcing' instead.
   if (relationship) {
-    const targetNode = nodes.find(node => node.id === relationship);
-    const currNode = nodes.find(node => node.id === typeName);
+    const targetNode = nodes.find((node) => node.id === relationship);
+    const currNode = nodes.find((node) => node.id === typeName);
     const targetPosition = targetNode.position;
     const currPosition = currNode.position;
-    if (currPosition.x > targetPosition.x && handlePosition !== 'left') {
-      setHandlePosition('left');
+    if (currPosition.x > targetPosition.x && handlePosition !== "left") {
+      setHandlePosition("left");
       updateNodeInternals(typeName);
-    } else if (currPosition.x < targetPosition.x && handlePosition !== 'right') {
-      setHandlePosition('right');
+    } else if (
+      currPosition.x < targetPosition.x &&
+      handlePosition !== "right"
+    ) {
+      setHandlePosition("right");
       updateNodeInternals(typeName);
     }
   }
 
+  const reverseClickHandler = () => {
+    if (revActiveTypesNFields === null || revActiveTypesNFields[typeName]) {
+      setRevClickedField({ typeName, fieldName, relationship });
+    } else {
+      // console.log(`DOES NOT PASS`);
+      setRevClickedField({ typeName, fieldName, relationship });
+    }
+  };
+
   return (
-    <div style={active ? {...field, ...fieldActive} : field}>
+    <div
+      style={active ? { ...field, ...fieldActive } : field}
+      onClick={reverseClickHandler}
+    >
       <div style={fieldData}>
         <p className="field-name">{fieldName}</p>
         <p className="return-type">{returnType}</p>
       </div>
-      { relationship &&
-        <Handle type="source" position={handlePosition} isConnectable={false} id={`${typeName}/${fieldName}`} />
-      }
+      {relationship && (
+        <Handle
+          type="source"
+          position={handlePosition}
+          isConnectable={false}
+          id={`${typeName}/${fieldName}`}
+        />
+      )}
     </div>
   );
 };
