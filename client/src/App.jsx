@@ -6,13 +6,24 @@ import Split from "react-split";
 import "./styles/App.css";
 import getActivesFromQuery from "./utils/getActivesFromQuery";
 
+const DEFAULT_ENDPOINT = "https://countries.trevorblades.com/";
+
 const App = () => {
   /********************************************** State & Refs *************************************************/
 
   // TODO: redux refactor (for only the necessary global pieces)
-  const [endpoint, setEndpoint] = useState(
-    "https://countries.trevorblades.com/"
-  );
+  const [endpoint, setEndpoint] = useState(DEFAULT_ENDPOINT);
+
+  /* Setting default highlight/edge colors */
+  const colors = {
+    // nodeHighlight: "#91EECF",
+    fieldHighlight: "#283145",
+    // fieldHighlight: "#262B36",
+    // #262B36
+    edgeDefault: "#6495ED",
+    edgeHighlight: "#FF00A2",
+  };
+
   const [schema, setSchema] = useState(null);
   const [vSchema, setVSchema] = useState(null);
   const [query, setQuery] = useState(null);
@@ -20,14 +31,20 @@ const App = () => {
   const [activeFieldIDs, setActiveFieldIDs] = useState(null);
   const [activeEdgeIDs, setActiveEdgeIDs] = useState(null);
   const [displayMode, setDisplayMode] = useState("all");
+  const editorVizSplit = useRef(null);
+  const [customColors, setCustomColors] = useState(colors);
+  const [ghostMode, setGhostMode] = useState("off");
+  const [ghostNodeIDs, setGhostNodeIDs] = useState(null);
+  const [ghostEdgeIDs, setGhostEdgeIDs] = useState(null);
 
-  /********************************************** useEFfect's *************************************************/
+  /********************************************** useEffect's *************************************************/
 
   /* Highlight Active Query */
   // If the user executes a query, update the active ID's for Types, Fields, & Edges
   useEffect(() => {
     if (query === null) return;
     const { queryString } = query;
+    console.log("vSchema : ", vSchema);
     const activeIDs = getActivesFromQuery(queryString, vSchema);
     if (activeIDs === null) return;
     const { activeTypeIDs, activeFieldIDs, activeEdgeIDs } = activeIDs;
@@ -44,11 +61,43 @@ const App = () => {
     setActiveEdgeIDs(null);
   }, [vSchema]);
 
+  /* Prevent Left Pane From Forcing Overflow */
+  const handleHorizontalDrag = (sizes) => {
+    if (sizes[0] > 49) {
+      editorVizSplit.current.split.setSizes([49, 51]);
+    }
+  };
+
+  const fullscreenVisualizer = () => {
+    const el = document.querySelector(".visualizer-container");
+    el.requestFullscreen();
+  };
+
   /************************************************ Render ******************************************************/
 
   return (
     <main>
-      <Split className="split" sizes={[28, 72]} minSize={5} snapOffset={50}>
+      <nav className="toolbar">
+        {/* TODO: Make the fullscreen button a custom control input component that goes with the other buttons */}
+        <button className="fullscreen-btn" onClick={fullscreenVisualizer}>
+          Fullscreen
+        </button>
+        <Endpoint
+          endpoint={endpoint}
+          setEndpoint={setEndpoint}
+          setSchema={setSchema}
+          setVSchema={setVSchema}
+        />
+      </nav>
+
+      <Split
+        ref={editorVizSplit}
+        className="editor-visualizer-split"
+        sizes={[27, 73]}
+        minSize={5}
+        snapOffset={50}
+        onDrag={handleHorizontalDrag}
+      >
         <section className="seg-holder editor-section">
           <Editor
             id="editor"
@@ -58,12 +107,6 @@ const App = () => {
           ></Editor>
         </section>
         <section className="seg-holder visualizer-section">
-          <Endpoint
-            endpoint={endpoint}
-            setEndpoint={setEndpoint}
-            setSchema={setSchema}
-            setVSchema={setVSchema}
-          />
           <Visualizer
             vSchema={vSchema}
             activeTypeIDs={activeTypeIDs}
@@ -71,6 +114,14 @@ const App = () => {
             activeEdgeIDs={activeEdgeIDs}
             displayMode={displayMode}
             setDisplayMode={setDisplayMode}
+            customColors={customColors}
+            setCustomColors={setCustomColors}
+            ghostMode={ghostMode}
+            setGhostMode={setGhostMode}
+            ghostNodeIDs={ghostNodeIDs}
+            setGhostNodeIDs={setGhostNodeIDs}
+            ghostEdgeIDs={ghostEdgeIDs}
+            setGhostEdgeIDs={setGhostEdgeIDs}
           />
         </section>
       </Split>

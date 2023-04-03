@@ -20,9 +20,7 @@ export const Endpoint = ({ endpoint, setEndpoint, setSchema, setVSchema }) => {
 
   return (
     <div className="endpoint__container">
-      <label htmlFor="endpoint-input" className="endpoint__label">
-        GraphQL Server Endpoint:
-      </label>
+      <label htmlFor="endpoint-input" className="endpoint__label"></label>
       <input
         type="text"
         ref={epInputRef}

@@ -1,8 +1,6 @@
 .visualizer-container {
   width: 100%;
-  height: 99vh;
-  /* border: 3px double black; */
-  padding-top: 5px;
+  height: 100%;
 }
 
 .type-node__handle-target-left {
@@ -15,3 +13,49 @@
   background-color: transparent;
 }
 
+.react-flow {
+  /* background: #171721;
+  background: #1f1f29;
+  background: #1d1e25; */
+  /* background: #24272f; */
+  /* background: #1d1e28; */
+  background: #1d1e22;
+}
+
+.react-flow__attribution {
+  background: #1d1e25;
+}
+.react-flow__attribution a {
+  font-size: 5px;
+  color: #3e3f46;
+}
+
+.react-flow__minimap {
+  background: #3e4e741f;
+}
+
+.react-flow__minimap-mask {
+  fill: #5b55774d;
+}
+
+.react-flow__controls button {
+  /* background: #3e4e741f; */
+  background: #5b55774d;
+  padding: 8px;
+  border-color: #9994aa;
+  fill: #9994aa;
+  border-bottom: 1px solid #9994aa;
+  transition: background-color 0.15s ease;
+}
+
+.react-flow__controls button:hover {
+  background: #746d944d;
+}
+
+.react-flow__controls button:active {
+  fill: #bfbbcd;
+}
+
+.react-flow__controls button:last-of-type {
+  border-bottom: none;
+}

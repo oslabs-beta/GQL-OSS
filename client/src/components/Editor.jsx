@@ -10,13 +10,12 @@ import "../styles/Editor.css";
 import { gql } from "graphql-tag";
 import * as gqlQB from "gql-query-builder";
 import Split from "react-split";
-import { parse } from "graphql";
 
 import ReverseContext from "../context/ReverseContext";
 
 /* Default Initial Display for Query Operations */
 const defaultOperations =
-  localStorage.getItem("operations") ??
+  // localStorage.getItem("operations") ??
   `
 # GQL Request Pane #
 
@@ -27,7 +26,7 @@ query {
 
 /* Default Initial Display for Variables */
 const defaultVariables =
-  localStorage.getItem("variables") ??
+  // localStorage.getItem("variables") ??
   `
 /* Variables Pane */
 
@@ -36,7 +35,8 @@ const defaultVariables =
 
 /* Default Initial Display for Results */
 const defaultResults =
-  localStorage.getItem("variables") ?? "\n/* Results Pane */ \n\n";
+  // localStorage.getItem("variables") ??
+  "\n/* Results Pane */ \n\n";
 
 /* Get Model at URI, or Create One at URI with Given Value */
 const getOrCreateModel = (uri, value) => {
@@ -131,6 +131,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
           },
           scrollbar: {
             horizontal: "hidden",
+            vertical: "hidden",
           },
         })
       );
@@ -145,6 +146,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
           },
           scrollbar: {
             horizontal: "hidden",
+            vertical: "hidden",
           },
         })
       );
@@ -161,6 +163,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
           },
           scrollbar: {
             horizontal: "hidden",
+            vertical: "hidden",
           },
         })
       );
@@ -174,11 +177,11 @@ export default function Editor({ schema, endpoint, setQuery }) {
         // localStorage.setItem("operations", queryModel.getValue());
       })
     );
-    variablesModel.onDidChangeContent(
-      debounce(300, () => {
-        // localStorage.setItem("variables", variablesModel.getValue());
-      })
-    );
+    // variablesModel.onDidChangeContent(
+    //   debounce(300, () => {
+    //     // localStorage.setItem("variables", variablesModel.getValue());
+    //   })
+    // );
 
     verticalGutterRef.current = document.querySelector(".gutter-vertical");
     upperCopyButton.current = document.querySelector(".upper-copy-btn");
@@ -266,6 +269,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
     const variables = editor.getModel(Uri.file("variables.json")).getValue();
     // Update query state at top level in order to update active ID's
     setQuery({ queryString: operations.operationString });
+    // Do NOT automatically execute mutations
     if (auto && operations.operationType === "mutation") return;
     // Create reference to the results pane
     const resultsModel = editor.getModel(Uri.file("results.json"));
@@ -352,7 +356,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
   /* Hide Upper Copy Button Before Overlap Occurs */
   const handleVerticalDrag = () => {
     const viewportOffset = verticalGutterRef.current.getBoundingClientRect();
-    if (viewportOffset.top < 100)
+    if (viewportOffset.top < 145)
       upperCopyButton.current.classList.add("hidden");
     else upperCopyButton.current.classList.remove("hidden");
   };
@@ -363,7 +367,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
     <div className="monaco-container">
       <section className="editor-pane">
         <Split
-          sizes={[47, 53]}
+          sizes={[49, 51]}
           minSize={5}
           expandToMin={false}
           gutterSize={10}
@@ -374,7 +378,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
           className="query-results-split"
           onDrag={handleVerticalDrag}
         >
-          <article className="editor-container query-editor">
+          <section className="editor-container query-editor">
             <div ref={opsRef} className="editor" />
             <button
               className="copy-btn upper-copy-btn"
@@ -389,7 +393,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
               Submit
             </button>
             <span className="operation-error-msg"></span>
-          </article>
+          </section>
           <section className="lower-editor-section">
             <header className="lower-editor-tabs">
               <button

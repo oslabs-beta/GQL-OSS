@@ -1,7 +1,6 @@
 .endpoint__container {
   margin: 1rem 0;
-  position: absolute;
-  z-index: 10;
+  margin: 0px;
 }
 
 .endpoint__label {
@@ -10,11 +9,58 @@
 
 .endpoint__input {
   width: 30rem;
-  padding: .3rem;
-  margin: 0 .3rem;
+  /* padding: 0.3rem; */
+  margin: 0 0.3rem;
   outline: none;
+  background: none;
+  border: 1px solid rgb(188, 183, 204);
+  border-radius: 5px;
+  margin-left: 10px;
+  color: whitesmoke;
+  padding: 7px;
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+  font-weight: 200;
 }
 
+.endpoint__input::placeholder {
+  color: rgb(156, 152, 168);
+}
+
+/* .endpoint__button {
+  padding: 10px;
+  background: #292929;
+  border: 1px solid white;
+  border-bottom: 2px solid white;
+  border-left: 2px solid white;
+  border-radius: 5px;
+  color: whitesmoke;
+  font-family: "Poppins", sans-serif;
+  font-weight: 200;
+} */
+
 .endpoint__button {
-  padding: .3rem;
+  font-family: "Poppins", sans-serif;
+  margin-left: 5px;
+  padding: 7px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: whitesmoke;
+  outline: 1px solid rgb(188, 183, 204);
+  transition: all 0.1s ease;
+  font-weight: 200;
+}
+
+.endpoint__button:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.6);
+  outline: 2px solid rgb(188, 183, 204);
+  outline-offset: 1px;
+}
+
+.endpoint__button:active {
+  outline-offset: 2px;
+  background-color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.8);
 }

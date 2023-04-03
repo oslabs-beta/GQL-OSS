@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState, useContext, useRef } from "react";
+import React, { memo, useEffect, useState, useContext } from "react";
 import { Handle } from "reactflow";
 import {
   MarkerType,
@@ -7,24 +7,7 @@ import {
   useStoreApi,
 } from "reactflow";
 
-import ReverseContext from "../context/ReverseContext";
-
-const field = {
-  position: `relative`,
-  padding: `8px 16px`,
-  flexGrow: 1,
-  textAlign: `center`,
-};
-const fieldActive = {
-  background: "lightblue",
-};
-
-const fieldData = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  gap: 10,
-};
+import "../styles/Field.css";
 
 const Field = ({
   typeName,
@@ -34,6 +17,8 @@ const Field = ({
   relationship,
   active,
   displayMode,
+  fieldHighlightColor,
+  edgeDefaultColor,
 }) => {
   const nodes = useNodes();
   const updateNodeInternals = useUpdateNodeInternals();
@@ -42,6 +27,9 @@ const Field = ({
 
   const { setRevClickedField, revActiveTypesNFields } =
     useContext(ReverseContext);
+  const fieldActive = {
+    backgroundColor: fieldHighlightColor + "ca",
+  };
 
   useEffect(() => {
     // In vSchema:
@@ -63,12 +51,12 @@ const Field = ({
         target: targetType,
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: "cornflowerblue",
-          width: 20,
-          height: 20,
-          strokeWidth: 0.3,
+          color: edgeDefaultColor,
+          width: 28,
+          height: 28,
+          strokeWidth: 0.7,
         },
-        style: { stroke: "cornflowerblue", strokeWidth: "1.1" },
+        style: { stroke: edgeDefaultColor, strokeWidth: "1.1" },
         hidden: false,
         active: false,
       });
@@ -109,10 +97,10 @@ const Field = ({
 
   return (
     <div
-      style={active ? { ...field, ...fieldActive } : field}
-      onClick={reverseClickHandler}
+      className={`field ${active ? "active" : ""}`}
+      style={active ? fieldActive : {}}
     >
-      <div style={fieldData}>
+      <div className="field-data">
         <p className="field-name">{fieldName}</p>
         <p className="return-type">{returnType}</p>
       </div>
