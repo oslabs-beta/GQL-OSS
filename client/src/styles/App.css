@@ -3,6 +3,10 @@ main {
   flex-direction: column;
   
 }
+.query-results-split {
+  height: 100%;
+  width: 100%;
+}
 
 .split {
   display: flex;
@@ -12,7 +16,7 @@ main {
 }
 
 .gutter {
-  background-color: #eee;
+  background-color: #f3f3f3;
   background-repeat: no-repeat;
   background-position: 50%;
   margin-left: 5px;
@@ -20,8 +24,12 @@ main {
 }
 
 .gutter.gutter-horizontal {
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+  background-image: url('../images/gutter-handle-vertical.png');
   cursor: col-resize;
+}
+.gutter.gutter-vertical {
+  background-image: url('../images/gutter-handle-horizontal.png');
+  cursor: row-resize;
 }
 .seg-holder{
   height: 94.5vh;
@@ -45,10 +53,4 @@ main {
 /* .editor-section{
   display: flex;
   width: 100%;
-} */
-
-/* .visualizer-section {
-  width: 100%;
-  height: 100vh;
-  margin-right: 1rem;
 } */

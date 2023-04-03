@@ -154,7 +154,8 @@ const Visualizer = ({
         let isHidden 
         if(displayMode !== "activeOnly" || isActive || isGhost && ghostMode === "on") isHidden = false
         else isHidden = true 
-        return {
+
+        const newEdge = {
           ...edge,
           markerEnd: {
             ...edge.markerEnd,
@@ -173,6 +174,7 @@ const Visualizer = ({
           animated: isActive,
           isGhost: isGhost
         };
+        return newEdge;
       });
     });
   }, [activeEdgeIDs, displayMode, ghostNodeIDs, ghostMode]);
@@ -291,7 +293,6 @@ const Visualizer = ({
     const showMinimap = !visualizerOptions.showMinimap;
     const updatedVisualizerOptions = { ...visualizerOptions, showMinimap };
     setVisualizerOptions(updatedVisualizerOptions);
-    return updatedNode;
   }
 
   // /* Toggle Controls */
@@ -299,7 +300,6 @@ const Visualizer = ({
     const showControls = !visualizerOptions.showControls;
     const updatedVisualizerOptions = { ...visualizerOptions, showControls };
     setVisualizerOptions(updatedVisualizerOptions);
-    return updatedNode;
   }
 
   function updateColors(colorCode, colorTarget){

@@ -50,9 +50,9 @@ export function OptionsPanel({
               handleChange={toggleTargetPosition}
             />
             <ToggleSwitch
-              toggleName="Display Mode"
-              labelLeft="All"
-              labelRight="Active"
+              toggleName="Active Only"
+              labelLeft="Off"
+              labelRight="On"
               isChecked={displayMode === "activeOnly"}
               handleChange={toggleDisplayMode}
             />
@@ -77,6 +77,7 @@ export function OptionsPanel({
               isChecked={showControls}
               handleChange={toggleControls}
             />
+
             
             <ColorPicker 
               pickerName="Node Highlight"
@@ -102,6 +103,7 @@ export function OptionsPanel({
               target='edgeHighlight'
               defaultColor={customColors}
             />
+            
           </div>
         )}
       </Panel>

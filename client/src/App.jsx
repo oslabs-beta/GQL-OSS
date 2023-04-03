@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Endpoint } from "./components/Endpoint";
 import Editor from "./components/Editor";
 import Visualizer from "./components/Visualizer";
@@ -41,8 +41,10 @@ const App = () => {
   useEffect(() => {
     if (query === null) return;
     const { queryString } = query;
-    const { activeTypeIDs, activeFieldIDs, activeEdgeIDs } =
-      getActivesFromQuery(queryString, vSchema);
+    console.log('vSchema : ', vSchema)
+    const activeIDs = getActivesFromQuery(queryString, vSchema);
+    if (activeIDs === null) return;
+    const { activeTypeIDs, activeFieldIDs, activeEdgeIDs } = activeIDs;
     setActiveTypeIDs(activeTypeIDs);
     setActiveFieldIDs(activeFieldIDs);
     setActiveEdgeIDs(activeEdgeIDs);
@@ -75,7 +77,7 @@ const App = () => {
           <button onClick={fullscreenVisualizer}>Fullscreen</button>
       </section>
       
-      <Split className="split" sizes={[25, 75]}>
+      <Split className="split" sizes={[28, 72]} minSize={5} snapOffset={50}>
         <section className="seg-holder editor-section">
           <Editor
             id="editor"
@@ -103,9 +105,6 @@ const App = () => {
           />
         </section>
       </Split>
-      <div className="footer">
-
-      </div>
     </main>
   );
 };

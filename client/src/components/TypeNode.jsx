@@ -72,7 +72,7 @@ const TypeNode = ({ data }) => {
   useEffect(() => {
     setAltHandles(
       fields.map((field) => (
-        <Handle 
+        <Handle
           type="source"
           position="right"
           id={`${typeName}/${field.fieldName}`}
@@ -82,8 +82,8 @@ const TypeNode = ({ data }) => {
       ))
     );
   }, []);
-      
-    
+
+
 
   const [collapsed, setCollapsed] = useState(false)
 
