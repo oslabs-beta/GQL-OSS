@@ -14,5 +14,18 @@
 }
 
 .react-flow {
-  background: #181819;
+  background: #171721;
+  background: #1f1f29;
+  background: #1d1e25;
+  background: #1d1e22;
+  /* background: #24272f; */
+  /* background: #1d1e28; */
+}
+
+.react-flow__attribution {
+  background: #1d1e25;
+}
+.react-flow__attribution a {
+  font-size: 5px;
+  color: #3e3f46;
 }

@@ -12,7 +12,7 @@ import { parse } from "graphql";
 
 /* Default Initial Display for Query Operations */
 const defaultOperations =
-  localStorage.getItem("operations") ??
+  // localStorage.getItem("operations") ??
   `
 # GQL Request Pane #
 
@@ -23,7 +23,7 @@ query {
 
 /* Default Initial Display for Variables */
 const defaultVariables =
-  localStorage.getItem("variables") ??
+  // localStorage.getItem("variables") ??
   `
 /* Variables Pane */
 
@@ -32,7 +32,8 @@ const defaultVariables =
 
 /* Default Initial Display for Results */
 const defaultResults =
-  localStorage.getItem("variables") ?? "\n/* Results Pane */ \n\n";
+  // localStorage.getItem("variables") ??
+  "\n/* Results Pane */ \n\n";
 
 /* Get Model at URI, or Create One at URI with Given Value */
 const getOrCreateModel = (uri, value) => {

@@ -266,6 +266,7 @@ const Visualizer = ({
         minZoom={0.1}
         maxZoom={2}
       >
+        <Background variant={"dots"} size={1.5} gap={55} color={"#a28a8a"} />
         <OptionsPanel
           visualizerOptions={visualizerOptions}
           toggleTargetPosition={toggleTargetPosition}

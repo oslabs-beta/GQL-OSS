@@ -10,11 +10,27 @@
 
 .endpoint__input {
   width: 30rem;
-  padding: .3rem;
-  margin: 0 .3rem;
+  /* padding: 0.3rem; */
+  margin: 0 0.3rem;
   outline: none;
+  background: none;
+  border: 1px solid white;
+  border-radius: 5px;
+  margin-left: 10px;
+  color: whitesmoke;
+  padding: 10px;
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+  font-weight: 200;
 }
 
 .endpoint__button {
-  padding: .3rem;
+  /* padding: 0.3rem; */
+  padding: 10px;
+  background: #292929;
+  border: 1px solid white;
+  border-radius: 5px;
+  color: whitesmoke;
+  font-family: "Poppins", sans-serif;
+  font-weight: 200;
 }

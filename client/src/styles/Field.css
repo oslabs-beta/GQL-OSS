@@ -7,6 +7,9 @@
 
 .field.active {
   background: rgb(54, 54, 61);
+  background: #2f333fdd;
+  background: #272e45b3;
+  background: #283145ca;
 }
 
 .field-data {
