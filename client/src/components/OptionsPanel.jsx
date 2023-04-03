@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Panel } from "reactflow";
 import "../styles/OptionsPanel.css";
 import { ToggleSwitch } from "./ToggleSwitch";
+import { ColorPicker  } from "./ColorPicker";
 import { motion } from "framer-motion";
 
 export function OptionsPanel({
@@ -11,12 +12,16 @@ export function OptionsPanel({
   toggleDisplayMode,
   toggleMinimap,
   toggleControls,
+  customColors,
+  setCustomColors,
+  ghostMode,
+  toggleGhostMode,
 }) {
   const { targetPosition, showMinimap, showControls } = visualizerOptions;
 
   const [collapsed, setCollapsed] = useState(false);
   // const [rotateIcon, setRotateIcon] = useState(false)
-
+  // useEffect(() => console.log('CUSTOMCOLORS::::::: ',customColors['nodeHighlight']), [])
   return (
     <>
       <Panel position="top-right" className="options-panel__container">
@@ -45,6 +50,20 @@ export function OptionsPanel({
               handleChange={toggleTargetPosition}
             />
             <ToggleSwitch
+              toggleName="Active Only"
+              labelLeft="Off"
+              labelRight="On"
+              isChecked={displayMode === "activeOnly"}
+              handleChange={toggleDisplayMode}
+            />
+            <ToggleSwitch
+              toggleName="Ghost Mode"
+              labelLeft="off"
+              labelRight="on"
+              isChecked={ghostMode === "on"}
+              handleChange={toggleGhostMode}
+            />
+            <ToggleSwitch
               toggleName="show minimap"
               labelLeft="off"
               labelRight="on"
@@ -58,13 +77,33 @@ export function OptionsPanel({
               isChecked={showControls}
               handleChange={toggleControls}
             />
-            <ToggleSwitch
-              toggleName="Active Only"
-              labelLeft="Off"
-              labelRight="On"
-              isChecked={displayMode === "activeOnly"}
-              handleChange={toggleDisplayMode}
+
+            
+            <ColorPicker 
+              pickerName="Node Highlight"
+              handleChange={setCustomColors}
+              target='nodeHighlight'
+              defaultColor={customColors}
             />
+            <ColorPicker 
+              pickerName="Field Highlight"
+              handleChange={setCustomColors}
+              target='fieldHighlight'
+              defaultColor={customColors}
+            />
+            <ColorPicker 
+              pickerName="Edge Default"
+              handleChange={setCustomColors}
+              target='edgeDefault'
+              defaultColor={customColors}
+            />
+            <ColorPicker 
+              pickerName="Edge Highlight"
+              handleChange={setCustomColors}
+              target='edgeHighlight'
+              defaultColor={customColors}
+            />
+            
           </div>
         )}
       </Panel>

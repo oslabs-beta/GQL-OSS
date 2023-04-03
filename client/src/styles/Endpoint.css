@@ -1,7 +1,6 @@
 .endpoint__container {
   margin: 1rem 0;
-  position: absolute;
-  z-index: 10;
+  margin: 0px;
 }
 
 .endpoint__label {

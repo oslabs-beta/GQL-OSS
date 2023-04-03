@@ -9,9 +9,7 @@ const field = {
   flexGrow: 1,
   textAlign: `center`,
 };
-const fieldActive = {
-  background: 'lightblue'
-};
+
 
 const fieldData = {
   display: 'flex',
@@ -20,12 +18,15 @@ const fieldData = {
   gap: 10,
 };
 
-const Field = ({ typeName, fieldName, returnType, updateEdge, relationship, active, displayMode }) => {
+const Field = ({ typeName, fieldName, returnType, updateEdge, relationship, active, displayMode, fieldHighlightColor, edgeDefaultColor }) => {
   const nodes = useNodes();
   const updateNodeInternals = useUpdateNodeInternals();
   const [handlePosition, setHandlePosition] = useState('right');
   const store = useStoreApi();
 
+  const fieldActive = {
+  background: fieldHighlightColor
+  };
 
   useEffect(() => {
     // In vSchema:
@@ -41,12 +42,12 @@ const Field = ({ typeName, fieldName, returnType, updateEdge, relationship, acti
         target: targetType,
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: 'cornflowerblue',
+          color: edgeDefaultColor,
           width: 20,
           height: 20,
           strokeWidth: .3
         },
-        style: { stroke: 'cornflowerblue', strokeWidth: '1.1'},
+        style: { stroke: edgeDefaultColor, strokeWidth: '1.1'},
         hidden: false,
         active: false
       });

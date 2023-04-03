@@ -1,12 +1,17 @@
+main {
+  display: flex;
+  flex-direction: column;
+  
+}
 .query-results-split {
-  height: 100vh;
+  height: 100%;
   width: 100%;
 }
 
 .split {
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  height: 94.5vh;
   width: 100vw;
 }
 
@@ -14,6 +19,7 @@
   background-color: #f3f3f3;
   background-repeat: no-repeat;
   background-position: 50%;
+  margin-left: 5px;
   margin-right: 5px;
 }
 
@@ -25,3 +31,26 @@
   background-image: url('../images/gutter-handle-horizontal.png');
   cursor: row-resize;
 }
+.seg-holder{
+  height: 94.5vh;
+  
+}
+
+:fullscreen{
+  background-color: white;
+}
+
+.toolbar{
+  background-color: lightgray;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 100vw;
+  height: 5.5vh;
+}
+
+/* .editor-section{
+  display: flex;
+  width: 100%;
+} */
