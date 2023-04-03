@@ -1,26 +1,7 @@
 import React, { memo, useEffect, useState } from "react";
 import { Handle, useUpdateNodeInternals } from "reactflow";
 import Field from "./Field";
-
-const containerStyle = {
-  display: "flex",
-  flexDirection: "column",
-  backgroundColor: "#fff",
-  transition: "all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
-  boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
-  fontSize: "10pt",
-  position: "relative",
-  minWidth: 150,
-};
-
-
-
-const typeHeading = {
-  padding: `8px 32px`,
-  flexGrow: 1,
-  backgroundColor: "#eee",
-  textAlign: `center`,
-};
+import "../styles/TypeNode.css";
 
 const TypeNode = ({ data }) => {
   const {
@@ -38,9 +19,9 @@ const TypeNode = ({ data }) => {
 
   const { targetPosition } = visualizerOptions;
 
-  const containerStyleActive = {
-    border: `2px solid ${customColors['nodeHighlight']}`,
-  };
+  // const containerStyleActive = {
+  //   border: `2px solid ${customColors["nodeHighlight"]}`,
+  // };
 
   // Any time the active field ID's change, remap the fields
   useEffect(() => {
@@ -54,21 +35,19 @@ const TypeNode = ({ data }) => {
           returnType={field.returnType}
           updateEdge={updateEdge}
           relationship={field.relationship}
-          fieldHighlightColor={customColors['fieldHighlight']}
-          edgeDefaultColor={customColors['edgeDefault']}
-          
+          fieldHighlightColor={customColors["fieldHighlight"]}
+          edgeDefaultColor={customColors["edgeDefault"]}
           active={
             activeFieldIDs?.has(`${typeName}/${field.fieldName}`) ? true : false
           }
           displayMode={displayMode}
-      />
+        />
       ))
     );
   }, [activeFieldIDs, customColors]);
 
-
   // creating "altHandles" -- a collection of source handles with the EXACT same ID as field source handles, rendered whenever the field collapses (edges automatically snap to them)
-  const [altHandles, setAltHandles] = useState()
+  const [altHandles, setAltHandles] = useState();
   useEffect(() => {
     setAltHandles(
       fields.map((field) => (
@@ -77,23 +56,16 @@ const TypeNode = ({ data }) => {
           position="right"
           id={`${typeName}/${field.fieldName}`}
           isConnectable={false}
-          style={{position: 'absolute'}}
+          style={{ position: "absolute" }}
         />
       ))
     );
   }, []);
 
-
-
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div
-      className="type-node"
-      style={
-        active ? { ...containerStyle, ...containerStyleActive } : containerStyle
-      }
-    >
+    <div className={`type-node ${active ? "gradient-border2" : ""}`}>
       {typeName !== "Root" && typeName !== "Query" && (
         <Handle
           type="target"
@@ -109,8 +81,12 @@ const TypeNode = ({ data }) => {
       )}
       {collapsed && altHandles}
       <div className="type-node__container">
-        <div onClick={() => setCollapsed(!collapsed)} style={typeHeading}>{typeName}</div>
-        {!collapsed && <div className="type-node__fields-container">{fieldElements}</div>}
+        <div onClick={() => setCollapsed(!collapsed)} className="type-heading">
+          {typeName}
+        </div>
+        {!collapsed && (
+          <div className="type-node__fields-container">{fieldElements}</div>
+        )}
       </div>
     </div>
   );
