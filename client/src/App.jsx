@@ -6,13 +6,13 @@ import Split from "react-split";
 import "./styles/App.css";
 import getActivesFromQuery from "./utils/getActivesFromQuery";
 
+const DEFAULT_ENDPOINT = "https://countries.trevorblades.com/";
+
 const App = () => {
   /********************************************** State & Refs *************************************************/
 
   // TODO: redux refactor (for only the necessary global pieces)
-  const [endpoint, setEndpoint] = useState(
-    "https://countries.trevorblades.com/"
-  );
+  const [endpoint, setEndpoint] = useState(DEFAULT_ENDPOINT);
   const [schema, setSchema] = useState(null);
   const [vSchema, setVSchema] = useState(null);
   const [query, setQuery] = useState(null);
@@ -20,6 +20,7 @@ const App = () => {
   const [activeFieldIDs, setActiveFieldIDs] = useState(null);
   const [activeEdgeIDs, setActiveEdgeIDs] = useState(null);
   const [displayMode, setDisplayMode] = useState("all");
+  const editorVizSplit = useRef(null);
 
   /********************************************** useEFfect's *************************************************/
 
@@ -44,11 +45,26 @@ const App = () => {
     setActiveEdgeIDs(null);
   }, [vSchema]);
 
+  /* Prevent Left Pane From Forcing Overflow */
+  const handleHorizontalDrag = (sizes) => {
+    console.log("sizes: ", sizes);
+    if (sizes[0] > 49) {
+      editorVizSplit.current.split.setSizes([49, 51]);
+    }
+  };
+
   /************************************************ Render ******************************************************/
 
   return (
     <main>
-      <Split className="split" sizes={[28, 72]} minSize={5} snapOffset={50}>
+      <Split
+        ref={editorVizSplit}
+        className="editor-visualizer-split"
+        sizes={[28, 72]}
+        minSize={5}
+        snapOffset={50}
+        onDrag={handleHorizontalDrag}
+      >
         <section className="seg-holder editor-section">
           <Editor
             id="editor"

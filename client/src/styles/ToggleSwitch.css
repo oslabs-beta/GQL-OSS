@@ -1,4 +1,3 @@
-
 /*  Slider from: https://alvarotrigo.com/blog/toggle-switch-css/ */
 .toggle-switch__switch {
   position: relative;
@@ -14,7 +13,7 @@
 .toggle-switch__name {
   margin: 0;
   padding: 0;
-  font-size: .8rem;
+  font-size: 0.8rem;
   font-weight: 400;
 }
 
@@ -28,7 +27,7 @@
 
 .toggle-switch__label-left,
 .toggle-switch__label-right {
-  font-size: .7rem;
+  font-size: 0.7rem;
   font-weight: 300;
 }
 
@@ -40,7 +39,9 @@
   transform: translateX(4px);
 }
 
-.toggle-switch__switch input {display:none;}
+.toggle-switch__switch input {
+  display: none;
+}
 
 .toggle-slider {
   position: absolute;
@@ -50,8 +51,8 @@
   right: 0;
   bottom: 0;
   background-color: #bbb;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .toggle-slider:before {
@@ -63,8 +64,8 @@
   bottom: 4px;
   transform: translateY(12px);
   background-color: #fff;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
   border: 1px gray solid;
 }
 
@@ -84,4 +85,5 @@ input:checked + .toggle-slider:before {
 }
 
 .toggle-slider.round:before {
-  border-radius: 50%;}
+  border-radius: 50%;
+}

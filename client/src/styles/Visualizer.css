@@ -14,12 +14,12 @@
 }
 
 .react-flow {
-  background: #171721;
+  /* background: #171721;
   background: #1f1f29;
-  background: #1d1e25;
-  background: #1d1e22;
+  background: #1d1e25; */
   /* background: #24272f; */
   /* background: #1d1e28; */
+  background: #1d1e22;
 }
 
 .react-flow__attribution {
@@ -39,11 +39,11 @@
 }
 
 .react-flow__controls button {
+  /* background: #3e4e741f; */
   background: #5b55774d;
   padding: 8px;
   border-color: #9994aa;
   fill: #9994aa;
-  /* background: #3e4e741f; */
   border-bottom: 1px solid #9994aa;
   transition: background-color 0.15s ease;
 }

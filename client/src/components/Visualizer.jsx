@@ -261,6 +261,7 @@ const Visualizer = ({
     // React Flow instance needs a container that has explicit width and height
     <div className="visualizer-container">
       <ReactFlow
+        defaultViewport={{ x: 0, y: 0, zoom: 0.5 }}
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
@@ -269,9 +270,9 @@ const Visualizer = ({
         selectionMode={SelectionMode.Partial}
         nodeTypes={nodeTypes}
         panOnScroll={true}
-        zoom={1}
         minZoom={0.1}
         maxZoom={2}
+        zoom={1}
         proOptions={{ hideAttribution: true }}
       >
         <Background variant={"dots"} size={1.5} gap={55} color={"#a28a8a"} />

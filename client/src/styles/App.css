@@ -1,20 +1,17 @@
+.editor-visualizer-split {
+  display: flex;
+  flex-direction: row;
+}
+
 .query-results-split {
   height: 100vh;
   width: 100%;
-}
-
-.split {
-  display: flex;
-  flex-direction: row;
-  height: 100vh;
-  width: 100vw;
 }
 
 .gutter {
   background-color: #413c45;
   background-repeat: no-repeat;
   background-position: 50%;
-  /* margin-right: 5px; */
 }
 
 .gutter.gutter-horizontal {

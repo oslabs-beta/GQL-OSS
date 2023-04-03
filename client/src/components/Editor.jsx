@@ -8,7 +8,6 @@ import validateBrackets from "../utils/validateBrackets";
 import "../styles/Editor.css";
 import { gql } from "graphql-tag";
 import Split from "react-split";
-import { parse } from "graphql";
 
 /* Default Initial Display for Query Operations */
 const defaultOperations =
@@ -169,11 +168,11 @@ export default function Editor({ schema, endpoint, setQuery }) {
         // localStorage.setItem("operations", queryModel.getValue());
       })
     );
-    variablesModel.onDidChangeContent(
-      debounce(300, () => {
-        // localStorage.setItem("variables", variablesModel.getValue());
-      })
-    );
+    // variablesModel.onDidChangeContent(
+    //   debounce(300, () => {
+    //     // localStorage.setItem("variables", variablesModel.getValue());
+    //   })
+    // );
 
     verticalGutterRef.current = document.querySelector(".gutter-vertical");
     upperCopyButton.current = document.querySelector(".upper-copy-btn");
@@ -242,6 +241,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
     const variables = editor.getModel(Uri.file("variables.json")).getValue();
     // Update query state at top level in order to update active ID's
     setQuery({ queryString: operations.operationString });
+    // Do NOT automatically execute mutations
     if (auto && operations.operationType === "mutation") return;
     // Create reference to the results pane
     const resultsModel = editor.getModel(Uri.file("results.json"));
