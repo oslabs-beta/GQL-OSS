@@ -2,6 +2,7 @@ import React, { createContext, useState, useRef, useEffect } from "react";
 
 import * as gqlQB from "gql-query-builder";
 import formatReverseQuery from "../utils/formatReverseQuery";
+import findCorrectReference from "../utils/findCorrectReference";
 
 const ReverseContext = createContext();
 
@@ -18,14 +19,16 @@ export const ContextProvider = ({ children }) => {
   console.log(`revActiveRelationships: `, revActiveRelationships);
 
   const revQueryObjUpdated = useRef(revQueryObj);
+  const revScalarRefMap = useRef({});
 
   useEffect(() => {
-    if (revQueryObj) {
-      const { query } = gqlQB.query(revQueryObj);
-      const formatted = formatReverseQuery(query);
-      console.log(`OUTPUT IS BELOW: `);
-      console.log(formatted);
-    }
+    // if (revQueryObj) {
+    //   const { query } = gqlQB.query(revQueryObj);
+    //   const formatted = formatReverseQuery(query);
+    //   console.log(`OUTPUT IS BELOW: `);
+    //   console.log(formatted);
+    // }
+    // console.log(`revScalarRefMap: `, revScalarRefMap.current);
   }, [dummyState]);
 
   useEffect(() => {
@@ -45,9 +48,11 @@ export const ContextProvider = ({ children }) => {
       revQueryType === null
     ) {
       // for first click, create innitial obj share that graphql-query-builder receives
+      //create array ref for future use. Will be put in ref map
+      const rootArrayRef = [];
       const revQueryRoot = {
         operation: fieldName,
-        fields: [],
+        fields: rootArrayRef,
       };
       //create map that will hold all active relationships between types and the fields that attach to them
       const revRelationships = new Map();
@@ -56,21 +61,14 @@ export const ContextProvider = ({ children }) => {
       // include selected type with relationship as key and value as array of the related fields. Note the
       //array holds nested objs for each field, including the field name and its corresponding type
       revRelationships.set(relationship, [
-        { field: fieldName, type: typeName },
+        { field: fieldName, type: typeName, reference: rootArrayRef },
       ]);
 
       //created obj to hold a record of all active types and fields
-      let actives;
-      if (!relationship) {
-        actives = {
-          [typeName]: [fieldName],
-        };
-      } else {
-        actives = {
-          [typeName]: [fieldName],
-          [relationship]: [],
-        };
-      }
+      const actives = {
+        [typeName]: [fieldName],
+        [relationship]: [],
+      };
 
       //initialize reverse mode first active state
       setRevQueryObj(revQueryRoot);
@@ -145,48 +143,14 @@ export const ContextProvider = ({ children }) => {
       const [referenceObj] = revActiveRelationships.get(typeName);
       // console.log(`referenceObj: `, referenceObj);
       const referenceStr = referenceObj.field;
-      const findCorrectReference = () => {
-        let correctTypeRef = null;
 
-        const findCorrectTypeRecursive = (
-          found = false,
-          fields = revQueryObjUpdated.current.fields
-        ) => {
-          // console.log(`referenceStr: `, referenceStr);
-          // console.log(`fields: `, fields);
-          // console.log(`found: `, found);
-          if (!found) {
-            for (const field of fields) {
-              // console.log(`field: `, field);
-              if (field.hasOwnProperty(referenceStr)) {
-                // console.log(`MATCHED!`);
-                correctTypeRef = field;
-                found = true;
-              } else {
-                //recurse if field is an object, change fields arg to current field
-                if (!Array.isArray(field) && typeof field === `object`) {
-                  //find the key to pass down the recursive call with the field, which is an obj, but with the key, we access
-                  //its array value pair
-                  const [key] = Object.keys(field);
-                  findCorrectTypeRecursive(found, field[key]);
-                }
-              }
-            }
-          }
-          // console.log(`correctTypeRef: `, correctTypeRef);
-          // not sure we ever reach here in the code
-          // case if is not found?
-          // console.log(`reference type was NOT found`);
-          return;
-        };
-        findCorrectTypeRecursive();
-
-        return correctTypeRef;
-      };
-      const reference = findCorrectReference(typeName);
+      const reference = findCorrectReference(referenceStr, revQueryObjUpdated);
       // console.log(`reference: `, reference);
-      // console.log(`referenseStr: `, referenceStr);
+
       if (relationship) {
+        //create new ref to pass into relationship map entry
+        const arrayRef = [];
+
         // if newly clicked field has refenrece, repeat the above idea where you create a new obj w/ field name as key
         //and values is an empty arr
         //add relationship to reverseActiveTypes
@@ -200,17 +164,22 @@ export const ContextProvider = ({ children }) => {
           //if so, push into it
           //if not, just create new map key/val pair, with key being the relationship and val and array w/ object w/ corresponding fields
           if (mapValue && mapValue.length > 0) {
-            mapValue.push({ field: fieldName, type: typeName });
+            mapValue.push({
+              field: fieldName,
+              type: typeName,
+              reference: arrayRef,
+            });
           } else {
             updatedMap.set(relationship, [
-              { field: fieldName, type: typeName },
+              { field: fieldName, type: typeName, reference: arrayRef },
             ]);
           }
 
           return updatedMap;
         });
-        reference[referenceStr].push({ [fieldName]: [] });
+        reference[referenceStr].push({ [fieldName]: arrayRef });
       } else {
+        //SCALAR! Push to it's parent/root objType relationship reference
         reference[referenceStr].push(fieldName);
       }
 
@@ -226,11 +195,11 @@ export const ContextProvider = ({ children }) => {
 
       setRevActiveTypesNFields((prevRevTypesNFields) => {
         if (relationship) {
-          console.log(`relationship: `, relationship);
-          console.log(
-            `IMP LENGTH: `,
-            revActiveRelationships.get(relationship)?.length + 1
-          );
+          // console.log(`relationship: `, relationship);
+          // console.log(
+          //   `IMP LENGTH: `,
+          //   revActiveRelationships.get(relationship)?.length + 1
+          // );
 
           if (checkForDuplicate > 1) {
             return {
