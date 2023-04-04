@@ -111,7 +111,17 @@ export default function Editor({ schema, endpoint, setQuery }) {
     const queryModel = getOrCreateModel("operation.graphql", defaultOperations);
     const variablesModel = getOrCreateModel("variables.json", defaultVariables);
     const resultsModel = getOrCreateModel("results.json", defaultResults);
-    const { isRealTimeFetching } = editorOptions;
+    const {
+      enableMiniMap,
+      verticalScrollbar,
+      horizontalScrollbar,
+      glyphMargin,
+      folding,
+      lineNumbersMinChars,
+      lineDecorationsWidth,
+      lineNumbers,
+      isRealTimeFetching,
+    } = editorOptions;
 
     queryEditor ??
       setQueryEditor(
@@ -121,12 +131,17 @@ export default function Editor({ schema, endpoint, setQuery }) {
           language: "graphql",
           automaticLayout: true,
           minimap: {
-            enabled: false,
+            enabled: enableMiniMap,
           },
           scrollbar: {
-            horizontal: "hidden",
-            vertical: "hidden",
+            vertical: verticalScrollbar,
+            horizontal: horizontalScrollbar,
           },
+          glyphMargin,
+          folding,
+          lineNumbersMinChars,
+          lineDecorationsWidth,
+          lineNumbers,
         })
       );
     variablesEditor ??
@@ -136,12 +151,17 @@ export default function Editor({ schema, endpoint, setQuery }) {
           model: variablesModel,
           automaticLayout: true,
           minimap: {
-            enabled: false,
+            enabled: enableMiniMap,
           },
           scrollbar: {
-            horizontal: "hidden",
-            vertical: "hidden",
+            vertical: verticalScrollbar,
+            horizontal: horizontalScrollbar,
           },
+          glyphMargin,
+          folding,
+          lineNumbersMinChars,
+          lineDecorationsWidth,
+          lineNumbers,
         })
       );
     resultsViewer ??
@@ -153,12 +173,17 @@ export default function Editor({ schema, endpoint, setQuery }) {
           smoothScrolling: true,
           automaticLayout: true,
           minimap: {
-            enabled: false,
+            enabled: enableMiniMap,
           },
           scrollbar: {
-            horizontal: "hidden",
-            vertical: "hidden",
+            vertical: verticalScrollbar,
+            horizontal: horizontalScrollbar,
           },
+          glyphMargin,
+          folding,
+          lineNumbersMinChars,
+          lineDecorationsWidth,
+          lineNumbers,
         })
       );
 
