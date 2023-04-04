@@ -237,54 +237,66 @@ export default function Editor({ schema, endpoint, setQuery }) {
     }
 
     // Get a list of "resource" performance entries
-    const resources = performance.getEntriesByType("resource");
+    const resources = performance.getEntriesByName(endpoint);
     if (resources === undefined || resources.length <= 0) {
       console.log(
         "= Calculate Load Times: there are NO `resource` performance records"
       );
       return;
     }
-    const endpointResources = resources.filter((resource) => {
-      return resource.name === endpoint;
-    });
-    console.log("endpointResources:", endpointResources);
+    // console.log("all resources: ", resources);
+    const mostRecentQuery = resources.pop();
+    console.log(mostRecentQuery);
+    let t =
+      mostRecentQuery.fetchStart > 0
+        ? mostRecentQuery.responseEnd - mostRecentQuery.fetchStart
+        : "0";
+    console.log(
+      `Total query time for ${mostRecentQuery.name} - ${mostRecentQuery.initiatorType} (including queuing) = ${t}`
+    );
 
-    console.log("= Calculate Load Times");
-    endpointResources.forEach((resource, i) => {
-      console.log(
-        `== Resource[${i}] - ${resource.name} - ${resource.initiatorType}`
-      );
-      // Fetch until response end
-      let t =
-        resource.fetchStart > 0
-          ? resource.responseEnd - resource.fetchStart
-          : "0";
-      console.log(`… Total query time (including queuing) = ${t}`);
-    });
+    // // filter resources to only contain entries of those that reference the endpoint
+    // const endpointResources = resources.filter((resource) => {
+    //   return resource.name === endpoint;
+    // });
+    // console.log("endpointResources:", endpointResources);
 
-    // SIZE
-    // For each "resource", display its *Size property values
-    console.log("= Display Size Data");
-    endpointResources.forEach((entry, i) => {
-      console.log(`== Resource[${i}] - ${entry.name}`);
-      if ("decodedBodySize" in entry) {
-        console.log(`… decodedBodySize[${i}] = ${entry.decodedBodySize}`);
-      } else {
-        console.log(`… decodedBodySize[${i}] = NOT supported`);
-      }
+    // console.log("= Calculate Load Times");
+    // resources.forEach((resource, i) => {
+    //   console.log(
+    //     `== Resource[${i}] - ${resource.name} - ${resource.initiatorType}`
+    //   );
+    //   // Fetch until response end
+    //   let t =
+    //     resource.fetchStart > 0
+    //       ? resource.responseEnd - resource.fetchStart
+    //       : "0";
+    //   console.log(`… Total query time (including queuing) = ${t}`);
+    // });
 
-      if ("encodedBodySize" in entry) {
-        console.log(`… encodedBodySize[${i}] = ${entry.encodedBodySize}`);
-      } else {
-        console.log(`… encodedBodySize[${i}] = NOT supported`);
-      }
+    // // SIZE
+    // // For each "resource", display its *Size property values
+    // console.log("= Display Size Data");
+    // endpointResources.forEach((entry, i) => {
+    //   console.log(`== Resource[${i}] - ${entry.name}`);
+    //   if ("decodedBodySize" in entry) {
+    //     console.log(`… decodedBodySize[${i}] = ${entry.decodedBodySize}`);
+    //   } else {
+    //     console.log(`… decodedBodySize[${i}] = NOT supported`);
+    //   }
 
-      if ("transferSize" in entry) {
-        console.log(`… transferSize[${i}] = ${entry.transferSize}`);
-      } else {
-        console.log(`… transferSize[${i}] = NOT supported`);
-      }
-    });
+    //   if ("encodedBodySize" in entry) {
+    //     console.log(`… encodedBodySize[${i}] = ${entry.encodedBodySize}`);
+    //   } else {
+    //     console.log(`… encodedBodySize[${i}] = NOT supported`);
+    //   }
+
+    //   if ("transferSize" in entry) {
+    //     console.log(`… transferSize[${i}] = ${entry.transferSize}`);
+    //   } else {
+    //     console.log(`… transferSize[${i}] = NOT supported`);
+    //   }
+    // });
   }
 
   /* Get Operations & Validate
