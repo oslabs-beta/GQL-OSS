@@ -17,7 +17,7 @@ const findCorrectReference = (
     // console.log(`found: `, found);
 
     if (revQueryObj.operation === referenceStr) {
-      console.log(`FOUND FOUND FOUND`);
+      // console.log(`FOUND FOUND FOUND`);
       correctTypeRef = fields;
       isOperation = true;
       found = true;
@@ -26,6 +26,10 @@ const findCorrectReference = (
     if (!found) {
       for (const field of fields) {
         // console.log(`field: `, field);
+        //if the field has the exact correct string ref name BUUUUTTTT also find a way to check if it belong to the appropriate obj type
+        //perhaps use a rebuilt string model of the current state of the array ref using JSON.stringify to see if the stringified version
+        //of the current field matches the store stringified version of the current array field ref. Haven't designed yet a way for
+        //storing/checking the stringified version of the query field. WORK ON THIS
         if (field.hasOwnProperty(referenceStr)) {
           // console.log(`MATCHED!`);
           correctTypeRef = field;

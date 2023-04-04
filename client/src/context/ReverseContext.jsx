@@ -12,14 +12,12 @@ export const ContextProvider = ({ children }) => {
   const [revQueryType, setRevQueryType] = useState(null);
   const [revActiveRelationships, setRevActiveRelationships] = useState(null);
   const [revClickedField, setRevClickedField] = useState(null);
-  const [dummyState, setDummyState] = useState(false);
 
   console.log(`revQueryObj: `, revQueryObj);
   console.log("revActiveTypesNFields:", revActiveTypesNFields);
   console.log(`revActiveRelationships: `, revActiveRelationships);
 
   const revQueryObjUpdated = useRef(revQueryObj);
-  // const revScalarRefMap = useRef({});
 
   useEffect(() => {
     if (revQueryObj) {
@@ -28,33 +26,32 @@ export const ContextProvider = ({ children }) => {
       console.log(`OUTPUT IS BELOW: `);
       console.log(formatted);
     }
-    // console.log(`revScalarRefMap: `, revScalarRefMap.current);
-  }, [dummyState]);
-
-  useEffect(() => {
     revQueryObjUpdated.current = revQueryObj;
-    // console.log(`TEST`, revQueryObj);
   }, [revQueryObj]);
 
   useEffect(() => {
     if (revClickedField === null) return;
-    setDummyState((prev) => !prev);
 
     const { fieldName, typeName, relationship } = revClickedField;
 
+    // STEP#1
+    //If reverse mode state is null, Query/mutation field has not been click yet
+    //while in reverse mode
     if (
       revQueryObjUpdated.current === null &&
       revActiveRelationships === null &&
       revActiveTypesNFields === null &&
       revQueryType === null
     ) {
-      // for first click, create innitial obj share that graphql-query-builder receives
-      //create array ref for future use. Will be put in ref map
-
+      // Handle first click
+      //Create Object#1
+      //create innitial query obj that graphql-query-builder will receive
       const revQueryRoot = {
         operation: fieldName,
         fields: [],
       };
+
+      //Create Object#2
       //create map that will hold all active relationships between types and the fields that attach to them
       const revRelationships = new Map();
       // Query/root type always connects to others, but is never connected to. Empty array represents this
@@ -65,7 +62,9 @@ export const ContextProvider = ({ children }) => {
         { field: fieldName, type: typeName },
       ]);
 
-      //created obj to hold a record of all active types and fields
+      //Create Object#3
+      //created obj to hold a record of all active types and fields/ This is dif than the above Object#2,
+      //which catalogs the active RELATIONSHIPS, because it just stores all the types and their corresponding fields
       const actives = {
         [typeName]: [fieldName],
         [relationship]: [],
@@ -76,18 +75,29 @@ export const ContextProvider = ({ children }) => {
       setRevActiveTypesNFields(actives);
       setRevActiveRelationships(revRelationships);
       setRevQueryType(typeName.toLowerCase());
+      //return to end operation
       return;
     }
-    // else the reverse query has already begun, so you just need to add the appropriate fields and shit into their place
+
+    // Above conditional was NOT met
+    //If we've reached here the reverse query has already begun, so you just need to
+    //add the appropriate fields and shit into their place
+
+    //Conditional check below...
     // a field's objectType has to exist in reverseActiveTypes in order to proceed
-    // console.log(reverseActiveTypes.has(typeName));
+    // with the current implementation in Field.jsx (see reverseClickHandler func specifically the if/else statement),
+    //I believe the below condition check may be unnecessary. Still, doesn't hurt to have it here just to double
+    //check that we're checking for only active types if we're going to be adding it to the query obj
     if (!revActiveRelationships.has(typeName)) return;
 
-    //First field(s) after rev mode init and picking query or mutation is easy.
-    //just push into the fields array
+    //First field(s) after rev mode init, that is after clicking Quer/Root objType, and picking query or mutation is easy.
+    //just push into the fields array create on STEP#1
+    // STEP#2
     if (revActiveRelationships.size === 2) {
       //add to rev active types n fields
+      //create a copy of the current fields of the current type
       const curType = revActiveTypesNFields[typeName].slice();
+      //push current field name into array copy
       curType.push(fieldName);
 
       //check if field has relationship
@@ -96,7 +106,7 @@ export const ContextProvider = ({ children }) => {
         //add relationship to reverseActiveTypes
         setRevActiveRelationships((prevRevActiveRelations) => {
           //create a DEEP clone of the map. Otherwise, map properties will not update properly
-          //since the values are all nested arrays/refs
+          //since the values are all nested arrays/refs. Trust me.. I tried that lol.
           const updatedMap = new Map(
             JSON.parse(JSON.stringify(Array.from(prevRevActiveRelations)))
           );
@@ -104,55 +114,68 @@ export const ContextProvider = ({ children }) => {
           return updatedMap;
         });
       } else {
-        //a no relationship field, ie returnType in scalar
-        //find referenceString by referencing the Relationships obj
-        //THIS HERE CHECK IS REDUNDANT, BUT LED ME TO A POTENTIAL SOLUTION
-        const [referenceStr] = revActiveRelationships.get(typeName);
-
-        // if (referenceStr) {
-        //   console.log(referenceStr.reference);
-        //   referenceStr.reference.push(fieldName);
-        // } else {
+        //no relationship, just push into fields array that was created on // STEP#1
         revQueryObjUpdated.current.fields.push(fieldName);
-        // }
       }
       //update reserve mode state
       setRevActiveTypesNFields((prevRevTypesNFields) => {
         if (relationship) {
+          //if there was a relationship, empty array represents the new "store" in which
+          //future new fields belonging to that newly active obj type will be placed/stored in
+          //Notice that curType is just a shallow copy (I don't think deep copy was necessary) of the previous entries for the current
+          //obj type. It has been updated by pushing the current field into it
           return {
             ...prevRevTypesNFields,
             [typeName]: curType,
             [relationship]: [],
           };
         } else {
+          //since no relationship exists in this case, no relationship key/val pair will be added
           return {
             ...prevRevTypesNFields,
             [typeName]: curType,
           };
         }
       });
+      //reassign query Obj
       setRevQueryObj({ ...revQueryObjUpdated.current });
+      //return to end operation
       return;
     }
 
-    // INTO THE MEAT OF IT
-    //guaging the DEPTH of the nested array, ie fields
+    // STEP#3 THE BIGGGGG ONE!!!!
+    //In this step, we are keep track of the DEPTH of the fields property in the query obj.
+    //Nested in here is where MOST of the fields will live.
     if (revActiveRelationships.size > 2) {
       const numberOfActiveRelationships =
         revActiveRelationships.get(typeName).length;
       if (numberOfActiveRelationships > 1) {
-        alert(`User has to click which relationship to follow!`);
+        //******** WORK IN PROGRESS... DOING COLLISION MANAGEMENT HERE*******//
+        const rebuiltStr = revActiveRelationships
+          .get(typeName)
+          .reduce((acc, cur) => {
+            const strForEachField = `  "${cur.field}" in ${cur.type}\n`;
+            return acc + strForEachField;
+          }, ``);
+        console.log(`rebuiltStr IS: `, rebuiltStr);
+
+        alert(
+          `User has to click which relationship to follow!\nClick field "${fieldName}" can go into the following query fields:\n${rebuiltStr}Please choose one!`
+        );
+        //******** WORK IN PROGRESS... DOING COLLISION MANAGEMENT HERE*******//
       }
 
-      // need to recursively? find the reference/pointer to the key that holds the corresponding array/field store. Once you have
-      //that pointer/reference, you SHOULD be able to just push into it.
+      // Below in findCorrectReference func, we will recursively finding the reference/pointer
+      //to the key that holds the corresponding array/field store. Once you have
+      //that pointer/reference, you will be able to just push into it.
       // TO DO: Will need to fine tune this to ensure references are ALWAYS correct
 
       // get reference/pointer
       const [referenceObj] = revActiveRelationships.get(typeName);
-      // console.log(`referenceObj: `, referenceObj);
       const referenceStr = referenceObj.field;
 
+      //if clicked field does not have a relationship, reference will be null
+      //since recursive funtion findCorrectReference did not find a relationship association to it, since it's a scalar
       const [reference, isOperation] = findCorrectReference(
         referenceStr,
         revQueryObjUpdated,
@@ -161,9 +184,6 @@ export const ContextProvider = ({ children }) => {
       // console.log(`reference: `, reference);
 
       if (relationship) {
-        //create new ref to pass into relationship map entry
-        const arrayRef = [];
-
         // if newly clicked field has refenrece, repeat the above idea where you create a new obj w/ field name as key
         //and values is an empty arr
         //add relationship to reverseActiveTypes
@@ -180,18 +200,19 @@ export const ContextProvider = ({ children }) => {
             mapValue.push({
               field: fieldName,
               type: typeName,
-              reference: arrayRef,
             });
           } else {
             updatedMap.set(relationship, [
-              { field: fieldName, type: typeName, reference: arrayRef },
+              { field: fieldName, type: typeName },
             ]);
           }
 
           return updatedMap;
         });
 
-        reference[referenceStr].push({ [fieldName]: arrayRef });
+        //Since there was a relationship, recursive function found the reference in the
+        // current query obj
+        reference[referenceStr].push({ [fieldName]: [] });
       } else {
         //SCALAR! Push to it's parent/root objType relationship reference
         //if the length of the relationships is more than 1, have to promp further user input
@@ -202,26 +223,17 @@ export const ContextProvider = ({ children }) => {
         //try getting the referecne thru the recursive way
 
         if (scalarRelationship.length > 1) {
+          //******** WORK IN PROGRESS... DOING COLLISION MANAGEMENT HERE*******//
           alert(`SOME SORT OF USER INPUT`);
+          //******** WORK IN PROGRESS... DOING COLLISION MANAGEMENT HERE*******//
         } else if (scalarRelationship && scalarRelationship.length <= 1) {
-          // console.log(`WE REACHED HERE DUDE! PUSHED ${typeName} INTO: `);
-          // console.log(
-          //   scalarRelationship[0].reference,
-          //   revQueryObjUpdated.current.fields
-          // );
-          // console.log(
-          //   `ARE THEY EQUAL: `,
-          //   scalarRelationship[0].reference === revQueryObjUpdated.current.fields
-          // );
-          // console.log(`HERE IS THE scalarRelationship: `, scalarRelationship);
-          // scalarRelationship[0].reference.push(fieldName);
           const [reference, isOperation] = findCorrectReference(
             scalarRelationship[0].field,
             revQueryObjUpdated,
             revQueryObj
           );
-          console.log(`reference IS: `, reference);
-          console.log(`isOperation IS: `, isOperation);
+          // console.log(`reference IS: `, reference);
+          // console.log(`isOperation IS: `, isOperation);
           if (isOperation) {
             reference.push(fieldName);
           } else {
@@ -244,12 +256,6 @@ export const ContextProvider = ({ children }) => {
 
       setRevActiveTypesNFields((prevRevTypesNFields) => {
         if (relationship) {
-          // console.log(`relationship: `, relationship);
-          // console.log(
-          //   `IMP LENGTH: `,
-          //   revActiveRelationships.get(relationship)?.length + 1
-          // );
-
           if (checkForDuplicate > 1) {
             return {
               ...prevRevTypesNFields,
@@ -272,20 +278,6 @@ export const ContextProvider = ({ children }) => {
       //update revQueryObj
       setRevQueryObj({ ...revQueryObjUpdated.current });
     }
-
-    /*
-    graphql-query-builder query string example:
-    const DUMMY_OBJ = {
-      operation: "continents",
-      fields: [
-        "code",
-        "name",
-        { countries: [`code`, `name`, { languages: [`name`, `native`] }] },
-      ],
-    };
-    const { query } = gqlQB.query(DUMMY_OBJ);
-    console.log(query); /-> query  { continents  { code, name, countries { code, name, languages { name, native } } } }
-    */
   }, [revClickedField]);
 
   return (
@@ -296,7 +288,6 @@ export const ContextProvider = ({ children }) => {
         setRevClickedField,
         revActiveTypesNFields,
         revActiveRelationships,
-        setDummyState,
       }}
     >
       {children}
