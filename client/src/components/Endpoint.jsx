@@ -3,6 +3,7 @@ import { getIntrospectionQuery } from "graphql";
 import { request } from "graphql-request";
 import parseReceivedSchema from "../utils/parseIntrospectionQueryResponse";
 import "../styles/Endpoint.css";
+import { calculate_metrics } from "../utils/metrics";
 
 export const Endpoint = ({ endpoint, setEndpoint, setSchema, setVSchema }) => {
   // state for controlled input
@@ -16,6 +17,7 @@ export const Endpoint = ({ endpoint, setEndpoint, setSchema, setVSchema }) => {
     setSchema(schema);
     const parsedSchemaData = parseReceivedSchema(schema);
     setVSchema(parsedSchemaData.visualizerSchema);
+    calculate_metrics(endpointText);
   };
 
   return (
