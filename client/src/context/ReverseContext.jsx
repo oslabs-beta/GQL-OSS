@@ -50,10 +50,10 @@ export const ContextProvider = ({ children }) => {
     ) {
       // for first click, create innitial obj share that graphql-query-builder receives
       //create array ref for future use. Will be put in ref map
-      const rootArrayRef = [];
+
       const revQueryRoot = {
         operation: fieldName,
-        fields: rootArrayRef,
+        fields: [],
       };
       //create map that will hold all active relationships between types and the fields that attach to them
       const revRelationships = new Map();
@@ -62,7 +62,7 @@ export const ContextProvider = ({ children }) => {
       // include selected type with relationship as key and value as array of the related fields. Note the
       //array holds nested objs for each field, including the field name and its corresponding type
       revRelationships.set(relationship, [
-        { field: fieldName, type: typeName, reference: rootArrayRef },
+        { field: fieldName, type: typeName },
       ]);
 
       //created obj to hold a record of all active types and fields
@@ -74,7 +74,7 @@ export const ContextProvider = ({ children }) => {
       //initialize reverse mode first active state
       setRevQueryObj(revQueryRoot);
       setRevActiveTypesNFields(actives);
-      relationship && setRevActiveRelationships(revRelationships);
+      setRevActiveRelationships(revRelationships);
       setRevQueryType(typeName.toLowerCase());
       return;
     }
@@ -92,8 +92,7 @@ export const ContextProvider = ({ children }) => {
 
       //check if field has relationship
       if (relationship) {
-        const arrayRef = [];
-        revQueryObjUpdated.current.fields.push({ [fieldName]: arrayRef });
+        revQueryObjUpdated.current.fields.push({ [fieldName]: [] });
         //add relationship to reverseActiveTypes
         setRevActiveRelationships((prevRevActiveRelations) => {
           //create a DEEP clone of the map. Otherwise, map properties will not update properly
@@ -101,9 +100,7 @@ export const ContextProvider = ({ children }) => {
           const updatedMap = new Map(
             JSON.parse(JSON.stringify(Array.from(prevRevActiveRelations)))
           );
-          updatedMap.set(relationship, [
-            { field: fieldName, type: typeName, reference: arrayRef },
-          ]);
+          updatedMap.set(relationship, [{ field: fieldName, type: typeName }]);
           return updatedMap;
         });
       } else {
@@ -156,7 +153,11 @@ export const ContextProvider = ({ children }) => {
       // console.log(`referenceObj: `, referenceObj);
       const referenceStr = referenceObj.field;
 
-      const reference = findCorrectReference(referenceStr, revQueryObjUpdated);
+      const [reference, isOperation] = findCorrectReference(
+        referenceStr,
+        revQueryObjUpdated,
+        revQueryObj
+      );
       // console.log(`reference: `, reference);
 
       if (relationship) {
@@ -214,16 +215,18 @@ export const ContextProvider = ({ children }) => {
           // );
           // console.log(`HERE IS THE scalarRelationship: `, scalarRelationship);
           // scalarRelationship[0].reference.push(fieldName);
-          console.log(`SCALARRELATIONSHIP: `, scalarRelationship[0].field);
-          const testRef = findCorrectReference(
+          const [reference, isOperation] = findCorrectReference(
             scalarRelationship[0].field,
-            revQueryObjUpdated
+            revQueryObjUpdated,
+            revQueryObj
           );
-
-          console.log(
-            `XX XX XX: `,
-            testRef[scalarRelationship[0].field].push(fieldName)
-          );
+          console.log(`reference IS: `, reference);
+          console.log(`isOperation IS: `, isOperation);
+          if (isOperation) {
+            reference.push(fieldName);
+          } else {
+            reference[scalarRelationship[0].field].push(fieldName);
+          }
         } else {
           reference[referenceStr].push(fieldName);
         }

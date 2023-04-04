@@ -1,5 +1,12 @@
-const findCorrectReference = (referenceStr, revQueryObjUpdated) => {
+const findCorrectReference = (
+  referenceStr,
+  revQueryObjUpdated,
+  revQueryObj
+) => {
+  console.log(`referenceStr IS: `, referenceStr);
+  // console.log(`revQueryObj IS: `, revQueryObj);
   let correctTypeRef = null;
+  let isOperation = false;
 
   const findCorrectTypeRecursive = (
     found = false,
@@ -8,6 +15,14 @@ const findCorrectReference = (referenceStr, revQueryObjUpdated) => {
     // console.log(`referenceStr: `, referenceStr);
     // console.log(`fields: `, fields);
     // console.log(`found: `, found);
+
+    if (revQueryObj.operation === referenceStr) {
+      console.log(`FOUND FOUND FOUND`);
+      correctTypeRef = fields;
+      isOperation = true;
+      found = true;
+    }
+
     if (!found) {
       for (const field of fields) {
         // console.log(`field: `, field);
@@ -34,7 +49,7 @@ const findCorrectReference = (referenceStr, revQueryObjUpdated) => {
   };
   findCorrectTypeRecursive();
 
-  return correctTypeRef;
+  return [correctTypeRef, isOperation];
 };
 
 export default findCorrectReference;
