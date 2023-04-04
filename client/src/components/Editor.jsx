@@ -8,6 +8,7 @@ import validateBrackets from "../utils/validateBrackets";
 import "../styles/Editor.css";
 import { gql } from "graphql-tag";
 import Split from "react-split";
+import DEFAULT_EDITOR_OPTIONS from "../utils/defaultEditorOptions";
 
 /* Default Initial Display for Query Operations */
 const defaultOperations =
@@ -67,6 +68,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
   const [variablesEditor, setVariablesEditor] = useState(null);
   const [resultsViewer, setResultsViewer] = useState(null);
   const [activeLowerEditor, setActiveLowerEditor] = useState("results");
+  const [editorOptions, setEditorOptions] = useState(DEFAULT_EDITOR_OPTIONS);
 
   const [MonacoGQLAPI, setMonacoGQLAPI] = useState(null);
 
@@ -109,6 +111,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
     const queryModel = getOrCreateModel("operation.graphql", defaultOperations);
     const variablesModel = getOrCreateModel("variables.json", defaultVariables);
     const resultsModel = getOrCreateModel("results.json", defaultResults);
+    const { isRealTimeFetching } = editorOptions;
 
     queryEditor ??
       setQueryEditor(
@@ -162,12 +165,14 @@ export default function Editor({ schema, endpoint, setQuery }) {
     // Assign Change Listeners
     // Debounce to wait 300ms after user stops typing before executing
     // Ref used here for non-stale state
-    queryModel.onDidChangeContent(
-      debounce(300, () => {
-        execOperation(true);
-        // localStorage.setItem("operations", queryModel.getValue());
-      })
-    );
+    if (isRealTimeFetching) {
+      queryModel.onDidChangeContent(
+        debounce(300, () => {
+          execOperation(true);
+          // localStorage.setItem("operations", queryModel.getValue());
+        })
+      );
+    }
     // variablesModel.onDidChangeContent(
     //   debounce(300, () => {
     //     // localStorage.setItem("variables", variablesModel.getValue());
@@ -187,6 +192,66 @@ export default function Editor({ schema, endpoint, setQuery }) {
   }, [variablesEditor]);
 
   /****************************************** Helper Functions ********************************************/
+  /*
+    metrics feedback
+    */
+  function calculate_metrics() {
+    // Check performance support
+    if (performance === undefined) {
+      console.log("= Calculate Load Times: performance NOT supported");
+      return;
+    }
+
+    // Get a list of "resource" performance entries
+    const resources = performance.getEntriesByType("resource");
+    if (resources === undefined || resources.length <= 0) {
+      console.log(
+        "= Calculate Load Times: there are NO `resource` performance records"
+      );
+      return;
+    }
+    const endpointResources = resources.filter((resource) => {
+      return resource.name === endpoint;
+    });
+    console.log("endpointResources:", endpointResources);
+
+    console.log("= Calculate Load Times");
+    endpointResources.forEach((resource, i) => {
+      console.log(
+        `== Resource[${i}] - ${resource.name} - ${resource.initiatorType}`
+      );
+      // Fetch until response end
+      let t =
+        resource.fetchStart > 0
+          ? resource.responseEnd - resource.fetchStart
+          : "0";
+      console.log(`… Total query time (including queuing) = ${t}`);
+    });
+
+    // SIZE
+    // For each "resource", display its *Size property values
+    console.log("= Display Size Data");
+    endpointResources.forEach((entry, i) => {
+      console.log(`== Resource[${i}] - ${entry.name}`);
+      if ("decodedBodySize" in entry) {
+        console.log(`… decodedBodySize[${i}] = ${entry.decodedBodySize}`);
+      } else {
+        console.log(`… decodedBodySize[${i}] = NOT supported`);
+      }
+
+      if ("encodedBodySize" in entry) {
+        console.log(`… encodedBodySize[${i}] = ${entry.encodedBodySize}`);
+      } else {
+        console.log(`… encodedBodySize[${i}] = NOT supported`);
+      }
+
+      if ("transferSize" in entry) {
+        console.log(`… transferSize[${i}] = ${entry.transferSize}`);
+      } else {
+        console.log(`… transferSize[${i}] = NOT supported`);
+      }
+    });
+  }
 
   /* Get Operations & Validate
      Return: {valid:Boolean <, error:String, operationString:String, operationType:String>} */
@@ -251,9 +316,11 @@ export default function Editor({ schema, endpoint, setQuery }) {
       query: operations.operationString,
       variables: JSONC.parse(variables),
     });
+
     // Note: this app only supports a single iteration for http GET/POST,
     // no multipart or subscriptions yet.
     const data = await result.next();
+    calculate_metrics();
 
     // Display the results in results pane
     resultsModel?.setValue(
