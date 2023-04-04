@@ -8,7 +8,7 @@ import validateBrackets from "../utils/validateBrackets";
 import "../styles/Editor.css";
 import { gql } from "graphql-tag";
 import Split from "react-split";
-import DEFAULT_EDITOR_OPTIONS from "../utils/defaultEditorOptions";
+import { DEFAULT_EDITOR_OPTIONS } from "../utils/defaultEditorOptions";
 
 /* Default Initial Display for Query Operations */
 const defaultOperations =
@@ -192,9 +192,18 @@ export default function Editor({ schema, endpoint, setQuery }) {
   }, [variablesEditor]);
 
   /****************************************** Helper Functions ********************************************/
+  // NOT CONNECTED OR TESTED
+  // function for toggling the RealTimeFetching for querys
+  function toggleRealTimeFetching() {
+    setEditorOptions({
+      ...editorOptions,
+      isRealTimeFetching: !editorOptions.isRealTimeFetching,
+    });
+  }
+
   /*
     metrics feedback
-    */
+  */
   function calculate_metrics() {
     // Check performance support
     if (performance === undefined) {
@@ -370,7 +379,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
     );
   };
 
-  /* Copy the Editor Contents */
+  // /* Copy the Editor Contents */
   async function copyEditorField(e, ref) {
     try {
       let uriFile;
