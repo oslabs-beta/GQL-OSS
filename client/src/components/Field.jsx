@@ -92,8 +92,8 @@ const Field = ({
     if (revActiveTypesNFields === null || revActiveTypesNFields[typeName]) {
       setRevClickedField({ typeName, fieldName, relationship });
     } else {
-      // console.log(`DOES NOT PASS`);
-      setRevClickedField({ typeName, fieldName, relationship });
+      console.log(`DOES NOT PASS`);
+      // setRevClickedField({ typeName, fieldName, relationship });
     }
   };
 

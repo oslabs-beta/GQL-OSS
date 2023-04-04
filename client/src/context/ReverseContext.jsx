@@ -19,20 +19,21 @@ export const ContextProvider = ({ children }) => {
   console.log(`revActiveRelationships: `, revActiveRelationships);
 
   const revQueryObjUpdated = useRef(revQueryObj);
-  const revScalarRefMap = useRef({});
+  // const revScalarRefMap = useRef({});
 
   useEffect(() => {
-    // if (revQueryObj) {
-    //   const { query } = gqlQB.query(revQueryObj);
-    //   const formatted = formatReverseQuery(query);
-    //   console.log(`OUTPUT IS BELOW: `);
-    //   console.log(formatted);
-    // }
+    if (revQueryObj) {
+      const { query } = gqlQB.query(revQueryObj);
+      const formatted = formatReverseQuery(query);
+      console.log(`OUTPUT IS BELOW: `);
+      console.log(formatted);
+    }
     // console.log(`revScalarRefMap: `, revScalarRefMap.current);
   }, [dummyState]);
 
   useEffect(() => {
     revQueryObjUpdated.current = revQueryObj;
+    // console.log(`TEST`, revQueryObj);
   }, [revQueryObj]);
 
   useEffect(() => {
@@ -106,8 +107,17 @@ export const ContextProvider = ({ children }) => {
           return updatedMap;
         });
       } else {
-        //a no relationship field, ie ends in scalar
+        //a no relationship field, ie returnType in scalar
+        //find referenceString by referencing the Relationships obj
+        //THIS HERE CHECK IS REDUNDANT, BUT LED ME TO A POTENTIAL SOLUTION
+        const [referenceStr] = revActiveRelationships.get(typeName);
+
+        // if (referenceStr) {
+        //   console.log(referenceStr.reference);
+        //   referenceStr.reference.push(fieldName);
+        // } else {
         revQueryObjUpdated.current.fields.push(fieldName);
+        // }
       }
       //update reserve mode state
       setRevActiveTypesNFields((prevRevTypesNFields) => {
@@ -124,10 +134,12 @@ export const ContextProvider = ({ children }) => {
           };
         }
       });
-      setRevQueryObj(revQueryObjUpdated.current);
+      setRevQueryObj({ ...revQueryObjUpdated.current });
+      return;
     }
 
     // INTO THE MEAT OF IT
+    //guaging the DEPTH of the nested array, ie fields
     if (revActiveRelationships.size > 2) {
       const numberOfActiveRelationships =
         revActiveRelationships.get(typeName).length;
@@ -177,10 +189,44 @@ export const ContextProvider = ({ children }) => {
 
           return updatedMap;
         });
+
         reference[referenceStr].push({ [fieldName]: arrayRef });
       } else {
         //SCALAR! Push to it's parent/root objType relationship reference
-        reference[referenceStr].push(fieldName);
+        //if the length of the relationships is more than 1, have to promp further user input
+        // if length is less than 1 && revActiveRelationships at typename is true
+        // push into relationship.reference
+        const scalarRelationship = revActiveRelationships.get(typeName);
+
+        //try getting the referecne thru the recursive way
+
+        if (scalarRelationship.length > 1) {
+          alert(`SOME SORT OF USER INPUT`);
+        } else if (scalarRelationship && scalarRelationship.length <= 1) {
+          // console.log(`WE REACHED HERE DUDE! PUSHED ${typeName} INTO: `);
+          // console.log(
+          //   scalarRelationship[0].reference,
+          //   revQueryObjUpdated.current.fields
+          // );
+          // console.log(
+          //   `ARE THEY EQUAL: `,
+          //   scalarRelationship[0].reference === revQueryObjUpdated.current.fields
+          // );
+          // console.log(`HERE IS THE scalarRelationship: `, scalarRelationship);
+          // scalarRelationship[0].reference.push(fieldName);
+          console.log(`SCALARRELATIONSHIP: `, scalarRelationship[0].field);
+          const testRef = findCorrectReference(
+            scalarRelationship[0].field,
+            revQueryObjUpdated
+          );
+
+          console.log(
+            `XX XX XX: `,
+            testRef[scalarRelationship[0].field].push(fieldName)
+          );
+        } else {
+          reference[referenceStr].push(fieldName);
+        }
       }
 
       //UPDATE THAT REVERSE MODE STATE
@@ -221,7 +267,7 @@ export const ContextProvider = ({ children }) => {
         }
       });
       //update revQueryObj
-      setRevQueryObj(revQueryObjUpdated.current);
+      setRevQueryObj({ ...revQueryObjUpdated.current });
     }
 
     /*
