@@ -20,6 +20,34 @@ export const ContextProvider = ({ children }) => {
   const revQueryObjUpdated = useRef(revQueryObj);
 
   useEffect(() => {
+    /*
+    gql.query([{
+      operation: "someoperation",
+      fields: [{
+        operation: "nestedoperation",
+        fields: ["field1"],
+        variables: {
+          id2: {
+            name: "id",
+            type: "ID",
+            value: 123,
+          },
+        },
+      }, ],
+      variables: {
+        id1: {
+          name: "id",
+          type: "ID",
+          value: 456,
+        },
+      },
+      }, ]);
+    */
+    // const { query } = gqlQB.query([
+    //   { operation: `languages`, fields: [`native`, `rtl`] },
+    // ]);
+    // console.log(query);
+    // console.log(formatReverseQuery(query));
     if (revQueryObj) {
       const { query } = gqlQB.query(revQueryObj);
       const formatted = formatReverseQuery(query);
@@ -32,7 +60,7 @@ export const ContextProvider = ({ children }) => {
   useEffect(() => {
     if (revClickedField === null) return;
 
-    const { fieldName, typeName, relationship } = revClickedField;
+    const { fieldName, typeName, relationship, args } = revClickedField;
 
     // STEP#1
     //If reverse mode state is null, Query/mutation field has not been click yet
@@ -46,8 +74,35 @@ export const ContextProvider = ({ children }) => {
       // Handle first click
       //Create Object#1
       //create innitial query obj that graphql-query-builder will receive
+
+      //consider first if field name takes arg. if so, just add to field name
+      let field;
+      if (args && args.length) {
+        const length = args.length;
+        let innerStr = ``;
+
+        for (let i = 0; i < length; i++) {
+          if (args[i].nonNull === true) {
+            if (args[i + 1]) {
+              innerStr += `<${args[i].name.toUpperCase()}> `;
+            } else {
+              innerStr += `<${args[i].name.toUpperCase()}>`;
+            }
+          }
+        }
+
+        console.log(innerStr.length);
+        if (innerStr.length !== 0) {
+          innerStr = `(${innerStr})`;
+        }
+        field = `${fieldName}${innerStr}`;
+      } else {
+        field = fieldName;
+      }
+      console.log(field);
+
       const revQueryRoot = {
-        operation: fieldName,
+        operation: field,
         fields: [],
       };
 
@@ -58,9 +113,7 @@ export const ContextProvider = ({ children }) => {
       revRelationships.set(typeName, []);
       // include selected type with relationship as key and value as array of the related fields. Note the
       //array holds nested objs for each field, including the field name and its corresponding type
-      revRelationships.set(relationship, [
-        { field: fieldName, type: typeName },
-      ]);
+      revRelationships.set(relationship, [{ field: field, type: typeName }]);
 
       //Create Object#3
       //created obj to hold a record of all active types and fields/ This is dif than the above Object#2,
@@ -203,7 +256,6 @@ export const ContextProvider = ({ children }) => {
             JSON.parse(JSON.stringify(Array.from(prevRevActiveRelations)))
           );
           const mapValue = updatedMap.get(relationship);
-          console.log(`VAL VAL VAL: `, mapValue);
 
           // check if map at relationship already exists and has length
           //if so, push into it
@@ -239,7 +291,6 @@ export const ContextProvider = ({ children }) => {
                 [typeName]: curType,
               };
             } else {
-              console.log(`WE MADE IT HERE!!`);
               return {
                 ...prevRevTypesNFields,
                 [typeName]: curType,
@@ -311,7 +362,6 @@ export const ContextProvider = ({ children }) => {
         reference[referenceStr] &&
           reference[referenceStr].push({ [fieldName]: [] });
       } else {
-        console.log(`DOES THIS EVER RUN?`);
         //No relationship, so, SCALAR! This conditional runs when all the active relationships (in the Map) are less than 2 (all of the actives will be 1, except for query, which has an empty array, so an array of 0). This is the case, for example of the user is just clicking on a bunch of scalars and barely any relationship fields.
 
         //Get current picture current/clicked field's objType relationship reference.
@@ -321,14 +371,17 @@ export const ContextProvider = ({ children }) => {
 
         //if the num (length) of the relationships is more than 1, have to promp further user input
 
-        console.log(`DOES THIS EVER RUN 2222?`);
+        console.log(
+          `clickedFieldTypeRelationship`,
+          clickedFieldTypeRelationship
+        );
         const [reference, isOperation] = findCorrectReference(
           clickedFieldTypeRelationship[0].field,
           revQueryObjUpdated,
           revQueryObj
         );
-        // console.log(`reference IS: `, reference);
-        // console.log(`isOperation IS: `, isOperation);
+        console.log(`reference IS: `, reference);
+        console.log(`isOperation IS: `, isOperation);
 
         //operation's ref will be to the opening array of the revQueryObj arr. It's a particular case
         if (isOperation) {

@@ -12,14 +12,17 @@ const findCorrectReference = (
     found = false,
     fields = revQueryObjUpdated.current.fields
   ) => {
-    // console.log(`referenceStr: `, referenceStr);
-    // console.log(`fields: `, fields);
+    console.log(`referenceStr: `, referenceStr);
+    console.log(`fields: `, fields);
     // console.log(`found: `, found);
 
     //check for special condition that a field belongs to the root fields
     //array created in Step#1 in revQueryRoot obj
-    if (revQueryObj.operation === referenceStr) {
-      // console.log(`FOUND FOUND FOUND`);
+    if (
+      //replace needed for when there's variables in the query/mutation
+      revQueryObj.operation === referenceStr
+    ) {
+      console.log(`FOUND FOUND FOUND`);
       correctTypeRef = fields;
       isOperation = true;
       found = true;
