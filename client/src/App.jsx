@@ -45,7 +45,7 @@ const App = () => {
   useEffect(() => {
     if (query === null) return;
     const { queryString } = query;
-    console.log("vSchema : ", vSchema);
+    // console.log("vSchema : ", vSchema);
     const activeIDs = getActivesFromQuery(queryString, vSchema);
     if (activeIDs === null) return;
     const { activeTypeIDs, activeFieldIDs, activeEdgeIDs } = activeIDs;
@@ -74,9 +74,8 @@ const App = () => {
     el.requestFullscreen();
   };
 
-  /************************************************ Helper Functions ******************************************************/
+  /************************************************ Helper Functions ********************************************/
   function updateMetrics(newMetricsProperties) {
-    console.log("updating metrics");
     setMetrics({
       ...metrics,
       ...newMetricsProperties,

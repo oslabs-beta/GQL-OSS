@@ -332,7 +332,6 @@ export default function Editor({
     // update metrics
     const newMetrics = calculate_metrics(endpoint);
     newMetrics.lastResponseType = "Query";
-    console.log(newMetrics);
     updateMetrics(newMetrics);
 
     // Display the results in results pane
