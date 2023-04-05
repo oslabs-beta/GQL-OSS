@@ -10,7 +10,7 @@ import "../styles/Editor.css";
 import { gql } from "graphql-tag";
 import * as gqlQB from "gql-query-builder";
 import Split from "react-split";
-
+import { ToggleSwitch } from "./ToggleSwitch";
 import ReverseContext from "../context/ReverseContext";
 
 /* Default Initial Display for Query Operations */
@@ -74,7 +74,8 @@ export default function Editor({ schema, endpoint, setQuery }) {
 
   const [MonacoGQLAPI, setMonacoGQLAPI] = useState(null);
 
-  const { formattedQuery } = useContext(ReverseContext);
+  const { formattedQuery, reverseMode, setReverseMode } =
+    useContext(ReverseContext);
   // below line is preferable but crashes the app on context save bcz for a moment context object does not exist.
   //in production should work fine
   // const { revQueryObj } = useContext(ReverseContext);
@@ -399,6 +400,15 @@ export default function Editor({ schema, endpoint, setQuery }) {
             >
               Submit
             </button>
+            <div className="reverse-toggle-switch-container">
+              <ToggleSwitch
+                toggleName="Reverse Mode"
+                labelLeft="off"
+                labelRight="on"
+                isChecked={reverseMode}
+                handleChange={() => setReverseMode((prevMode) => !prevMode)}
+              />
+            </div>
             <span className="operation-error-msg"></span>
           </section>
           <section className="lower-editor-section">

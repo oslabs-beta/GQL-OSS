@@ -13,6 +13,7 @@ export const ContextProvider = ({ children }) => {
   const [revActiveRelationships, setRevActiveRelationships] = useState(null);
   const [revClickedField, setRevClickedField] = useState(null);
   const [formattedQuery, setFormattedQuery] = useState(null);
+  const [reverseMode, setReverseMode] = useState(false);
 
   console.log(`revQueryObj: `, revQueryObj);
   console.log("revActiveTypesNFields:", revActiveTypesNFields);
@@ -41,7 +42,8 @@ export const ContextProvider = ({ children }) => {
   }, [revQueryObj]);
 
   useEffect(() => {
-    if (revClickedField === null) return;
+    if (revClickedField === null || !reverseMode) return;
+    console.log("HERE");
 
     const { fieldName, typeName, relationship } = revClickedField;
 
@@ -309,6 +311,8 @@ export const ContextProvider = ({ children }) => {
         revQueryType,
         setRevQueryType,
         resetReverseContext,
+        reverseMode,
+        setReverseMode,
       }}
     >
       {children}

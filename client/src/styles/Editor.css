@@ -142,3 +142,10 @@
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
+
+.reverse-toggle-switch-container {
+  position: absolute;
+  bottom: 5px;
+  left: 20px;
+  color: rgb(196, 196, 196);
+}

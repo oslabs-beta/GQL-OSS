@@ -26,7 +26,7 @@ const Field = ({
   const [handlePosition, setHandlePosition] = useState("right");
   const store = useStoreApi();
 
-  const { setRevClickedField, revActiveTypesNFields } =
+  const { setRevClickedField, revActiveTypesNFields, reverseMode } =
     useContext(ReverseContext);
 
   const fieldActive = {
@@ -89,6 +89,7 @@ const Field = ({
   }
 
   const reverseClickHandler = () => {
+    if (!reverseMode) return;
     if (revActiveTypesNFields === null || revActiveTypesNFields[typeName]) {
       setRevClickedField({ typeName, fieldName, relationship });
     } else {
