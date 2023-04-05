@@ -1,13 +1,17 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { Uri, editor, KeyMod, KeyCode, languages } from "monaco-editor";
 import { initializeMode } from "monaco-graphql/esm/initializeMode";
 import { createGraphiQLFetcher } from "@graphiql/toolkit";
 import * as JSONC from "jsonc-parser";
 import { debounce } from "../utils/debounce";
 import validateBrackets from "../utils/validateBrackets";
+import formatReverseQuery from "../utils/formatReverseQuery";
 import "../styles/Editor.css";
 import { gql } from "graphql-tag";
+import * as gqlQB from "gql-query-builder";
 import Split from "react-split";
+
+import ReverseContext from "../context/ReverseContext";
 
 /* Default Initial Display for Query Operations */
 const defaultOperations =
@@ -69,6 +73,11 @@ export default function Editor({ schema, endpoint, setQuery }) {
   const [activeLowerEditor, setActiveLowerEditor] = useState("results");
 
   const [MonacoGQLAPI, setMonacoGQLAPI] = useState(null);
+
+  const ctx = useContext(ReverseContext);
+  // below line is preferable but crashes the app on context save bcz for a moment context object does not exist.
+  //in production should work fine
+  // const { revQueryObj } = useContext(ReverseContext);
 
   // Refs for accurate updates
   const currentSchema = useRef(schema);
@@ -237,6 +246,25 @@ export default function Editor({ schema, endpoint, setQuery }) {
       }
       return;
     }
+    //TESTING FOR REVERSE MODE
+    const DUMMY_OBJ = {
+      operation: "continents",
+      fields: [
+        "code",
+        "name",
+        { countries: [`code`, `name`, { languages: [`name`, `native`] }] },
+      ],
+    };
+
+    const { query } = gqlQB.query(DUMMY_OBJ);
+    console.log(query);
+    const formatted = formatReverseQuery(query);
+    // console.log(formatted);
+
+    const queryModel = editor.getModel(Uri.file("operation.graphql"));
+    // queryModel?.setValue(formatted);
+    //LAST LINE OF TESTING FOR REVERSE MODE
+
     // Grab the code from the variables pane
     const variables = editor.getModel(Uri.file("variables.json")).getValue();
     // Update query state at top level in order to update active ID's
