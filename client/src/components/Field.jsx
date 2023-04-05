@@ -100,7 +100,9 @@ const Field = ({
 
   return (
     <div
-      className={`field ${active ? "active" : ""}`}
+      className={`field ${active ? "active" : ""} ${
+        reverseMode ? "reverse-mode" : ""
+      }`}
       style={active ? fieldActive : {}}
       onClick={reverseClickHandler}
     >
