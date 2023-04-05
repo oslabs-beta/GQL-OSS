@@ -36,6 +36,7 @@ const App = () => {
   const [ghostMode, setGhostMode] = useState("off");
   const [ghostNodeIDs, setGhostNodeIDs] = useState(null);
   const [ghostEdgeIDs, setGhostEdgeIDs] = useState(null);
+  const [metrics, setMetrics] = useState(null);
 
   /********************************************** useEffect's *************************************************/
 
@@ -44,7 +45,7 @@ const App = () => {
   useEffect(() => {
     if (query === null) return;
     const { queryString } = query;
-    console.log("vSchema : ", vSchema);
+    // console.log("vSchema : ", vSchema);
     const activeIDs = getActivesFromQuery(queryString, vSchema);
     if (activeIDs === null) return;
     const { activeTypeIDs, activeFieldIDs, activeEdgeIDs } = activeIDs;
@@ -73,6 +74,14 @@ const App = () => {
     el.requestFullscreen();
   };
 
+  /************************************************ Helper Functions ********************************************/
+  function updateMetrics(newMetricsProperties) {
+    setMetrics({
+      ...metrics,
+      ...newMetricsProperties,
+    });
+  }
+
   /************************************************ Render ******************************************************/
 
   return (
@@ -87,6 +96,7 @@ const App = () => {
           setEndpoint={setEndpoint}
           setSchema={setSchema}
           setVSchema={setVSchema}
+          updateMetrics={updateMetrics}
         />
       </nav>
 
@@ -104,6 +114,8 @@ const App = () => {
             schema={schema}
             endpoint={endpoint}
             setQuery={setQuery}
+            updateMetrics={updateMetrics}
+            metrics={metrics}
           ></Editor>
         </section>
         <section className="seg-holder visualizer-section">
