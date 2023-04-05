@@ -1,21 +1,28 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { getIntrospectionQuery } from "graphql";
 import { request } from "graphql-request";
 import parseReceivedSchema from "../utils/parseIntrospectionQueryResponse";
 import "../styles/Endpoint.css";
+import ReverseContext from "../context/ReverseContext";
 
 export const Endpoint = ({ endpoint, setEndpoint, setSchema, setVSchema }) => {
   // state for controlled input
   const epInputRef = useRef();
   const [endpointText, setEndpointText] = useState(endpoint);
+  const { resetReverseContext } = useContext(ReverseContext);
 
   const setEPAndFetchSchema = async () => {
     setEndpoint(endpointText);
     // fetch and parse schema
-    const schema = await request(endpointText, getIntrospectionQuery());
-    setSchema(schema);
-    const parsedSchemaData = parseReceivedSchema(schema);
-    setVSchema(parsedSchemaData.visualizerSchema);
+    try {
+      const schema = await request(endpointText, getIntrospectionQuery());
+      setSchema(schema);
+      const parsedSchemaData = parseReceivedSchema(schema);
+      setVSchema(parsedSchemaData.visualizerSchema);
+      resetReverseContext();
+    } catch (e) {
+      console.log("Error fetching introspection query: ", e);
+    }
   };
 
   return (

@@ -4,7 +4,7 @@ import * as gqlQB from "gql-query-builder";
 import formatReverseQuery from "../utils/formatReverseQuery";
 import findCorrectReference from "../utils/findCorrectReference";
 
-const ReverseContext = createContext();
+const ReverseContext = createContext({});
 
 export const ContextProvider = ({ children }) => {
   const [revQueryObj, setRevQueryObj] = useState(null);
@@ -12,6 +12,7 @@ export const ContextProvider = ({ children }) => {
   const [revQueryType, setRevQueryType] = useState(null);
   const [revActiveRelationships, setRevActiveRelationships] = useState(null);
   const [revClickedField, setRevClickedField] = useState(null);
+  const [formattedQuery, setFormattedQuery] = useState(null);
 
   console.log(`revQueryObj: `, revQueryObj);
   console.log("revActiveTypesNFields:", revActiveTypesNFields);
@@ -19,10 +20,20 @@ export const ContextProvider = ({ children }) => {
 
   const revQueryObjUpdated = useRef(revQueryObj);
 
+  const resetReverseContext = () => {
+    setRevQueryObj(null);
+    setRevClickedField(null);
+    setRevActiveTypesNFields(null);
+    setRevActiveRelationships(null);
+    setFormattedQuery(null);
+    setRevQueryType(null);
+  };
+
   useEffect(() => {
     if (revQueryObj) {
       const { query } = gqlQB.query(revQueryObj);
       const formatted = formatReverseQuery(query);
+      setFormattedQuery(formatted);
       console.log(`OUTPUT IS BELOW: `);
       console.log(formatted);
     }
@@ -287,9 +298,17 @@ export const ContextProvider = ({ children }) => {
       value={{
         revQueryObj,
         setRevQueryObj,
+        revClickedField,
         setRevClickedField,
         revActiveTypesNFields,
+        setRevActiveTypesNFields,
         revActiveRelationships,
+        setRevActiveRelationships,
+        formattedQuery,
+        setFormattedQuery,
+        revQueryType,
+        setRevQueryType,
+        resetReverseContext,
       }}
     >
       {children}
