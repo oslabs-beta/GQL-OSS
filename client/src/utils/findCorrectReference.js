@@ -16,6 +16,8 @@ const findCorrectReference = (
     // console.log(`fields: `, fields);
     // console.log(`found: `, found);
 
+    //check for special condition that a field belongs to the root fields
+    //array created in Step#1 in revQueryRoot obj
     if (revQueryObj.operation === referenceStr) {
       // console.log(`FOUND FOUND FOUND`);
       correctTypeRef = fields;

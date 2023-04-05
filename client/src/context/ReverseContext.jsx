@@ -214,33 +214,34 @@ export const ContextProvider = ({ children }) => {
         // current query obj
         reference[referenceStr].push({ [fieldName]: [] });
       } else {
-        //SCALAR! Push to it's parent/root objType relationship reference
-        //if the length of the relationships is more than 1, have to promp further user input
-        // if length is less than 1 && revActiveRelationships at typename is true
-        // push into relationship.reference
-        const scalarRelationship = revActiveRelationships.get(typeName);
+        //No relationship, so, SCALAR! Get current picture current/clicked field's objType relationship reference.
+        //This will be an array
+        const clickedFieldTypeRelationship =
+          revActiveRelationships.get(typeName);
 
-        //try getting the referecne thru the recursive way
-
-        if (scalarRelationship.length > 1) {
+        //if the num (length) of the relationships is more than 1, have to promp further user input
+        if (clickedFieldTypeRelationship.length > 1) {
           //******** WORK IN PROGRESS... DOING COLLISION MANAGEMENT HERE*******//
           alert(`SOME SORT OF USER INPUT`);
           //******** WORK IN PROGRESS... DOING COLLISION MANAGEMENT HERE*******//
-        } else if (scalarRelationship && scalarRelationship.length <= 1) {
+
+          // if length is less than 1 get corresponding reference for current/clicked field via recursive function
+        } else if (clickedFieldTypeRelationship.length <= 1) {
           const [reference, isOperation] = findCorrectReference(
-            scalarRelationship[0].field,
+            clickedFieldTypeRelationship[0].field,
             revQueryObjUpdated,
             revQueryObj
           );
           // console.log(`reference IS: `, reference);
           // console.log(`isOperation IS: `, isOperation);
+
+          //operation's ref will be to the opening array of the revQueryObj arr. It's a particular case
           if (isOperation) {
             reference.push(fieldName);
           } else {
-            reference[scalarRelationship[0].field].push(fieldName);
+            //These references are found nested in the fields array, from the originally made revQueryRoot obj in Step#1
+            reference[clickedFieldTypeRelationship[0].field].push(fieldName);
           }
-        } else {
-          reference[referenceStr].push(fieldName);
         }
       }
 
@@ -249,8 +250,9 @@ export const ContextProvider = ({ children }) => {
       const curType = revActiveTypesNFields[typeName].slice();
       curType.push(fieldName);
 
-      //Use this num to determine if a duplicate type will come up
-      //if so, need to not override the former type by recreating it w/ an empty arr
+      //Use checkForDuplicate num to determine if a duplicate type will come up. Eg say Continent: [countries]
+      //and Country: [emojie] already exists. If we then click State: [country],
+      //Country already has an array, the fields array needs to be pushed into instead of overriden
       const checkForDuplicate =
         revActiveRelationships.get(relationship)?.length + 1;
 
