@@ -16,14 +16,14 @@ export function calculate_metrics(endpoint) {
 
   // select the most recent interaction with the endpoint
   const mostRecentQuery = resources.pop();
-  console.log(mostRecentQuery);
+  // console.log(mostRecentQuery);
   // calculate the queryTime
   const responseTime =
     mostRecentQuery.fetchStart > 0
       ? mostRecentQuery.responseEnd - mostRecentQuery.fetchStart
       : "0";
-  console.log(
-    `Total query time for ${mostRecentQuery.name} - ${mostRecentQuery.initiatorType} (including queuing) = ${responseTime}`
-  );
+  // console.log(
+  //   `Total query time for ${mostRecentQuery.name} - ${mostRecentQuery.initiatorType} (including queuing) = ${responseTime}`
+  // );
   return { responseTime };
 }

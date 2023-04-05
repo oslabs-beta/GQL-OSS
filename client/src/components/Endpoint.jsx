@@ -5,7 +5,13 @@ import parseReceivedSchema from "../utils/parseIntrospectionQueryResponse";
 import "../styles/Endpoint.css";
 import { calculate_metrics } from "../utils/metrics";
 
-export const Endpoint = ({ endpoint, setEndpoint, setSchema, setVSchema }) => {
+export const Endpoint = ({
+  endpoint,
+  setEndpoint,
+  setSchema,
+  setVSchema,
+  updateMetrics,
+}) => {
   // state for controlled input
   const epInputRef = useRef();
   const [endpointText, setEndpointText] = useState(endpoint);
@@ -17,7 +23,9 @@ export const Endpoint = ({ endpoint, setEndpoint, setSchema, setVSchema }) => {
     setSchema(schema);
     const parsedSchemaData = parseReceivedSchema(schema);
     setVSchema(parsedSchemaData.visualizerSchema);
-    calculate_metrics(endpointText);
+    const newMetrics = calculate_metrics(endpointText);
+    newMetrics.lastResponseType = "Introspection Query";
+    updateMetrics(newMetrics);
   };
 
   return (

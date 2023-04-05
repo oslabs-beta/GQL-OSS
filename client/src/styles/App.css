@@ -61,11 +61,11 @@ main {
   padding: 7px;
   border: none;
   border-radius: 5px;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 0, 0, 0.3);
   color: whitesmoke;
   outline: 1px solid rgb(188, 183, 204);
   transition: all 0.1s ease;
-  font-weight: 200;
+  font-weight: 300;
 }
 
 .fullscreen-btn:hover {

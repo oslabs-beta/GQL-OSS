@@ -55,7 +55,13 @@ const createEditor = (ref, options) => editor.create(ref.current, options);
 
 /** EDITOR COMPONENT **/
 
-export default function Editor({ schema, endpoint, setQuery }) {
+export default function Editor({
+  schema,
+  endpoint,
+  setQuery,
+  metrics,
+  updateMetrics,
+}) {
   /********************************************** State & Refs *************************************************/
 
   const opsRef = useRef(null);
@@ -294,7 +300,12 @@ export default function Editor({ schema, endpoint, setQuery }) {
     // Note: this app only supports a single iteration for http GET/POST,
     // no multipart or subscriptions yet.
     const data = await result.next();
-    calculate_metrics(endpoint);
+
+    // update metrics
+    const newMetrics = calculate_metrics(endpoint);
+    newMetrics.lastResponseType = "Query";
+    console.log(newMetrics);
+    updateMetrics(newMetrics);
 
     // Display the results in results pane
     resultsModel?.setValue(
@@ -451,6 +462,15 @@ export default function Editor({ schema, endpoint, setQuery }) {
               >
                 copy
               </button>
+            </article>
+            <article className="metrics__container">
+              {metrics && (
+                <p className="metrics__text">
+                  {metrics.lastResponseType} response time:{" "}
+                  <span className="metrics__data">{metrics.responseTime}</span>{" "}
+                  ms
+                </p>
+              )}
             </article>
           </section>
         </Split>
