@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState, useContext } from "react";
 import { Handle } from "reactflow";
 import {
   MarkerType,
@@ -6,6 +6,8 @@ import {
   useUpdateNodeInternals,
   useStoreApi,
 } from "reactflow";
+import ReverseContext from "../context/ReverseContext";
+
 import "../styles/Field.css";
 
 const Field = ({
@@ -23,6 +25,9 @@ const Field = ({
   const updateNodeInternals = useUpdateNodeInternals();
   const [handlePosition, setHandlePosition] = useState("right");
   const store = useStoreApi();
+
+  const { setRevClickedField, revActiveTypesNFields } =
+    useContext(ReverseContext);
 
   const fieldActive = {
     backgroundColor: fieldHighlightColor + "ca",
@@ -83,10 +88,20 @@ const Field = ({
     }
   }
 
+  const reverseClickHandler = () => {
+    if (revActiveTypesNFields === null || revActiveTypesNFields[typeName]) {
+      setRevClickedField({ typeName, fieldName, relationship });
+    } else {
+      console.log(`DOES NOT PASS`);
+      // setRevClickedField({ typeName, fieldName, relationship });
+    }
+  };
+
   return (
     <div
       className={`field ${active ? "active" : ""}`}
       style={active ? fieldActive : {}}
+      onClick={reverseClickHandler}
     >
       <div className="field-data">
         <p className="field-name">{fieldName}</p>
