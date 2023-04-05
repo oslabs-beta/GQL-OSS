@@ -4,7 +4,7 @@ import * as gqlQB from "gql-query-builder";
 import formatReverseQuery from "../utils/formatReverseQuery";
 import findCorrectReference from "../utils/findCorrectReference";
 
-const ReverseContext = createContext();
+const ReverseContext = createContext({});
 
 export const ContextProvider = ({ children }) => {
   const [revQueryObj, setRevQueryObj] = useState(null);
@@ -151,17 +151,112 @@ export const ContextProvider = ({ children }) => {
         revActiveRelationships.get(typeName).length;
       if (numberOfActiveRelationships > 1) {
         //******** WORK IN PROGRESS... DOING COLLISION MANAGEMENT HERE*******//
+        //get info use to build user interface so they help us resolve a collision
         const rebuiltStr = revActiveRelationships
           .get(typeName)
           .reduce((acc, cur) => {
             const strForEachField = `  "${cur.field}" in ${cur.type}\n`;
             return acc + strForEachField;
           }, ``);
-        console.log(`rebuiltStr IS: `, rebuiltStr);
 
-        alert(
+        //prompt the user
+        const userClarification = prompt(
           `User has to click which relationship to follow!\nClick field "${fieldName}" can go into the following query fields:\n${rebuiltStr}Please choose one!`
         );
+
+        // console.log(`userClarification`, userClarification);
+
+        //receiving value from user, find the correct reference
+        const [reference, isOperation] = findCorrectReference(
+          userClarification,
+          revQueryObjUpdated,
+          revQueryObj
+        );
+        console.log(`reference IS: `, reference);
+
+        //push user selected field (the prompt value) into the reference arr
+        if (isOperation) {
+          if (relationship) {
+            //update active relationships
+
+            reference.push({ [fieldName]: [] });
+          } else {
+            reference.push(fieldName);
+          }
+        } else {
+          // console.log(`reference IS: `, reference);
+          // console.log(`userClarification IS: `, userClarification);
+          //handles scenario where in a collision, the field chosen has a relationship
+          if (relationship) {
+            reference[userClarification].push({ [fieldName]: [] });
+            //handles scenario where in a collion, the chosen field is a scalar
+          } else {
+            reference[userClarification].push(fieldName);
+          }
+        }
+
+        // update reverse mode state
+        //UPDATE THAT REVERSE MODE STATE
+
+        setRevActiveRelationships((prevRevActiveRelations) => {
+          const updatedMap = new Map(
+            JSON.parse(JSON.stringify(Array.from(prevRevActiveRelations)))
+          );
+          const mapValue = updatedMap.get(relationship);
+          console.log(`VAL VAL VAL: `, mapValue);
+
+          // check if map at relationship already exists and has length
+          //if so, push into it
+          //if not, just create new map key/val pair, with key being the relationship and val and array w/ object w/ corresponding fields
+          if (mapValue && mapValue.length > 0) {
+            mapValue.push({
+              field: fieldName,
+              type: typeName,
+            });
+          } else {
+            updatedMap.set(relationship, [
+              { field: fieldName, type: typeName },
+            ]);
+          }
+          return updatedMap;
+        });
+
+        //add to rev active types n fields
+        const curType = revActiveTypesNFields[typeName].slice();
+        curType.push(fieldName);
+
+        //Use checkForDuplicate num to determine if a duplicate type will come up. Eg say Continent: [countries]
+        //and Country: [emojie] already exists. If we then click State: [country],
+        //Country already has an array, the fields array needs to be pushed into instead of overriden
+        const checkForDuplicate =
+          revActiveRelationships.get(relationship)?.length + 1;
+
+        setRevActiveTypesNFields((prevRevTypesNFields) => {
+          if (relationship) {
+            if (checkForDuplicate > 1) {
+              return {
+                ...prevRevTypesNFields,
+                [typeName]: curType,
+              };
+            } else {
+              console.log(`WE MADE IT HERE!!`);
+              return {
+                ...prevRevTypesNFields,
+                [typeName]: curType,
+                [relationship]: [],
+              };
+            }
+          } else {
+            return {
+              ...prevRevTypesNFields,
+              [typeName]: curType,
+            };
+          }
+        });
+
+        setRevQueryObj({ ...revQueryObjUpdated.current });
+        console.log(`END OF THE ROAD HERE`);
+        return;
         //******** WORK IN PROGRESS... DOING COLLISION MANAGEMENT HERE*******//
       }
 
@@ -212,36 +307,35 @@ export const ContextProvider = ({ children }) => {
 
         //Since there was a relationship, recursive function found the reference in the
         // current query obj
-        reference[referenceStr].push({ [fieldName]: [] });
+
+        reference[referenceStr] &&
+          reference[referenceStr].push({ [fieldName]: [] });
       } else {
-        //No relationship, so, SCALAR! Get current picture current/clicked field's objType relationship reference.
+        console.log(`DOES THIS EVER RUN?`);
+        //No relationship, so, SCALAR! This conditional runs when all the active relationships (in the Map) are less than 2 (all of the actives will be 1, except for query, which has an empty array, so an array of 0). This is the case, for example of the user is just clicking on a bunch of scalars and barely any relationship fields.
+
+        //Get current picture current/clicked field's objType relationship reference.
         //This will be an array
         const clickedFieldTypeRelationship =
           revActiveRelationships.get(typeName);
 
         //if the num (length) of the relationships is more than 1, have to promp further user input
-        if (clickedFieldTypeRelationship.length > 1) {
-          //******** WORK IN PROGRESS... DOING COLLISION MANAGEMENT HERE*******//
-          alert(`SOME SORT OF USER INPUT`);
-          //******** WORK IN PROGRESS... DOING COLLISION MANAGEMENT HERE*******//
 
-          // if length is less than 1 get corresponding reference for current/clicked field via recursive function
-        } else if (clickedFieldTypeRelationship.length <= 1) {
-          const [reference, isOperation] = findCorrectReference(
-            clickedFieldTypeRelationship[0].field,
-            revQueryObjUpdated,
-            revQueryObj
-          );
-          // console.log(`reference IS: `, reference);
-          // console.log(`isOperation IS: `, isOperation);
+        console.log(`DOES THIS EVER RUN 2222?`);
+        const [reference, isOperation] = findCorrectReference(
+          clickedFieldTypeRelationship[0].field,
+          revQueryObjUpdated,
+          revQueryObj
+        );
+        // console.log(`reference IS: `, reference);
+        // console.log(`isOperation IS: `, isOperation);
 
-          //operation's ref will be to the opening array of the revQueryObj arr. It's a particular case
-          if (isOperation) {
-            reference.push(fieldName);
-          } else {
-            //These references are found nested in the fields array, from the originally made revQueryRoot obj in Step#1
-            reference[clickedFieldTypeRelationship[0].field].push(fieldName);
-          }
+        //operation's ref will be to the opening array of the revQueryObj arr. It's a particular case
+        if (isOperation) {
+          reference.push(fieldName);
+        } else {
+          //These references are found nested in the fields array, from the originally made revQueryRoot obj in Step#1
+          reference[clickedFieldTypeRelationship[0].field].push(fieldName);
         }
       }
 
