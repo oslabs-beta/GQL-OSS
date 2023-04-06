@@ -86,6 +86,16 @@ export const ContextProvider = ({ children }) => {
     ) {
       // Handle first click
       //Create Object#1
+
+      //if type node is not query or mutation, end operation
+      if (
+        !typeName.toLowerCase().includes(`query`) &&
+        !typeName.toLowerCase().includes(`mutation`)
+      ) {
+        console.log(`YA HAVE TO START WITH EITHER QUERY OR MUTATION`);
+        return;
+      }
+
       //create innitial query obj that graphql-query-builder will receive
 
       //consider first if field name takes arg. if so, just add to field name
