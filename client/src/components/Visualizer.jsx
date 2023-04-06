@@ -137,8 +137,10 @@ const Visualizer = ({
     const updatedGhostEdges = [];
     const updatedGhostNodes = [];
 
+    const { edges } = store.getState();
     for (const edge of edges) {
-      if (activeTypeIDs?.has(edge.source)) {
+      // Should only be ghost if it's NOT active and is an active node's potential next lead
+      if (activeTypeIDs?.has(edge.source) && !activeTypeIDs?.has(edge.target)) {
         updatedGhostEdges.push(edge.id);
         updatedGhostNodes.push(edge.target);
       }
@@ -157,7 +159,7 @@ const Visualizer = ({
         const isGhost = ghostNodeIDs?.includes(node.id) ? true : false;
         let isHidden;
         if (
-          displayMode !== "activeOnly" ||
+          displayMode === "all" ||
           isActive ||
           (isGhost && ghostMode === "on")
         )
@@ -201,7 +203,7 @@ const Visualizer = ({
         const isGhost = ghostEdgeIDs?.includes(edge.id) ? true : false;
         let isHidden;
         if (
-          displayMode !== "activeOnly" ||
+          displayMode === "all" ||
           isActive ||
           (isGhost && ghostMode === "on")
         )
@@ -252,13 +254,13 @@ const Visualizer = ({
   const generateGraph = async (initial = false) => {
     // Get accurate picture of nodes and edges from internal React Flow state
     const { nodeInternals, edges } = store.getState();
-    console.log("edges: ", edges);
     const currNodes = Array.from(nodeInternals.values());
     let graphedNodes, activeNodes, activeEdges;
     if (displayMode === "activeOnly" && ghostMode === "on") {
-      activeNodes = currNodes.filter((node) => node.data.isGhost);
-      activeEdgeIDs = edges.filter((edge) => edge.active || edge.isGhost);
-      // activeEdges = edges.filter((edge) => edge.active);
+      activeNodes = currNodes.filter(
+        (node) => node.data.isGhost || node.data.active
+      );
+      activeEdges = edges.filter((edge) => edge.active || edge.isGhost);
     } else if (displayMode === "activeOnly") {
       activeNodes = currNodes.filter((node) => node.data.active);
       activeEdges = edges.filter((edge) => edge.active);
