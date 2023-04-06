@@ -65,8 +65,8 @@ const Visualizer = ({
   const { showControls, showMinimap } = visualizerOptions;
 
   //Triggers for "Expand All" and "Collapse All" functionality
-  const [collapseTrigger, setCollapseTrigger] = useState(0)
-  const [expandTrigger, setExpandTrigger] = useState(0)
+  const [collapseTrigger, setCollapseTrigger] = useState(0);
+  const [expandTrigger, setExpandTrigger] = useState(0);
 
   /********************************************** useEFfect's *************************************************/
 
@@ -183,7 +183,14 @@ const Visualizer = ({
     setTimeout(() => {
       generateGraph();
     }, 0);
-  }, [activeTypeIDs, displayMode, ghostNodeIDs, ghostMode, collapseTrigger, expandTrigger]);
+  }, [
+    activeTypeIDs,
+    displayMode,
+    ghostNodeIDs,
+    ghostMode,
+    collapseTrigger,
+    expandTrigger,
+  ]);
 
   /* Update Active Edges  */
   // Whenever the display mode or active edge ID's change, update the edges' properties to reflect the changes
@@ -342,13 +349,17 @@ const Visualizer = ({
   };
 
   // /* Collapsing and expanding all nodes */
-  const collapseAll = () => {setCollapseTrigger((collapseTrigger) => collapseTrigger + 1)}
-  const expandAll = () => {setExpandTrigger((expandTrigger) => expandTrigger + 1)}
+  const collapseAll = () => {
+    setCollapseTrigger((collapseTrigger) => collapseTrigger + 1);
+  };
+  const expandAll = () => {
+    setExpandTrigger((expandTrigger) => expandTrigger + 1);
+  };
 
   // /* Resetting the trigger for collapsing nodes to prevent buggy functionality when changing Display Mode */
   useEffect(() => {
-    setCollapseTrigger(0)
-    setExpandTrigger(0)
+    setCollapseTrigger(0);
+    setExpandTrigger(0);
   }, [displayMode, ghostMode]);
 
   function updateColors(colorCode, colorTarget) {
@@ -395,8 +406,6 @@ const Visualizer = ({
     );
   }
 
-  
-  
   /************************************************ Render ******************************************************/
 
   return (
@@ -417,7 +426,7 @@ const Visualizer = ({
         zoom={1}
         proOptions={{ hideAttribution: true }}
       >
-        <Background variant={"dots"} size={1.5} gap={55} color={"#a28a8a"}/>
+        <Background variant={"dots"} size={1.5} gap={55} color={"#a28a8a"} />
         <OptionsPanel
           visualizerOptions={visualizerOptions}
           toggleTargetPosition={toggleTargetPosition}
@@ -431,6 +440,7 @@ const Visualizer = ({
           toggleGhostMode={toggleGhostMode}
           collapseAll={collapseAll}
           expandAll={expandAll}
+          generateGraph={generateGraph}
         />
         <Background />
         {showControls && <Controls />}

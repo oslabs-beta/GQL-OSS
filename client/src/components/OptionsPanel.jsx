@@ -20,6 +20,7 @@ export function OptionsPanel({
   toggleGhostMode,
   collapseAll,
   expandAll,
+  generateGraph,
 }) {
   const { targetPosition, showMinimap, showControls } = visualizerOptions;
   const { reverseMode } = useContext(ReverseContext);
@@ -52,20 +53,6 @@ export function OptionsPanel({
         {!collapsed && <hr className="options-panel__hr" />}
         {!collapsed && (
           <div>
-            <ToggleSwitch
-              toggleName="active only"
-              labelLeft="Off"
-              labelRight="On"
-              isChecked={displayMode === "activeOnly"}
-              handleChange={toggleDisplayMode}
-            />
-            <ToggleSwitch
-              toggleName="ghost mode"
-              labelLeft="off"
-              labelRight="on"
-              isChecked={ghostMode === "on"}
-              handleChange={toggleGhostMode}
-            />
             <ToggleSwitch
               toggleName="target position"
               labelLeft="left"
@@ -114,6 +101,7 @@ export function OptionsPanel({
             />
             <Pushbutton buttonText="Expand All" handleClick={expandAll} />
             <Pushbutton buttonText="Collapse All" handleClick={collapseAll} />
+            <Pushbutton buttonText="Regraph" handleClick={generateGraph} />
             <ToggleSwitch
               toggleName="Active Only"
               labelLeft="Off"
