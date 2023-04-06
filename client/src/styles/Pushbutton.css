@@ -1,0 +1,20 @@
+.Pushbutton{
+  background: none;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  opacity: 75%;
+}
+.Pushbutton button{
+  background: transparent;
+  color: #F5F5F5;
+  border: 1px groove #F5F5F5;
+  
+  font-size: 12px;
+  font-weight: 400;
+  border-radius: 5px;
+  margin: 5px;
+  
+}

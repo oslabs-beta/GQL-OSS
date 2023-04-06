@@ -5,6 +5,7 @@ import { ToggleSwitch } from "./ToggleSwitch";
 import { ColorPicker } from "./ColorPicker";
 import { motion } from "framer-motion";
 import ReverseContext from "../context/ReverseContext";
+import { Pushbutton } from "./Pushbutton";
 
 export function OptionsPanel({
   visualizerOptions,
@@ -17,6 +18,8 @@ export function OptionsPanel({
   setCustomColors,
   ghostMode,
   toggleGhostMode,
+  collapseAll,
+  expandAll,
 }) {
   const { targetPosition, showMinimap, showControls } = visualizerOptions;
   const { reverseMode } = useContext(ReverseContext);
@@ -109,6 +112,24 @@ export function OptionsPanel({
               target="edgeHighlight"
               defaultColor={customColors}
             />
+            <Pushbutton buttonText="Expand All" handleClick={expandAll} />
+            <Pushbutton buttonText="Collapse All" handleClick={collapseAll} />
+            <ToggleSwitch
+              toggleName="Active Only"
+              labelLeft="Off"
+              labelRight="On"
+              isChecked={displayMode === "activeOnly"}
+              handleChange={toggleDisplayMode}
+            />
+            {displayMode === "activeOnly" && (
+              <ToggleSwitch
+                toggleName="Ghost Mode"
+                labelLeft="off"
+                labelRight="on"
+                isChecked={ghostMode === "on"}
+                handleChange={toggleGhostMode}
+              />
+            )}
           </div>
         )}
       </Panel>

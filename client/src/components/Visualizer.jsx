@@ -64,6 +64,10 @@ const Visualizer = ({
   );
   const { showControls, showMinimap } = visualizerOptions;
 
+  //Triggers for "Expand All" and "Collapse All" functionality
+  const [collapseTrigger, setCollapseTrigger] = useState(0)
+  const [expandTrigger, setExpandTrigger] = useState(0)
+
   /********************************************** useEFfect's *************************************************/
 
   /* Update Active Field ID Reference to Accurate State Upon Change */
@@ -93,11 +97,19 @@ const Visualizer = ({
                 setEdges((prev) => [...prev, newEdge]);
               },
               active: false,
+              markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 28,
+                height: 28,
+                strokeWidth: 0.7,
+              },
               isGhost: false,
               activeFieldIDs: currentActiveFieldIDs.current,
               ghostNodeIDs: null,
               visualizerOptions,
               customColors: customColors,
+              collapseTrigger: 0,
+              expandTrigger: 0,
             },
             type: `typeNode`,
           }))
@@ -157,6 +169,8 @@ const Visualizer = ({
             ...node.data,
             active: isActive,
             isGhost: isGhost,
+            collapseTrigger: collapseTrigger,
+            expandTrigger: expandTrigger,
             // Always update active fields reference to avoid stale state
             activeFieldIDs: currentActiveFieldIDs.current,
           },
@@ -169,7 +183,7 @@ const Visualizer = ({
     setTimeout(() => {
       generateGraph();
     }, 0);
-  }, [activeTypeIDs, displayMode, ghostNodeIDs, ghostMode]);
+  }, [activeTypeIDs, displayMode, ghostNodeIDs, ghostMode, collapseTrigger, expandTrigger]);
 
   /* Update Active Edges  */
   // Whenever the display mode or active edge ID's change, update the edges' properties to reflect the changes
@@ -212,6 +226,8 @@ const Visualizer = ({
           active: isActive,
           animated: isActive,
           isGhost: isGhost,
+          collapseTrigger: collapseTrigger,
+          expandTrigger: expandTrigger,
         };
         return newEdge;
       });
@@ -325,6 +341,16 @@ const Visualizer = ({
     // return "rgba(188, 183, 204, .5)";
   };
 
+  // /* Collapsing and expanding all nodes */
+  const collapseAll = () => {setCollapseTrigger((collapseTrigger) => collapseTrigger + 1)}
+  const expandAll = () => {setExpandTrigger((expandTrigger) => expandTrigger + 1)}
+
+  // /* Resetting the trigger for collapsing nodes to prevent buggy functionality when changing Display Mode */
+  useEffect(() => {
+    setCollapseTrigger(0)
+    setExpandTrigger(0)
+  }, [displayMode, ghostMode]);
+
   function updateColors(colorCode, colorTarget) {
     const currentColors = customColors;
     currentColors[colorTarget] = colorCode;
@@ -349,6 +375,7 @@ const Visualizer = ({
         const updatedEdge = {
           ...edge,
           markerEnd: {
+            type: MarkerType.ArrowClosed,
             width: edge.active ? 18 : 28,
             height: edge.active ? 18 : 28,
             strokeWidth: edge.active ? 0.6 : 0.7,
@@ -368,6 +395,8 @@ const Visualizer = ({
     );
   }
 
+  
+  
   /************************************************ Render ******************************************************/
 
   return (
@@ -388,7 +417,7 @@ const Visualizer = ({
         zoom={1}
         proOptions={{ hideAttribution: true }}
       >
-        <Background variant={"dots"} size={1.5} gap={55} color={"#a28a8a"} />
+        <Background variant={"dots"} size={1.5} gap={55} color={"#a28a8a"}/>
         <OptionsPanel
           visualizerOptions={visualizerOptions}
           toggleTargetPosition={toggleTargetPosition}
@@ -400,6 +429,8 @@ const Visualizer = ({
           setCustomColors={updateColors}
           ghostMode={ghostMode}
           toggleGhostMode={toggleGhostMode}
+          collapseAll={collapseAll}
+          expandAll={expandAll}
         />
         <Background />
         {showControls && <Controls />}
