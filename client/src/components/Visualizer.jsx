@@ -95,7 +95,7 @@ const Visualizer = ({
               active: false,
               isGhost: false,
               activeFieldIDs: currentActiveFieldIDs.current,
-              ghostNodeIDs: displayMode,
+              ghostNodeIDs: null,
               visualizerOptions,
               customColors: customColors,
             },
@@ -112,6 +112,28 @@ const Visualizer = ({
     if (!nodesInitialized) return;
     generateGraph(true);
   }, [nodesInitialized]);
+
+  /* Update Ghost Type Nodes and Edges */
+  /*
+  POTENTIAL PROBLEM: the preceding UseEffects(mapping through the nodes)
+  must happen before the proceeding UseEffect(deriving a list of Ghost Type IDs by parsing through "active nodes").
+  Then, the preceding UseEffects must happen a SECOND time to apply the changes made via "ghost node/edge ids".
+
+  Is there a way to simplify this process?
+  */
+  useEffect(() => {
+    const updatedGhostEdges = [];
+    const updatedGhostNodes = [];
+
+    for (const edge of edges) {
+      if (activeTypeIDs?.has(edge.source)) {
+        updatedGhostEdges.push(edge.id);
+        updatedGhostNodes.push(edge.target);
+      }
+      setGhostNodeIDs(updatedGhostNodes);
+      setGhostEdgeIDs(updatedGhostEdges);
+    }
+  }, [ghostMode, activeEdgeIDs, displayMode]);
 
   /* Update Active Type Nodes */
   // Whenever the display mode or active type ID's change, update the nodes' properties to reflect the changes
@@ -196,28 +218,6 @@ const Visualizer = ({
     });
   }, [activeEdgeIDs, displayMode, ghostNodeIDs, ghostMode]);
 
-  /* Update Ghost Type Nodes and Edges */
-  /*
-  POTENTIAL PROBLEM: the preceding UseEffects(mapping through the nodes)
-  must happen before the proceeding UseEffect(deriving a list of Ghost Type IDs by parsing through "active nodes").
-  Then, the preceding UseEffects must happen a SECOND time to apply the changes made via "ghost node/edge ids".
-
-  Is there a way to simplify this process?
-  */
-  useEffect(() => {
-    const updatedGhostEdges = [];
-    const updatedGhostNodes = [];
-
-    for (const edge of edges) {
-      if (activeTypeIDs?.has(edge.source)) {
-        updatedGhostEdges.push(edge.id);
-        updatedGhostNodes.push(edge.target);
-      }
-      setGhostNodeIDs(updatedGhostNodes);
-      setGhostEdgeIDs(updatedGhostEdges);
-    }
-  }, [ghostMode, activeEdgeIDs, displayMode]);
-
   /* When Display Mode Changes, Fit Nodes to View */
   useEffect(() => {
     setTimeout(() => flowInstance.fitView(), 0);
@@ -235,7 +235,7 @@ const Visualizer = ({
     if (displayMode === "activeOnly" && ghostMode === "on") {
       activeNodes = currNodes.filter((node) => node.data.isGhost);
       activeEdgeIDs = edges.filter((edge) => edge.active || edge.isGhost);
-      activeEdges = edges.filter((edge) => edge.active);
+      // activeEdges = edges.filter((edge) => edge.active);
     } else if (displayMode === "activeOnly") {
       activeNodes = currNodes.filter((node) => node.data.active);
       activeEdges = edges.filter((edge) => edge.active);
