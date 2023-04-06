@@ -16,11 +16,23 @@ import { calculate_metrics } from "../utils/metrics";
 
 import ReverseContext from "../context/ReverseContext";
 
-/* Default Initial Display for Query Operations */
+/* Default Initial Display for Operations */
 const defaultOperations =
   // localStorage.getItem("operations") ??
   `
 # GQL Request Pane #
+
+query {
+
+}
+`;
+
+/* Default Initial Display for Reverse-Mode Operations */
+const defaultReverseOperations =
+  // localStorage.getItem("operations") ??
+  `
+# Reverse Mode #
+# Build a query in the visualizer #
 
 query {
 
@@ -238,19 +250,17 @@ export default function Editor({
     if (!formattedQuery) return;
     editor
       .getModel(Uri.file("operation.graphql"))
-      ?.setValue("\n# GQL Request Pane #\n\n" + formattedQuery);
+      ?.setValue(
+        "\n# Reverse Mode #\n# Build a query in the visualizer #\n\n" +
+          formattedQuery
+      );
   }, [formattedQuery]);
 
   useEffect(() => {
-    if (reverseMode) {
-      resetReverseContext();
-      editor
-        .getModel(Uri.file("operation.graphql"))
-        ?.setValue(defaultOperations);
-      queryEditor?.updateOptions({ readOnly: true });
-    } else {
-      queryEditor?.updateOptions({ readOnly: false });
-    }
+    if (reverseMode) resetReverseContext();
+    editor
+      .getModel(Uri.file("operation.graphql"))
+      ?.setValue(reverseMode ? defaultReverseOperations : defaultOperations);
   }, [reverseMode]);
 
   /****************************************** Helper Functions ********************************************/
