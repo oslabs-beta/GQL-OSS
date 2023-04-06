@@ -24,7 +24,7 @@ export const Endpoint = ({
     const parsedSchemaData = parseReceivedSchema(schema);
     setVSchema(parsedSchemaData.visualizerSchema);
     const newMetrics = calculate_metrics(endpointText);
-    newMetrics.lastResponseType = "Introspection Query";
+    newMetrics.lastResponseType = "Introspection";
     updateMetrics(newMetrics);
   };
 

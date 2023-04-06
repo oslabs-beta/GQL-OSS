@@ -12,6 +12,7 @@ import * as gqlQB from "gql-query-builder";
 import Split from "react-split";
 import { DEFAULT_EDITOR_OPTIONS } from "../utils/defaultEditorOptions";
 import { calculate_metrics } from "../utils/metrics";
+import { ToggleSwitch } from "./ToggleSwitch";
 
 import ReverseContext from "../context/ReverseContext";
 
@@ -74,6 +75,7 @@ export default function Editor({
   const verticalGutterRef = useRef(null);
   const upperCopyButton = useRef(null);
   const operationErrorMsg = useRef(null);
+  const debounceRef = useRef(() => {});
 
   const [queryEditor, setQueryEditor] = useState(null);
   const [variablesEditor, setVariablesEditor] = useState(null);
@@ -136,7 +138,7 @@ export default function Editor({
       lineNumbersMinChars,
       lineDecorationsWidth,
       lineNumbers,
-      isRealTimeFetching,
+      liveQueryMode,
     } = editorOptions;
 
     queryEditor ??
@@ -206,14 +208,12 @@ export default function Editor({
     // Assign Change Listeners
     // Debounce to wait 300ms after user stops typing before executing
     // Ref used here for non-stale state
-    if (isRealTimeFetching) {
-      queryModel.onDidChangeContent(
-        debounce(300, () => {
-          execOperation(true);
-          // localStorage.setItem("operations", queryModel.getValue());
-        })
-      );
-    }
+    queryModel.onDidChangeContent(
+      debounce(300, () => {
+        if (liveQueryMode) execOperation(true);
+        // localStorage.setItem("operations", queryModel.getValue());
+      })
+    );
     // variablesModel.onDidChangeContent(
     //   debounce(300, () => {
     //     // localStorage.setItem("variables", variablesModel.getValue());
@@ -238,7 +238,7 @@ export default function Editor({
   function toggleRealTimeFetching() {
     setEditorOptions({
       ...editorOptions,
-      isRealTimeFetching: !editorOptions.isRealTimeFetching,
+      liveQueryMode: !editorOptions.liveQueryMode,
     });
   }
 
@@ -493,11 +493,20 @@ export default function Editor({
             <article className="metrics__container">
               {metrics && (
                 <p className="metrics__text">
-                  {metrics.lastResponseType} response time:{" "}
+                  {metrics.lastResponseType} time:{" "}
                   <span className="metrics__data">{metrics.responseTime}</span>{" "}
                   ms
                 </p>
               )}
+              <div className="RT-toggle__container">
+                <h6 className="RT-toggle__text">Live:</h6>
+                <ToggleSwitch
+                  labelLeft={"off"}
+                  labelRight={"on"}
+                  handleChange={toggleRealTimeFetching}
+                  isChecked={editorOptions.liveQueryMode}
+                />
+              </div>
             </article>
           </section>
         </Split>
