@@ -75,13 +75,14 @@ export default function Editor({
   const verticalGutterRef = useRef(null);
   const upperCopyButton = useRef(null);
   const operationErrorMsg = useRef(null);
-  const debounceRef = useRef(() => {});
 
   const [queryEditor, setQueryEditor] = useState(null);
   const [variablesEditor, setVariablesEditor] = useState(null);
   const [resultsViewer, setResultsViewer] = useState(null);
   const [activeLowerEditor, setActiveLowerEditor] = useState("results");
   const [editorOptions, setEditorOptions] = useState(DEFAULT_EDITOR_OPTIONS);
+
+  const liveQueryModeRef = useRef(DEFAULT_EDITOR_OPTIONS.liveQueryMode);
 
   const [MonacoGQLAPI, setMonacoGQLAPI] = useState(null);
 
@@ -100,7 +101,19 @@ export default function Editor({
       : null
   );
 
+  // DEBOUNCE REF
+  // const debounceRef = useRef(() => {});
+  // debounceRef.current = () => {
+  //   if (editorOptions.liveQueryMode) debounce(300, () => execOperation(true))();
+  // };
+  // debounceRef.current = () => {
+  //   console.log(`dbRef.current. liveQueryMode: ${editorOptions.liveQueryMode}`);
+  // };
   /********************************************** useEFfect's *************************************************/
+
+  useEffect(() => {
+    liveQueryModeRef.current = editorOptions.liveQueryMode;
+  }, [editorOptions.liveQueryMode]);
 
   /* Schema Changed: Init MonacoAPI if Needed, Update Config, and Reset Editors */
   useEffect(() => {
@@ -208,9 +221,15 @@ export default function Editor({
     // Assign Change Listeners
     // Debounce to wait 300ms after user stops typing before executing
     // Ref used here for non-stale state
+    // queryModel.onDidChangeContent(() => {
+    //   debounce(300, () => execOperation(true));
+    //   // localStorage.setItem("operations", queryModel.getValue());
+    // });
+
     queryModel.onDidChangeContent(
       debounce(300, () => {
-        if (liveQueryMode) execOperation(true);
+        // if live mode is off, return
+        if (liveQueryModeRef.current) execOperation(true);
         // localStorage.setItem("operations", queryModel.getValue());
       })
     );
@@ -219,6 +238,12 @@ export default function Editor({
     //     // localStorage.setItem("variables", variablesModel.getValue());
     //   })
     // );
+
+    // create a ref for debounce
+    // debounceRef.current = debounce function
+    // this function references editorOptions.liveQueryMode state via closure
+    // add onDidChangeContent listener to queryModel that calls debounceRef.current
+    // queryModel.onDidChangeContent(() => debounceRef.current());
 
     verticalGutterRef.current = document.querySelector(".gutter-vertical");
     upperCopyButton.current = document.querySelector(".upper-copy-btn");
@@ -235,7 +260,7 @@ export default function Editor({
   /****************************************** Helper Functions ********************************************/
   // NOT CONNECTED OR TESTED
   // function for toggling the RealTimeFetching for querys
-  function toggleRealTimeFetching() {
+  function toggleLiveQueryMode() {
     setEditorOptions({
       ...editorOptions,
       liveQueryMode: !editorOptions.liveQueryMode,
@@ -503,7 +528,7 @@ export default function Editor({
                 <ToggleSwitch
                   labelLeft={"off"}
                   labelRight={"on"}
-                  handleChange={toggleRealTimeFetching}
+                  handleChange={toggleLiveQueryMode}
                   isChecked={editorOptions.liveQueryMode}
                 />
               </div>
@@ -514,3 +539,12 @@ export default function Editor({
     </div>
   );
 }
+
+// const [editorOptions, setEditorOptions] = useState({ liveQueryMode: false });
+// const debounceRef = useRef(() => {});
+// debounceRef.current = () => {
+//   if (editorOptions.liveQueryMode) debounce(300, () => execOperation(true));
+// };
+
+// const queryModel = getOrCreateModel("operation.graphql", defaultOperations);
+// queryModel.onDidChangeContent(() => debounceRef.current());
