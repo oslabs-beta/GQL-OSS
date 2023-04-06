@@ -59,6 +59,7 @@ const App = () => {
     setActiveTypeIDs(null);
     setActiveFieldIDs(null);
     setActiveEdgeIDs(null);
+    setDisplayMode("all");
   }, [vSchema]);
 
   useEffect(() => {
