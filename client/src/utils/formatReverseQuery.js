@@ -34,13 +34,26 @@ const formatReverseQuery = (reverseQueryStr) => {
     } else if (newLineBefore[char]) {
       //decrement num of tabs to get proper tab length
       numOfTabs--;
-      reformatedQuery += `\n${tab.repeat(numOfTabs)}` + char;
+      //if a closing tab actually has another field proceeding it
+      //val of next proceeding char
+      const predictNext = reverseQueryStr[i + 2];
+      if (
+        reverseQueryStr[i + 2] &&
+        reverseQueryStr[i + 2] !== `}` &&
+        !predictNext.replace(/[A-Za-z]/g, ``)
+      ) {
+        reformatedQuery += `\n${tab.repeat(numOfTabs)}` + char + `\n`;
+      } else {
+        reformatedQuery += `\n${tab.repeat(numOfTabs)}` + char;
+      }
     } else if (char === ` `) {
       // in string input, some spaces are ok while others are not
       //spaces that should'nt be kept are always after opening curlys and after commas
       if (reverseQueryStr[i - 1] === `{` || reverseQueryStr[i - 1] === `,`) {
         reformatedQuery += ``;
       } else {
+        //TO DO: To perfect formatting query on multiple Query type fields chosen, revise
+        //code in this else statement
         reformatedQuery += char;
       }
     } else {

@@ -45,6 +45,12 @@ export const ContextProvider = ({ children }) => {
     */
     // const { query } = gqlQB.query([
     //   { operation: `languages`, fields: [`native`, `rtl`] },
+    //   { operation: `countries`, fields: [`name`, `code`] },
+    // ]);
+    // const { query } = gqlQB.query([
+    //   { operation: `languages`, fields: [`native`, `rtl`] },
+    //   { operation: `countries`, fields: [`name`, `emoji`] },
+    //   { operation: `continents`, fields: [`code`] },
     // ]);
     // console.log(query);
     // console.log(formatReverseQuery(query));
