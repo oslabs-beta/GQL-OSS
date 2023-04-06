@@ -1,29 +1,27 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { Endpoint } from "./components/Endpoint";
 import Editor from "./components/Editor";
 import Visualizer from "./components/Visualizer";
 import Split from "react-split";
 import "./styles/App.css";
 import getActivesFromQuery from "./utils/getActivesFromQuery";
+import ReverseContext from "./context/ReverseContext";
+import { Tooltip } from "@mui/material";
 
 const DEFAULT_ENDPOINT = "https://countries.trevorblades.com/";
+
+/* Setting default highlight/edge colors */
+const colors = {
+  fieldHighlight: "#283145",
+  edgeDefault: "#6495ED",
+  edgeHighlight: "#FF00A2",
+};
 
 const App = () => {
   /********************************************** State & Refs *************************************************/
 
   // TODO: redux refactor (for only the necessary global pieces)
   const [endpoint, setEndpoint] = useState(DEFAULT_ENDPOINT);
-
-  /* Setting default highlight/edge colors */
-  const colors = {
-    // nodeHighlight: "#91EECF",
-    fieldHighlight: "#283145",
-    // fieldHighlight: "#262B36",
-    // #262B36
-    edgeDefault: "#6495ED",
-    edgeHighlight: "#FF00A2",
-  };
-
   const [schema, setSchema] = useState(null);
   const [vSchema, setVSchema] = useState(null);
   const [query, setQuery] = useState(null);
@@ -36,6 +34,8 @@ const App = () => {
   const [ghostMode, setGhostMode] = useState("off");
   const [ghostNodeIDs, setGhostNodeIDs] = useState(null);
   const [ghostEdgeIDs, setGhostEdgeIDs] = useState(null);
+
+  const { reverseMode } = useContext(ReverseContext);
 
   /********************************************** useEffect's *************************************************/
 
@@ -60,6 +60,15 @@ const App = () => {
     setActiveFieldIDs(null);
     setActiveEdgeIDs(null);
   }, [vSchema]);
+
+  useEffect(() => {
+    if (reverseMode) {
+      setDisplayMode("activeOnly");
+      setGhostMode("on");
+    }
+  }, [reverseMode]);
+
+  /********************************************** Helper Functions *************************************************/
 
   /* Prevent Left Pane From Forcing Overflow */
   const handleHorizontalDrag = (sizes) => {

@@ -4,6 +4,7 @@ import "../styles/OptionsPanel.css";
 import { ToggleSwitch } from "./ToggleSwitch";
 import { ColorPicker } from "./ColorPicker";
 import { motion } from "framer-motion";
+import { Tooltip } from "@mui/material";
 
 export function OptionsPanel({
   visualizerOptions,
@@ -43,25 +44,25 @@ export function OptionsPanel({
         {!collapsed && (
           <div>
             <ToggleSwitch
-              toggleName="target Position"
-              labelLeft="left"
-              labelRight="top"
-              isChecked={targetPosition === "top"}
-              handleChange={toggleTargetPosition}
-            />
-            <ToggleSwitch
-              toggleName="Active Only"
+              toggleName="active only"
               labelLeft="Off"
               labelRight="On"
               isChecked={displayMode === "activeOnly"}
               handleChange={toggleDisplayMode}
             />
             <ToggleSwitch
-              toggleName="Ghost Mode"
+              toggleName="ghost mode"
               labelLeft="off"
               labelRight="on"
               isChecked={ghostMode === "on"}
               handleChange={toggleGhostMode}
+            />
+            <ToggleSwitch
+              toggleName="target position"
+              labelLeft="left"
+              labelRight="top"
+              isChecked={targetPosition === "top"}
+              handleChange={toggleTargetPosition}
             />
             <ToggleSwitch
               toggleName="show minimap"
