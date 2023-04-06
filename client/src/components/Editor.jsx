@@ -208,14 +208,14 @@ export default function Editor({
     // Assign Change Listeners
     // Debounce to wait 300ms after user stops typing before executing
     // Ref used here for non-stale state
-    if (isRealTimeFetching) {
-      queryModel.onDidChangeContent(
-        debounce(300, () => {
-          execOperation(true);
-          // localStorage.setItem("operations", queryModel.getValue());
-        })
-      );
-    }
+    // if (isRealTimeFetching) {
+    queryModel.onDidChangeContent(
+      debounce(300, () => {
+        execOperation(true);
+        // localStorage.setItem("operations", queryModel.getValue());
+      })
+    );
+    // }
     // variablesModel.onDidChangeContent(
     //   debounce(300, () => {
     //     // localStorage.setItem("variables", variablesModel.getValue());
@@ -465,13 +465,16 @@ export default function Editor({
               Submit
             </button>
             <div className="reverse-toggle-switch-container">
-              <ToggleSwitch
-                toggleName="Reverse Mode"
-                labelLeft="off"
-                labelRight="on"
-                isChecked={reverseMode}
-                handleChange={() => setReverseMode((prevMode) => !prevMode)}
-              />
+              {schema && (
+                <ToggleSwitch
+                  toggleName="Reverse Mode"
+                  labelLeft="off"
+                  labelRight="on"
+                  isChecked={reverseMode}
+                  handleChange={() => setReverseMode((prevMode) => !prevMode)}
+                  disabled={schema === null}
+                />
+              )}
             </div>
             <span className="operation-error-msg"></span>
           </section>
@@ -524,7 +527,9 @@ export default function Editor({
               {metrics && (
                 <p className="metrics__text">
                   {metrics.lastResponseType} response time:{" "}
-                  <span className="metrics__data">{metrics.responseTime}</span>{" "}
+                  <span className="metrics__data">
+                    {metrics.responseTime.toFixed(0)}
+                  </span>{" "}
                   ms
                 </p>
               )}

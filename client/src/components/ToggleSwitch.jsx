@@ -15,6 +15,7 @@ export function ToggleSwitch({
   labelRight,
   handleChange,
   isChecked,
+  disabled,
 }) {
   const { reverseMode } = useContext(ReverseContext);
   const isAlwaysToggled = reverseMode && toggleName in alwaysToggledInReverse;
@@ -38,7 +39,7 @@ export function ToggleSwitch({
           <label className="toggle-switch__switch">
             <input
               type="checkbox"
-              disabled={isAlwaysToggled}
+              disabled={disabled || isAlwaysToggled}
               checked={isAlwaysToggled ? true : isChecked}
               onChange={(e) => handleChange(e)}
             />

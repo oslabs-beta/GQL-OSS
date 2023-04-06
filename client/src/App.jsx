@@ -6,12 +6,11 @@ import Split from "react-split";
 import "./styles/App.css";
 import getActivesFromQuery from "./utils/getActivesFromQuery";
 import ReverseContext from "./context/ReverseContext";
-import { Tooltip } from "@mui/material";
 
 const DEFAULT_ENDPOINT = "https://countries.trevorblades.com/";
 
 /* Setting default highlight/edge colors */
-const colors = {
+const DEFAULT_COLORS = {
   fieldHighlight: "#283145",
   edgeDefault: "#6495ED",
   edgeHighlight: "#FF00A2",
@@ -30,7 +29,7 @@ const App = () => {
   const [activeEdgeIDs, setActiveEdgeIDs] = useState(null);
   const [displayMode, setDisplayMode] = useState("all");
   const editorVizSplit = useRef(null);
-  const [customColors, setCustomColors] = useState(colors);
+  const [customColors, setCustomColors] = useState(DEFAULT_COLORS);
   const [ghostMode, setGhostMode] = useState("off");
   const [ghostNodeIDs, setGhostNodeIDs] = useState(null);
   const [ghostEdgeIDs, setGhostEdgeIDs] = useState(null);
@@ -67,9 +66,11 @@ const App = () => {
       setDisplayMode("activeOnly");
       setGhostMode("on");
       setActiveTypeIDs(new Set([vSchema.queryName.name]));
-      setActiveFieldIDs(null);
-      setActiveEdgeIDs(null);
+    } else {
+      setActiveTypeIDs(null);
     }
+    setActiveFieldIDs(null);
+    setActiveEdgeIDs(null);
   }, [reverseMode]);
 
   /********************************************** Helper Functions *************************************************/

@@ -54,6 +54,22 @@ export function OptionsPanel({
         {!collapsed && (
           <div>
             <ToggleSwitch
+              toggleName="active only"
+              labelLeft="Off"
+              labelRight="On"
+              isChecked={displayMode === "activeOnly"}
+              handleChange={toggleDisplayMode}
+            />
+            {displayMode === "activeOnly" && (
+              <ToggleSwitch
+                toggleName="ghost mode"
+                labelLeft="off"
+                labelRight="on"
+                isChecked={ghostMode === "on"}
+                handleChange={toggleGhostMode}
+              />
+            )}
+            <ToggleSwitch
               toggleName="target position"
               labelLeft="left"
               labelRight="top"
@@ -102,22 +118,6 @@ export function OptionsPanel({
             <Pushbutton buttonText="Expand All" handleClick={expandAll} />
             <Pushbutton buttonText="Collapse All" handleClick={collapseAll} />
             <Pushbutton buttonText="Regraph" handleClick={generateGraph} />
-            <ToggleSwitch
-              toggleName="Active Only"
-              labelLeft="Off"
-              labelRight="On"
-              isChecked={displayMode === "activeOnly"}
-              handleChange={toggleDisplayMode}
-            />
-            {displayMode === "activeOnly" && (
-              <ToggleSwitch
-                toggleName="Ghost Mode"
-                labelLeft="off"
-                labelRight="on"
-                isChecked={ghostMode === "on"}
-                handleChange={toggleGhostMode}
-              />
-            )}
           </div>
         )}
       </Panel>
