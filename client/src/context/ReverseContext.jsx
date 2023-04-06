@@ -119,18 +119,23 @@ export const ContextProvider = ({ children }) => {
           }
         }
 
+        //adds parenthesis to vars innerString
         if (innerStr.length !== 0) {
           innerStr = `(${innerStr})`;
         }
+        //adds inner string to field name.
+        //TODO: This fieldName + vars String will create a BAD UX/UI when collisions occur and the field name w/ vars (only for query and mutations field) appears for the user to select. Gonna have to filter out the paranthesis and the chars within it, and then make sure if the user selects THAT field, field w/ vars, to resolve the collision, that the parenthesis and its contexts are present in the response too, since that field is actually saved as a reference w/ those vars, for convenience
         field = `${fieldName}${innerStr}`;
       } else {
         field = fieldName;
       }
 
-      const revQueryRoot = {
-        operation: field,
-        fields: [],
-      };
+      const revQueryRoot = [
+        {
+          operation: field,
+          fields: [],
+        },
+      ];
 
       //Create Object#2
       //create map that will hold all active relationships between types and the fields that attach to them
