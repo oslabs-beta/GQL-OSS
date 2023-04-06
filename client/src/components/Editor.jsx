@@ -11,6 +11,9 @@ import { gql } from "graphql-tag";
 import * as gqlQB from "gql-query-builder";
 import Split from "react-split";
 import { ToggleSwitch } from "./ToggleSwitch";
+import { DEFAULT_EDITOR_OPTIONS } from "../utils/defaultEditorOptions";
+import { calculate_metrics } from "../utils/metrics";
+
 import ReverseContext from "../context/ReverseContext";
 
 /* Default Initial Display for Query Operations */
@@ -57,7 +60,13 @@ const createEditor = (ref, options) => editor.create(ref.current, options);
 
 /** EDITOR COMPONENT **/
 
-export default function Editor({ schema, endpoint, setQuery }) {
+export default function Editor({
+  schema,
+  endpoint,
+  setQuery,
+  metrics,
+  updateMetrics,
+}) {
   /********************************************** State & Refs *************************************************/
 
   const opsRef = useRef(null);
@@ -71,6 +80,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
   const [variablesEditor, setVariablesEditor] = useState(null);
   const [resultsViewer, setResultsViewer] = useState(null);
   const [activeLowerEditor, setActiveLowerEditor] = useState("results");
+  const [editorOptions, setEditorOptions] = useState(DEFAULT_EDITOR_OPTIONS);
 
   const [MonacoGQLAPI, setMonacoGQLAPI] = useState(null);
 
@@ -119,6 +129,17 @@ export default function Editor({ schema, endpoint, setQuery }) {
     const queryModel = getOrCreateModel("operation.graphql", defaultOperations);
     const variablesModel = getOrCreateModel("variables.json", defaultVariables);
     const resultsModel = getOrCreateModel("results.json", defaultResults);
+    const {
+      enableMiniMap,
+      verticalScrollbar,
+      horizontalScrollbar,
+      glyphMargin,
+      folding,
+      lineNumbersMinChars,
+      lineDecorationsWidth,
+      lineNumbers,
+      isRealTimeFetching,
+    } = editorOptions;
 
     queryEditor ??
       setQueryEditor(
@@ -128,12 +149,17 @@ export default function Editor({ schema, endpoint, setQuery }) {
           language: "graphql",
           automaticLayout: true,
           minimap: {
-            enabled: false,
+            enabled: enableMiniMap,
           },
           scrollbar: {
-            horizontal: "hidden",
-            vertical: "hidden",
+            vertical: verticalScrollbar,
+            horizontal: horizontalScrollbar,
           },
+          glyphMargin,
+          folding,
+          lineNumbersMinChars,
+          lineDecorationsWidth,
+          lineNumbers,
         })
       );
     variablesEditor ??
@@ -143,12 +169,17 @@ export default function Editor({ schema, endpoint, setQuery }) {
           model: variablesModel,
           automaticLayout: true,
           minimap: {
-            enabled: false,
+            enabled: enableMiniMap,
           },
           scrollbar: {
-            horizontal: "hidden",
-            vertical: "hidden",
+            vertical: verticalScrollbar,
+            horizontal: horizontalScrollbar,
           },
+          glyphMargin,
+          folding,
+          lineNumbersMinChars,
+          lineDecorationsWidth,
+          lineNumbers,
         })
       );
     resultsViewer ??
@@ -160,24 +191,31 @@ export default function Editor({ schema, endpoint, setQuery }) {
           smoothScrolling: true,
           automaticLayout: true,
           minimap: {
-            enabled: false,
+            enabled: enableMiniMap,
           },
           scrollbar: {
-            horizontal: "hidden",
-            vertical: "hidden",
+            vertical: verticalScrollbar,
+            horizontal: horizontalScrollbar,
           },
+          glyphMargin,
+          folding,
+          lineNumbersMinChars,
+          lineDecorationsWidth,
+          lineNumbers,
         })
       );
 
     // Assign Change Listeners
     // Debounce to wait 300ms after user stops typing before executing
     // Ref used here for non-stale state
-    queryModel.onDidChangeContent(
-      debounce(300, () => {
-        execOperation(true);
-        // localStorage.setItem("operations", queryModel.getValue());
-      })
-    );
+    if (isRealTimeFetching) {
+      queryModel.onDidChangeContent(
+        debounce(300, () => {
+          execOperation(true);
+          // localStorage.setItem("operations", queryModel.getValue());
+        })
+      );
+    }
     // variablesModel.onDidChangeContent(
     //   debounce(300, () => {
     //     // localStorage.setItem("variables", variablesModel.getValue());
@@ -216,6 +254,14 @@ export default function Editor({ schema, endpoint, setQuery }) {
   }, [reverseMode]);
 
   /****************************************** Helper Functions ********************************************/
+  // NOT CONNECTED OR TESTED
+  // function for toggling the RealTimeFetching for querys
+  function toggleRealTimeFetching() {
+    setEditorOptions({
+      ...editorOptions,
+      isRealTimeFetching: !editorOptions.isRealTimeFetching,
+    });
+  }
 
   /* Get Operations & Validate
      Return: {valid:Boolean <, error:String, operationString:String, operationType:String>} */
@@ -299,9 +345,15 @@ export default function Editor({ schema, endpoint, setQuery }) {
       query: operations.operationString,
       variables: JSONC.parse(variables),
     });
+
     // Note: this app only supports a single iteration for http GET/POST,
     // no multipart or subscriptions yet.
     const data = await result.next();
+
+    // update metrics
+    const newMetrics = calculate_metrics(endpoint);
+    newMetrics.lastResponseType = "Query";
+    updateMetrics(newMetrics);
 
     // Display the results in results pane
     resultsModel?.setValue(
@@ -351,7 +403,7 @@ export default function Editor({ schema, endpoint, setQuery }) {
     );
   };
 
-  /* Copy the Editor Contents */
+  // /* Copy the Editor Contents */
   async function copyEditorField(e, ref) {
     try {
       let uriFile;
@@ -467,6 +519,15 @@ export default function Editor({ schema, endpoint, setQuery }) {
               >
                 copy
               </button>
+            </article>
+            <article className="metrics__container">
+              {metrics && (
+                <p className="metrics__text">
+                  {metrics.lastResponseType} response time:{" "}
+                  <span className="metrics__data">{metrics.responseTime}</span>{" "}
+                  ms
+                </p>
+              )}
             </article>
           </section>
         </Split>

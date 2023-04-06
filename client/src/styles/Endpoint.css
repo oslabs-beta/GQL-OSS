@@ -12,7 +12,7 @@
   /* padding: 0.3rem; */
   margin: 0 0.3rem;
   outline: none;
-  background: none;
+  background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgb(188, 183, 204);
   border-radius: 5px;
   margin-left: 10px;
@@ -20,7 +20,7 @@
   padding: 7px;
   font-family: "Poppins", sans-serif;
   text-align: center;
-  font-weight: 200;
+  font-weight: 300;
 }
 
 .endpoint__input::placeholder {
@@ -45,11 +45,11 @@
   padding: 7px;
   border: none;
   border-radius: 5px;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 0, 0, 0.3);
   color: whitesmoke;
   outline: 1px solid rgb(188, 183, 204);
   transition: all 0.1s ease;
-  font-weight: 200;
+  font-weight: 300;
 }
 
 .endpoint__button:hover {

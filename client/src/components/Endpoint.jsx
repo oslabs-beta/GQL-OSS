@@ -4,8 +4,15 @@ import { request } from "graphql-request";
 import parseReceivedSchema from "../utils/parseIntrospectionQueryResponse";
 import "../styles/Endpoint.css";
 import ReverseContext from "../context/ReverseContext";
+import { calculate_metrics } from "../utils/metrics";
 
-export const Endpoint = ({ endpoint, setEndpoint, setSchema, setVSchema }) => {
+export const Endpoint = ({
+  endpoint,
+  setEndpoint,
+  setSchema,
+  setVSchema,
+  updateMetrics,
+}) => {
   // state for controlled input
   const epInputRef = useRef();
   const [endpointText, setEndpointText] = useState(endpoint);
@@ -20,6 +27,9 @@ export const Endpoint = ({ endpoint, setEndpoint, setSchema, setVSchema }) => {
       const parsedSchemaData = parseReceivedSchema(schema);
       setVSchema(parsedSchemaData.visualizerSchema);
       resetReverseContext();
+      const newMetrics = calculate_metrics(endpointText);
+      newMetrics.lastResponseType = "Introspection Query";
+      updateMetrics(newMetrics);
     } catch (e) {
       console.log("Error fetching introspection query: ", e);
     }
