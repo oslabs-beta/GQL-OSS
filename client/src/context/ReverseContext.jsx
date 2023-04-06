@@ -56,7 +56,14 @@ export const ContextProvider = ({ children }) => {
     // console.log(formatReverseQuery(query));
     if (revQueryObj) {
       const { query } = gqlQB.query(revQueryObj);
-      const formatted = formatReverseQuery(query);
+      let fedQuery = query;
+
+      if (revQueryType.includes(`mutation`)) {
+        console.log(`LET'S SEE THIS QUERYTYPE: `, revQueryType);
+        fedQuery = query.replace(`query`, `mutation`);
+      }
+
+      const formatted = formatReverseQuery(fedQuery);
       console.log(`OUTPUT IS BELOW: `);
       console.log(formatted);
     }
@@ -82,22 +89,26 @@ export const ContextProvider = ({ children }) => {
       //create innitial query obj that graphql-query-builder will receive
 
       //consider first if field name takes arg. if so, just add to field name
+      //args is an array containing all possible args as vals
       let field;
       if (args && args.length) {
         const length = args.length;
         let innerStr = ``;
 
+        //in case of multiple args, iterate
         for (let i = 0; i < length; i++) {
+          //only nonNull args should be added, the optional ones, not a priority and clutter up the reverse mode build query
           if (args[i].nonNull === true) {
+            //first case essentially if there's another arg. If so, make sure the space is added at the end for proper formatting
             if (args[i + 1]) {
               innerStr += `<${args[i].name.toUpperCase()}> `;
             } else {
+              //if no more args after current, just add arg name w/out space
               innerStr += `<${args[i].name.toUpperCase()}>`;
             }
           }
         }
 
-        console.log(innerStr.length);
         if (innerStr.length !== 0) {
           innerStr = `(${innerStr})`;
         }
@@ -105,7 +116,6 @@ export const ContextProvider = ({ children }) => {
       } else {
         field = fieldName;
       }
-      console.log(field);
 
       const revQueryRoot = {
         operation: field,
@@ -333,6 +343,8 @@ export const ContextProvider = ({ children }) => {
         revQueryObjUpdated,
         revQueryObj
       );
+      console.log(`FIRST reference IS: `, reference);
+      console.log(`FIRST isOperation IS: `, isOperation);
       // console.log(`reference: `, reference);
 
       if (relationship) {
@@ -363,10 +375,16 @@ export const ContextProvider = ({ children }) => {
         });
 
         //Since there was a relationship, recursive function found the reference in the
-        // current query obj
+        // current query obj. Push into found reference
 
-        reference[referenceStr] &&
-          reference[referenceStr].push({ [fieldName]: [] });
+        //first check of special case if reference is operation. If so, push in there
+        //operation's ref will be to the opening array of the revQueryObj arr. It's a particular case
+        if (isOperation) {
+          reference.push({ [fieldName]: [] });
+        } else {
+          reference[referenceStr] &&
+            reference[referenceStr].push({ [fieldName]: [] });
+        }
       } else {
         //No relationship, so, SCALAR! This conditional runs when all the active relationships (in the Map) are less than 2 (all of the actives will be 1, except for query, which has an empty array, so an array of 0). This is the case, for example of the user is just clicking on a bunch of scalars and barely any relationship fields.
 
@@ -377,17 +395,13 @@ export const ContextProvider = ({ children }) => {
 
         //if the num (length) of the relationships is more than 1, have to promp further user input
 
-        console.log(
-          `clickedFieldTypeRelationship`,
-          clickedFieldTypeRelationship
-        );
         const [reference, isOperation] = findCorrectReference(
           clickedFieldTypeRelationship[0].field,
           revQueryObjUpdated,
           revQueryObj
         );
-        console.log(`reference IS: `, reference);
-        console.log(`isOperation IS: `, isOperation);
+        // console.log(`SECOND reference IS: `, reference);
+        // console.log(`SECOND isOperation IS: `, isOperation);
 
         //operation's ref will be to the opening array of the revQueryObj arr. It's a particular case
         if (isOperation) {
