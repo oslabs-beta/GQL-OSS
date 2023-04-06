@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Panel } from "reactflow";
 import "../styles/OptionsPanel.css";
 import { ToggleSwitch } from "./ToggleSwitch";
 import { ColorPicker } from "./ColorPicker";
 import { motion } from "framer-motion";
-import { Tooltip } from "@mui/material";
+import ReverseContext from "../context/ReverseContext";
 
 export function OptionsPanel({
   visualizerOptions,
@@ -19,10 +19,16 @@ export function OptionsPanel({
   toggleGhostMode,
 }) {
   const { targetPosition, showMinimap, showControls } = visualizerOptions;
-
+  const { reverseMode } = useContext(ReverseContext);
   const [collapsed, setCollapsed] = useState(false);
-  // const [rotateIcon, setRotateIcon] = useState(false)
-  // useEffect(() => console.log('CUSTOMCOLORS::::::: ',customColors['nodeHighlight']), [])
+
+  useEffect(() => {
+    if (!reverseMode && displayMode === "activeOnly" && ghostMode === "on") {
+      toggleDisplayMode();
+      toggleGhostMode();
+    }
+  }, [reverseMode]);
+
   return (
     <>
       <Panel position="top-right" className="options-panel__container">

@@ -229,11 +229,13 @@ const Visualizer = ({
   const generateGraph = async (initial = false) => {
     // Get accurate picture of nodes and edges from internal React Flow state
     const { nodeInternals, edges } = store.getState();
+    console.log("edges: ", edges);
     const currNodes = Array.from(nodeInternals.values());
     let graphedNodes, activeNodes, activeEdges;
     if (displayMode === "activeOnly" && ghostMode === "on") {
       activeNodes = currNodes.filter((node) => node.data.isGhost);
       activeEdgeIDs = edges.filter((edge) => edge.active || edge.isGhost);
+      activeEdges = edges.filter((edge) => edge.active);
     } else if (displayMode === "activeOnly") {
       activeNodes = currNodes.filter((node) => node.data.active);
       activeEdges = edges.filter((edge) => edge.active);
@@ -241,8 +243,11 @@ const Visualizer = ({
     // Generate graph layout from React Flow nodes & edges by processing through Elk
     if (initial || displayMode === "all")
       graphedNodes = await createGraphLayout(currNodes, edges);
-    else if (displayMode === "activeOnly")
+    else if (displayMode === "activeOnly") {
+      console.log("activeNodes: ", activeNodes);
+      console.log("activeEdges: ", activeEdges);
       graphedNodes = await createGraphLayout(activeNodes, activeEdges);
+    }
 
     // Remap React Flow nodes to reflect the graph layout
     if (initial) setNodes(graphedNodes); // Just map to initial state
