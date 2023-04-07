@@ -10,8 +10,10 @@ const elk = new Elk({
     // 'elk.padding': '[top=50, bottom=50, left=50, right=50]',
     "elk.edgeRouting": "SPLINES",
     "elk.layered.nodePlacement.strategy": "SIMPLE",
+    // "elk.layered.layering.coffmanGraham.layerBound": 5,
+    // "elk.layered.wrapping.cutting.strategy": "MANUAL",
     // 'elk.edgeRouting.splines.mode': 'CONSERVATIVE',
-    // 'elk.crossingMinimization.strategy': 'LAYER_SWEEP',
+    // "elk.crossingMinimization.strategy": "INTERACTIVE",
     // "elk.layered.layering.strategy": "NETWORK_SIMPLEX",
   },
 });
@@ -50,8 +52,9 @@ const createGraphLayout = async (flowNodes, flowEdges) => {
         // For nodes:
         // Elk coordinates are centered
         // React Flow coordinates start at upper left
-        x: elkNode.x - elkNode.width / 2,
-        y: elkNode.y - elkNode.height / 2,
+        x: elkNode.x,
+        // - elkNode.width / 2,
+        y: elkNode.y,
       };
     }
     return flowNode;

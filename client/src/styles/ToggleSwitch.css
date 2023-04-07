@@ -34,7 +34,7 @@
 .toggle-switch__label-left {
   transform: translateX(-4px);
 }
-.toggle-switch__label-left.unavailable {
+.unavailable {
   color: rgb(105, 105, 105);
 }
 

@@ -60,15 +60,14 @@ export function OptionsPanel({
               isChecked={displayMode === "activeOnly"}
               handleChange={toggleDisplayMode}
             />
-            {displayMode === "activeOnly" && (
-              <ToggleSwitch
-                toggleName="ghost mode"
-                labelLeft="off"
-                labelRight="on"
-                isChecked={ghostMode === "on"}
-                handleChange={toggleGhostMode}
-              />
-            )}
+            <ToggleSwitch
+              toggleName="ghost mode"
+              labelLeft="off"
+              labelRight="on"
+              isChecked={ghostMode === "on"}
+              handleChange={toggleGhostMode}
+              displayMode={displayMode}
+            />
             <ToggleSwitch
               toggleName="target position"
               labelLeft="left"

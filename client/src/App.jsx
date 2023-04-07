@@ -75,6 +75,10 @@ const App = () => {
     setActiveEdgeIDs(null);
   }, [reverseMode]);
 
+  useEffect(() => {
+    if (displayMode === "all") setGhostMode("off");
+  }, [displayMode]);
+
   /********************************************** Helper Functions *************************************************/
 
   /* Prevent Left Pane From Forcing Overflow */

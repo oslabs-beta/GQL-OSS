@@ -58,7 +58,10 @@ const Field = ({
           height: 28,
           strokeWidth: 0.7,
         },
-        style: { stroke: edgeDefaultColor, strokeWidth: "1.1" },
+        style: {
+          stroke: edgeDefaultColor,
+          strokeWidth: "1.1",
+        },
         hidden: false,
         active: false,
       });

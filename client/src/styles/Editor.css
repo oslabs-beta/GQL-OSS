@@ -88,7 +88,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #373636;
   font-size: 14px;
   font-style: italic;
 }

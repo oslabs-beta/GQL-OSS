@@ -145,9 +145,9 @@ const Visualizer = ({
         updatedGhostEdges.add(edge.id);
         updatedGhostNodes.add(edge.target);
       }
-      setGhostNodeIDs(updatedGhostNodes);
-      setGhostEdgeIDs(updatedGhostEdges);
     }
+    setGhostNodeIDs(updatedGhostNodes);
+    setGhostEdgeIDs(updatedGhostEdges);
   }, [ghostMode, activeEdgeIDs, displayMode]);
 
   /* Update Active Type Nodes */
@@ -265,17 +265,19 @@ const Visualizer = ({
         (node) => node.data.isGhost || node.data.active
       );
       activeEdges = edges.filter((edge) => edge.active || edge.isGhost);
-    } else if (displayMode === "activeOnly") {
+    } else if (displayMode === "activeOnly" && ghostMode === "off") {
       activeNodes = currNodes.filter((node) => node.data.active);
       activeEdges = edges.filter((edge) => edge.active);
     }
     // Generate graph layout from React Flow nodes & edges by processing through Elk
-    if (initial || displayMode === "all")
+    if (initial || displayMode === "all") {
+      console.log("here for some reason");
       graphedNodes = await createGraphLayout(currNodes, edges);
-    else if (displayMode === "activeOnly") {
+    } else if (displayMode === "activeOnly") {
       console.log("activeNodes: ", activeNodes);
       console.log("activeEdges: ", activeEdges);
       graphedNodes = await createGraphLayout(activeNodes, activeEdges);
+      console.log("graphed nodes: ", graphedNodes);
     }
 
     // Remap React Flow nodes to reflect the graph layout
@@ -294,8 +296,8 @@ const Visualizer = ({
       });
     }
     // Queue fitView to explicitly occur AFTER the graphed nodes have asynchronously been set
-    if (displayMode === "activeOnly" || ghostMode === "on" || initial)
-      setTimeout(() => flowInstance.fitView(), 0);
+    // if (displayMode === "activeOnly" || ghostMode === "on" || initial)
+    setTimeout(() => flowInstance.fitView(), 0);
     // You can configure this to fitView after every change when displayMode === 'all' as well,
     // however that UX feels slightly worse
   };

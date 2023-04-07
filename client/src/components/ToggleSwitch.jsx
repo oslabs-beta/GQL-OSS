@@ -8,6 +8,9 @@ const alwaysToggledInReverse = {
   "active only": true,
   "ghost mode": true,
 };
+const alwaysOffWhileDisplayAll = {
+  "ghost mode": true,
+};
 
 export function ToggleSwitch({
   toggleName,
@@ -16,9 +19,15 @@ export function ToggleSwitch({
   handleChange,
   isChecked,
   disabled,
+  displayMode,
 }) {
   const { reverseMode } = useContext(ReverseContext);
   const isAlwaysToggled = reverseMode && toggleName in alwaysToggledInReverse;
+  const isAlwaysOff =
+    displayMode === "all" && toggleName in alwaysOffWhileDisplayAll;
+  let tooltipMessage;
+  if (isAlwaysToggled) tooltipMessage = "Always on in reverse mode";
+  else if (isAlwaysOff) tooltipMessage = "Active Only must be on";
 
   return (
     <div className="toggle-switch">
@@ -31,22 +40,27 @@ export function ToggleSwitch({
           {labelLeft}
         </p>
         <ConditionalWrapper
-          condition={isAlwaysToggled}
+          condition={isAlwaysToggled || isAlwaysOff}
           wrapper={(children) => (
-            <Tooltip title="Always on in reverse mode">{children}</Tooltip>
+            <Tooltip title={tooltipMessage}>{children}</Tooltip>
           )}
         >
           <label className="toggle-switch__switch">
             <input
               type="checkbox"
-              disabled={disabled || isAlwaysToggled}
+              disabled={disabled || isAlwaysToggled || isAlwaysOff}
               checked={isAlwaysToggled ? true : isChecked}
               onChange={(e) => handleChange(e)}
             />
             <span className="toggle-slider round"></span>
           </label>
         </ConditionalWrapper>
-        <p className="toggle-switch__label-right">{labelRight}</p>
+        <p
+          className={`toggle-switch__label-right
+        ${isAlwaysOff ? " unavailable" : ""}`}
+        >
+          {labelRight}
+        </p>
       </div>
     </div>
   );
