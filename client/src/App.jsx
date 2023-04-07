@@ -31,8 +31,8 @@ const App = () => {
   const editorVizSplit = useRef(null);
   const [customColors, setCustomColors] = useState(DEFAULT_COLORS);
   const [ghostMode, setGhostMode] = useState("off");
-  const [ghostNodeIDs, setGhostNodeIDs] = useState(null);
-  const [ghostEdgeIDs, setGhostEdgeIDs] = useState(null);
+  const [ghostNodeIDs, setGhostNodeIDs] = useState(new Set());
+  const [ghostEdgeIDs, setGhostEdgeIDs] = useState(new Set());
   const [metrics, setMetrics] = useState(null);
 
   const { reverseMode, setReverseMode } = useContext(ReverseContext);

@@ -105,7 +105,7 @@ const Visualizer = ({
               },
               isGhost: false,
               activeFieldIDs: currentActiveFieldIDs.current,
-              ghostNodeIDs: null,
+              ghostNodeIDs,
               visualizerOptions,
               customColors: customColors,
               collapseTrigger: 0,
@@ -135,15 +135,15 @@ const Visualizer = ({
   Is there a way to simplify this process?
   */
   useEffect(() => {
-    const updatedGhostEdges = [];
-    const updatedGhostNodes = [];
+    const updatedGhostEdges = new Set();
+    const updatedGhostNodes = new Set();
 
     const { edges } = store.getState();
     for (const edge of edges) {
       // Should only be ghost if it's NOT active and is an active node's potential next lead
       if (activeTypeIDs?.has(edge.source) && !activeTypeIDs?.has(edge.target)) {
-        updatedGhostEdges.push(edge.id);
-        updatedGhostNodes.push(edge.target);
+        updatedGhostEdges.add(edge.id);
+        updatedGhostNodes.add(edge.target);
       }
       setGhostNodeIDs(updatedGhostNodes);
       setGhostEdgeIDs(updatedGhostEdges);
@@ -157,7 +157,7 @@ const Visualizer = ({
     setNodes((prevNodes) => {
       return prevNodes.map((node) => {
         const isActive = activeTypeIDs?.has(node.id) ? true : false;
-        const isGhost = ghostNodeIDs?.includes(node.id) ? true : false;
+        const isGhost = ghostNodeIDs?.has(node.id) ? true : false;
         let isHidden;
         if (
           displayMode === "all" ||
@@ -204,7 +204,7 @@ const Visualizer = ({
     setEdges((prevEdges) => {
       return prevEdges.map((edge) => {
         const isActive = activeEdgeIDs?.has(edge.id) ? true : false;
-        const isGhost = ghostEdgeIDs?.includes(edge.id) ? true : false;
+        const isGhost = ghostEdgeIDs?.has(edge.id) ? true : false;
         let isHidden;
         if (
           displayMode === "all" ||
