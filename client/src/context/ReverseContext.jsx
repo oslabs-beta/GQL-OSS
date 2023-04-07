@@ -20,48 +20,14 @@ export const ContextProvider = ({ children }) => {
   const revQueryObjUpdated = useRef(revQueryObj);
 
   useEffect(() => {
-    /*
-    gql.query([{
-      operation: "someoperation",
-      fields: [{
-        operation: "nestedoperation",
-        fields: ["field1"],
-        variables: {
-          id2: {
-            name: "id",
-            type: "ID",
-            value: 123,
-          },
-        },
-      }, ],
-      variables: {
-        id1: {
-          name: "id",
-          type: "ID",
-          value: 456,
-        },
-      },
-      }, ]);
-    */
-    // const { query } = gqlQB.query([
-    //   { operation: `languages`, fields: [`native`, `rtl`] },
-    //   { operation: `countries`, fields: [`name`, `code`] },
-    // ]);
-    // const { query } = gqlQB.query([
-    //   { operation: `languages`, fields: [`native`, `rtl`] },
-    //   { operation: `countries`, fields: [`name`, `emoji`] },
-    //   { operation: `continents`, fields: [`code`] },
-    // ]);
-    // console.log(query);
-    // console.log(formatReverseQuery(query));
     if (revQueryObj) {
       const { query } = gqlQB.query(revQueryObj);
       let fedQuery = query;
 
       if (revQueryType.includes(`mutation`)) {
-        console.log(`LET'S SEE THIS QUERYTYPE: `, revQueryType);
         fedQuery = query.replace(`query`, `mutation`);
       }
+      console.log(`fedQuery IS: `, fedQuery);
 
       const formatted = formatReverseQuery(fedQuery);
       console.log(`OUTPUT IS BELOW: `);
@@ -90,6 +56,7 @@ export const ContextProvider = ({ children }) => {
       //if type node is not query or mutation, end operation
       if (
         !typeName.toLowerCase().includes(`query`) &&
+        !typeName.toLowerCase().includes(`root`) &&
         !typeName.toLowerCase().includes(`mutation`)
       ) {
         console.log(`YA HAVE TO START WITH EITHER QUERY OR MUTATION`);
@@ -136,7 +103,6 @@ export const ContextProvider = ({ children }) => {
           fields: [],
         },
       ];
-
       //Create Object#2
       //create map that will hold all active relationships between types and the fields that attach to them
       const revRelationships = new Map();
@@ -178,15 +144,93 @@ export const ContextProvider = ({ children }) => {
     //just push into the fields array create on STEP#1
     // STEP#2
     if (revActiveRelationships.size === 2) {
-      //add to rev active types n fields
-      //create a copy of the current fields of the current type
-      const curType = revActiveTypesNFields[typeName].slice();
-      //push current field name into array copy
-      curType.push(fieldName);
+      //first thing: Get the correct starting operation
+      //if user has clicked query again, the reference is going to be the overall array
+      const revQueryRootName = [...revActiveRelationships.keys()][0];
+
+      if (typeName === revQueryRootName) {
+        //consider first if field name takes arg. if so, just add to field name
+        //args is an array containing all possible args as vals
+        let field;
+        if (args && args.length) {
+          const length = args.length;
+          let innerStr = ``;
+
+          //in case of multiple args, iterate
+          for (let i = 0; i < length; i++) {
+            //only nonNull args should be added, the optional ones, not a priority and clutter up the reverse mode build query
+            if (args[i].nonNull === true) {
+              //first case essentially if there's another arg. If so, make sure the space is added at the end for proper formatting
+              if (args[i + 1]) {
+                innerStr += `<${args[i].name.toUpperCase()}> `;
+              } else {
+                //if no more args after current, just add arg name w/out space
+                innerStr += `<${args[i].name.toUpperCase()}>`;
+              }
+            }
+          }
+
+          //adds parenthesis to vars innerString
+          if (innerStr.length !== 0) {
+            innerStr = `(${innerStr})`;
+          }
+          //adds inner string to field name.
+          //TODO: This fieldName + vars String will create a BAD UX/UI when collisions occur and the field name w/ vars (only for query and mutations field) appears for the user to select. Gonna have to filter out the paranthesis and the chars within it, and then make sure if the user selects THAT field, field w/ vars, to resolve the collision, that the parenthesis and its contexts are present in the response too, since that field is actually saved as a reference w/ those vars, for convenience
+          field = `${fieldName}${innerStr}`;
+        } else {
+          field = fieldName;
+        }
+
+        const newOperation = {
+          operation: field,
+          fields: [],
+        };
+        revQueryObjUpdated.current.push(newOperation);
+        //UPDATE STATE
+        //update relationships
+        setRevActiveRelationships((prevRevActiveRelations) => {
+          //create a DEEP clone of the map. Otherwise, map properties will not update properly
+          //since the values are all nested arrays/refs. Trust me.. I tried that lol.
+          const updatedMap = new Map(
+            JSON.parse(JSON.stringify(Array.from(prevRevActiveRelations)))
+          );
+          updatedMap.set(relationship, [{ field, type: typeName }]);
+          return updatedMap;
+        });
+
+        //update rev active types n fields
+        const curType = revActiveTypesNFields[typeName].slice();
+        //push current field name into array copy
+        curType.push(fieldName);
+        setRevActiveTypesNFields((prevRevTypesNFields) => {
+          //All fields in the Query type have a relationship. The below empty array represents the new "store" in which
+          //future new fields belonging to that newly active obj type will be placed/stored in
+          //Notice that curType is just a shallow copy (I don't think deep copy was necessary) of the previous entries for the current
+          //obj type. It has been updated by pushing the current field into it
+          return {
+            ...prevRevTypesNFields,
+            [typeName]: curType,
+            [relationship]: [],
+          };
+        });
+
+        //reassign query Obj
+        setRevQueryObj([...revQueryObjUpdated.current]);
+        //return to end operation
+        return;
+      }
+      // else {
+      //   //if user has clicked the type their first click was related to
+      // }
+
+      // if user clicked a non active field, user should be prompted: CHECKED AND PASSED
+
+      // const [curOperation] = revActiveRelationships.get(typeName);
+      // console.log(`curOperation IS: `, curOperation);
 
       //check if field has relationship
       if (relationship) {
-        revQueryObjUpdated.current.fields.push({ [fieldName]: [] });
+        revQueryObjUpdated.current[0].fields.push({ [fieldName]: [] });
         //add relationship to reverseActiveTypes
         setRevActiveRelationships((prevRevActiveRelations) => {
           //create a DEEP clone of the map. Otherwise, map properties will not update properly
@@ -199,9 +243,16 @@ export const ContextProvider = ({ children }) => {
         });
       } else {
         //no relationship, just push into fields array that was created on // STEP#1
-        revQueryObjUpdated.current.fields.push(fieldName);
+        revQueryObjUpdated.current[0].fields.push(fieldName);
       }
+
       //update reserve mode state
+
+      //add to rev active types n fields
+      //create a copy of the current fields of the current type. copy here intended to remove references so no funny behaviour happens down the line (hopefully)
+      const curType = revActiveTypesNFields[typeName].slice();
+      //push current field name into array copy
+      curType.push(fieldName);
       setRevActiveTypesNFields((prevRevTypesNFields) => {
         if (relationship) {
           //if there was a relationship, empty array represents the new "store" in which
@@ -222,17 +273,24 @@ export const ContextProvider = ({ children }) => {
         }
       });
       //reassign query Obj
-      setRevQueryObj({ ...revQueryObjUpdated.current });
+      setRevQueryObj([...revQueryObjUpdated.current]);
       //return to end operation
       return;
     }
 
     // STEP#3 THE BIGGGGG ONE!!!!
+    //
+    //
+    //
+    //
+    //
     //In this step, we are keep track of the DEPTH of the fields property in the query obj.
     //Nested in here is where MOST of the fields will live.
     if (revActiveRelationships.size > 2) {
+      // Getting the number of action relationships for that obType will help you determine if your click has led to a collision
       const numberOfActiveRelationships =
         revActiveRelationships.get(typeName).length;
+
       if (numberOfActiveRelationships > 1) {
         //******** WORK IN PROGRESS... DOING COLLISION MANAGEMENT HERE*******//
         //get info use to build user interface so they help us resolve a collision
@@ -251,15 +309,18 @@ export const ContextProvider = ({ children }) => {
         // console.log(`userClarification`, userClarification);
 
         //receiving value from user, find the correct reference
-        const [reference, isOperation] = findCorrectReference(
+        const [reference, isRevRoot, isOperation] = findCorrectReference(
           userClarification,
           revQueryObjUpdated,
-          revQueryObj
+          revActiveRelationships,
+          revActiveTypesNFields
         );
-        console.log(`reference IS: `, reference);
+        // console.log(`COLLISION reference IS: `, reference);
+        // console.log(`COLLISION isRevRoot IS: `, isRevRoot);
+        // console.log(`COLLISION isOperation IS: `, isOperation);
 
         //push user selected field (the prompt value) into the reference arr
-        if (isOperation) {
+        if (isRevRoot) {
           if (relationship) {
             //update active relationships
 
@@ -271,9 +332,14 @@ export const ContextProvider = ({ children }) => {
           // console.log(`reference IS: `, reference);
           // console.log(`userClarification IS: `, userClarification);
           //handles scenario where in a collision, the field chosen has a relationship
-          if (relationship) {
+          if (relationship && !isOperation) {
             reference[userClarification].push({ [fieldName]: [] });
             //handles scenario where in a collion, the chosen field is a scalar
+          } else if (relationship && isOperation) {
+            reference.fields.push({ [fieldName]: [] });
+            //at this point, have handled all possible collisions where field names have relationships. Below is code handling the pushing into reference the field names of the collisions that are SCALARS
+          } else if (!relationship && isOperation) {
+            reference.fields.push(fieldName);
           } else {
             reference[userClarification].push(fieldName);
           }
@@ -296,7 +362,7 @@ export const ContextProvider = ({ children }) => {
               field: fieldName,
               type: typeName,
             });
-          } else {
+          } else if (mapValue && mapValue.length === 0) {
             updatedMap.set(relationship, [
               { field: fieldName, type: typeName },
             ]);
@@ -336,7 +402,7 @@ export const ContextProvider = ({ children }) => {
           }
         });
 
-        setRevQueryObj({ ...revQueryObjUpdated.current });
+        setRevQueryObj([...revQueryObjUpdated.current]);
         console.log(`END OF THE ROAD HERE`);
         return;
         //******** WORK IN PROGRESS... DOING COLLISION MANAGEMENT HERE*******//
@@ -349,23 +415,61 @@ export const ContextProvider = ({ children }) => {
 
       // get reference/pointer
       const [referenceObj] = revActiveRelationships.get(typeName);
-      const referenceStr = referenceObj.field;
+      // console.log(`FIRST referenceObj IS: `, referenceObj);
 
-      //if clicked field does not have a relationship, reference will be null
-      //since recursive funtion findCorrectReference did not find a relationship association to it, since it's a scalar
-      const [reference, isOperation] = findCorrectReference(
-        referenceStr,
-        revQueryObjUpdated,
-        revQueryObj
-      );
-      console.log(`FIRST reference IS: `, reference);
-      console.log(`FIRST isOperation IS: `, isOperation);
-      // console.log(`reference: `, reference);
+      // in cases when reference of is undefined, bcz revActiveRelationships.get(typeName) gets an empty arr for empty relationships arrs, which only exists for query/mutation TO DO: MAKE SURE THIS WORKS FOR MUTATION
+      const referenceStr = referenceObj?.field || typeName;
+      // console.log(`FIRST referenceStr IS: `, referenceStr);
 
       if (relationship) {
+        // console.log(`WHAT IS THE RELATIONSHIP?? `, relationship);
+        //if clicked field does not have a relationship, reference will be null
+        //since recursive funtion findCorrectReference did not find a relationship association to it, since it's a scalar
+        const [reference, isRevRoot, isOperation] = findCorrectReference(
+          referenceStr,
+          revQueryObjUpdated,
+          revActiveRelationships,
+          revActiveTypesNFields
+        );
+        // console.log(`FIRST reference IS: `, reference);
+        // console.log(`FIRST isRevRoot IS: `, isRevRoot);
+
         // if newly clicked field has refenrece, repeat the above idea where you create a new obj w/ field name as key
         //and values is an empty arr
         //add relationship to reverseActiveTypes
+
+        //consider first if field name takes arg. if so, just add to field name
+        //args is an array containing all possible args as vals
+        let field;
+        if (args && args.length) {
+          const length = args.length;
+          let innerStr = ``;
+
+          //in case of multiple args, iterate
+          for (let i = 0; i < length; i++) {
+            //only nonNull args should be added, the optional ones, not a priority and clutter up the reverse mode build query
+            if (args[i].nonNull === true) {
+              //first case essentially if there's another arg. If so, make sure the space is added at the end for proper formatting
+              if (args[i + 1]) {
+                innerStr += `<${args[i].name.toUpperCase()}> `;
+              } else {
+                //if no more args after current, just add arg name w/out space
+                innerStr += `<${args[i].name.toUpperCase()}>`;
+              }
+            }
+          }
+
+          //adds parenthesis to vars innerString
+          if (innerStr.length !== 0) {
+            innerStr = `(${innerStr})`;
+          }
+          //adds inner string to field name.
+          //TODO: This fieldName + vars String will create a BAD UX/UI when collisions occur and the field name w/ vars (only for query and mutations field) appears for the user to select. Gonna have to filter out the paranthesis and the chars within it, and then make sure if the user selects THAT field, field w/ vars, to resolve the collision, that the parenthesis and its contexts are present in the response too, since that field is actually saved as a reference w/ those vars, for convenience
+          field = `${fieldName}${innerStr}`;
+        } else {
+          field = fieldName;
+        }
+
         setRevActiveRelationships((prevRevActiveRelations) => {
           const updatedMap = new Map(
             JSON.parse(JSON.stringify(Array.from(prevRevActiveRelations)))
@@ -377,13 +481,11 @@ export const ContextProvider = ({ children }) => {
           //if not, just create new map key/val pair, with key being the relationship and val and array w/ object w/ corresponding fields
           if (mapValue && mapValue.length > 0) {
             mapValue.push({
-              field: fieldName,
+              field: field,
               type: typeName,
             });
           } else {
-            updatedMap.set(relationship, [
-              { field: fieldName, type: typeName },
-            ]);
+            updatedMap.set(relationship, [{ field: field, type: typeName }]);
           }
 
           return updatedMap;
@@ -394,8 +496,10 @@ export const ContextProvider = ({ children }) => {
 
         //first check of special case if reference is operation. If so, push in there
         //operation's ref will be to the opening array of the revQueryObj arr. It's a particular case
-        if (isOperation) {
-          reference.push({ [fieldName]: [] });
+        if (isRevRoot) {
+          reference.push({ operation: field, fields: [] });
+        } else if (isOperation) {
+          reference.fields.push({ [fieldName]: [] });
         } else {
           reference[referenceStr] &&
             reference[referenceStr].push({ [fieldName]: [] });
@@ -410,17 +514,21 @@ export const ContextProvider = ({ children }) => {
 
         //if the num (length) of the relationships is more than 1, have to promp further user input
 
-        const [reference, isOperation] = findCorrectReference(
+        const [reference, isRevRoot, isOperation] = findCorrectReference(
           clickedFieldTypeRelationship[0].field,
           revQueryObjUpdated,
-          revQueryObj
+          revActiveRelationships,
+          revActiveTypesNFields
         );
         // console.log(`SECOND reference IS: `, reference);
+        // console.log(`SECOND isRevRoot IS: `, isRevRoot);
         // console.log(`SECOND isOperation IS: `, isOperation);
 
         //operation's ref will be to the opening array of the revQueryObj arr. It's a particular case
-        if (isOperation) {
+        if (isRevRoot) {
           reference.push(fieldName);
+        } else if (isOperation) {
+          reference.fields.push(fieldName);
         } else {
           //These references are found nested in the fields array, from the originally made revQueryRoot obj in Step#1
           reference[clickedFieldTypeRelationship[0].field].push(fieldName);
@@ -460,7 +568,7 @@ export const ContextProvider = ({ children }) => {
         }
       });
       //update revQueryObj
-      setRevQueryObj({ ...revQueryObjUpdated.current });
+      setRevQueryObj([...revQueryObjUpdated.current]);
     }
   }, [revClickedField]);
 
