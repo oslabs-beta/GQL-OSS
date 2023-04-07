@@ -122,6 +122,7 @@ const Visualizer = ({
   // Whenever the initialization state of the nodes changes from false to true, regraph them
   useEffect(() => {
     if (!nodesInitialized) return;
+    console.log("generating graph in cuz nodes are initialized");
     generateGraph(true);
   }, [nodesInitialized]);
 
@@ -183,14 +184,17 @@ const Visualizer = ({
     });
     // Queue graph generation (async) to explicitly occur AFTER nodes are set
     setTimeout(() => {
+      console.log(
+        "generating graph cuz activeTypeIDs, displayMode, ghostNodeIDs, ghostMode, collapseTrigger, or expandTrigger changed"
+      );
       generateGraph();
     }, 0);
   }, [
     activeTypeIDs,
     displayMode,
+    collapseTrigger,
     ghostNodeIDs,
     ghostMode,
-    collapseTrigger,
     expandTrigger,
   ]);
 
