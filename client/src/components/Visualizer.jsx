@@ -294,7 +294,7 @@ const Visualizer = ({
       });
     }
     // Queue fitView to explicitly occur AFTER the graphed nodes have asynchronously been set
-    if (displayMode === "activeOnly" || initial)
+    if (displayMode === "activeOnly" || ghostMode === "on" || initial)
       setTimeout(() => flowInstance.fitView(), 0);
     // You can configure this to fitView after every change when displayMode === 'all' as well,
     // however that UX feels slightly worse

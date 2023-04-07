@@ -35,7 +35,7 @@ const App = () => {
   const [ghostEdgeIDs, setGhostEdgeIDs] = useState(null);
   const [metrics, setMetrics] = useState(null);
 
-  const { reverseMode } = useContext(ReverseContext);
+  const { reverseMode, setReverseMode } = useContext(ReverseContext);
 
   /********************************************** useEffect's *************************************************/
 
@@ -60,6 +60,7 @@ const App = () => {
     setActiveFieldIDs(null);
     setActiveEdgeIDs(null);
     setDisplayMode("all");
+    setReverseMode(false);
   }, [vSchema]);
 
   useEffect(() => {
