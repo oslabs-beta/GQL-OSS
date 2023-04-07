@@ -13,9 +13,9 @@ export const ContextProvider = ({ children }) => {
   const [revActiveRelationships, setRevActiveRelationships] = useState(null);
   const [revClickedField, setRevClickedField] = useState(null);
 
-  console.log(`revQueryObj: `, revQueryObj);
-  console.log("revActiveTypesNFields:", revActiveTypesNFields);
-  console.log(`revActiveRelationships: `, revActiveRelationships);
+  // console.log(`revQueryObj: `, revQueryObj);
+  // console.log("revActiveTypesNFields:", revActiveTypesNFields);
+  // console.log(`revActiveRelationships: `, revActiveRelationships);
 
   const revQueryObjUpdated = useRef(revQueryObj);
 
@@ -27,7 +27,7 @@ export const ContextProvider = ({ children }) => {
       if (revQueryType.includes(`mutation`)) {
         fedQuery = query.replace(`query`, `mutation`);
       }
-      console.log(`fedQuery IS: `, fedQuery);
+      // console.log(`fedQuery IS: `, fedQuery);
 
       const formatted = formatReverseQuery(fedQuery);
       console.log(`OUTPUT IS BELOW: `);
@@ -403,7 +403,7 @@ export const ContextProvider = ({ children }) => {
         });
 
         setRevQueryObj([...revQueryObjUpdated.current]);
-        console.log(`END OF THE ROAD HERE`);
+        // console.log(`END OF THE ROAD HERE`);
         return;
         //******** WORK IN PROGRESS... DOING COLLISION MANAGEMENT HERE*******//
       }

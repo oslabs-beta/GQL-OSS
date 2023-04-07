@@ -49,11 +49,13 @@ const findCorrectReference = (
           field.hasOwnProperty(referenceStr) ||
           field?.operation === referenceStr
         ) {
+          // **** // FAILED ATTEMPT AT SOLVING THE DUPLICATE FIELD NAME PROBLEM
           //Createa a current snapshot of the objType state through stringifying it's values as store in the actives types n fields obj and comparing it with the current reference's current fields. Will have to iterate through the cur types to get its fields, saving them into an array, and in case of an obj, just store the key in the array. Then JSON.stringify it and compare it to the stringified version of it in active types n fields
-          console.log(`this is the FIELD`, field);
-          const stringifiedField = JSON.stringify(field);
-          console.log(`stringifiedField IS`, stringifiedField);
-          console.log(`revActiveTypesNFields for cur: `, revActiveTypesNFields);
+          // console.log(`this is the FIELD`, field);
+          // const stringifiedField = JSON.stringify(field);
+          // console.log(`stringifiedField IS`, stringifiedField);
+          // console.log(`revActiveTypesNFields for cur: `, revActiveTypesNFields);
+          // **** // FAILED ATTEMPT AT SOLVING THE DUPLICATE FIELD NAME PROBLEM
 
           if (field?.operation === referenceStr) {
             isOperation = true;
