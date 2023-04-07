@@ -102,7 +102,7 @@ export default function Editor({
   );
 
   /********************************************** useEFfect's *************************************************/
-  /* update liveQueryModeRef to prevent stale state in queryModel.on
+  /* update liveQueryModeRef to prevent stale state in queryModel.onDidChangeContent */
   useEffect(() => {
     liveQueryModeRef.current = editorOptions.liveQueryMode;
   }, [editorOptions.liveQueryMode]);
