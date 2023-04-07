@@ -14,6 +14,8 @@ const TypeNode = ({ data }) => {
     visualizerOptions,
     customColors,
     isGhost,
+    collapseTrigger,
+    expandTrigger,
   } = data;
   const [fieldElements, setFieldElements] = useState();
 
@@ -42,6 +44,7 @@ const TypeNode = ({ data }) => {
             activeFieldIDs?.has(`${typeName}/${field.fieldName}`) ? true : false
           }
           displayMode={displayMode}
+          
         />
       ))
     );
@@ -64,6 +67,16 @@ const TypeNode = ({ data }) => {
   }, []);
 
   const [collapsed, setCollapsed] = useState(false);
+  
+  const forceCollapse = () => {
+    if(!collapsed) setCollapsed(true)
+  }
+  const forceUncollapse = () => {
+    if(collapsed) setCollapsed(false)
+  }
+
+  useEffect(() => {if(collapseTrigger  > 0) forceCollapse()}, [collapseTrigger])
+  useEffect(() => {if(expandTrigger > 0) forceUncollapse()}, [expandTrigger])
 
   return (
     <div className={`type-node ${active ? "gradient-border2" : ""}`}>
@@ -73,6 +86,7 @@ const TypeNode = ({ data }) => {
           position={targetPosition === "left" ? "left" : "top"}
           id={typeName}
           isConnectable={false}
+          
           className={
             targetPosition === "left"
               ? "type-node__handle-target-left"
