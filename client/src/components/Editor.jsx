@@ -491,7 +491,7 @@ export default function Editor({
             <article className="metrics__container">
               {metrics && (
                 <p className="metrics__text">
-                  {metrics.lastResponseType} response time:{" "}
+                  {metrics.lastResponseType} time:{" "}
                   <span className="metrics__data">{metrics.responseTime}</span>{" "}
                   ms
                 </p>
