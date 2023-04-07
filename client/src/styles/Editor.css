@@ -85,10 +85,11 @@
   height: 41px;
   width: 100%;
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 1rem;
+  position: relative;
 }
 
 .metrics__text {
@@ -98,6 +99,22 @@
 .metrics__data {
   color: rgba(255, 255, 255, 0.9);
   font-weight: 500;
+}
+
+.RT-toggle__container {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 1rem;
+}
+
+.RT-toggle__text {
+  transform: translateX(-10px);
+}
+
+.metrics__container p, h6 {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
 }
 
 .copy-btn,
