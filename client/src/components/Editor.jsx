@@ -13,8 +13,6 @@ import Split from "react-split";
 import { ToggleSwitch } from "./ToggleSwitch";
 import { DEFAULT_EDITOR_OPTIONS } from "../utils/defaultEditorOptions";
 import { calculate_metrics } from "../utils/metrics";
-import { ToggleSwitch } from "./ToggleSwitch";
-
 import ReverseContext from "../context/ReverseContext";
 
 /* Default Initial Display for Operations */

@@ -5,7 +5,6 @@ import formatReverseQuery from "../utils/formatReverseQuery";
 import findCorrectReference from "../utils/findCorrectReference";
 
 const ReverseContext = createContext({});
-const ReverseContext = createContext({});
 
 export const ContextProvider = ({ children }) => {
   const [revQueryObj, setRevQueryObj] = useState(null);
