@@ -464,7 +464,16 @@ export default function Editor({
                 labelLeft="off"
                 labelRight="on"
                 isChecked={reverseMode}
-                handleChange={() => setReverseMode((prevMode) => !prevMode)}
+                handleChange={() => {
+                  setReverseMode((prevMode) => {
+                    if (prevMode === false)
+                      setEditorOptions((prevOptions) => ({
+                        ...prevOptions,
+                        liveQueryMode: true,
+                      }));
+                    return !prevMode;
+                  });
+                }}
                 // disabled={schema === null}
               />
             </div>
@@ -528,10 +537,11 @@ export default function Editor({
               <div className="RT-toggle__container">
                 <h6 className="RT-toggle__text">Live:</h6>
                 <ToggleSwitch
-                  labelLeft={"off"}
-                  labelRight={"on"}
+                  labelLeft="off"
+                  labelRight="on"
                   handleChange={toggleLiveQueryMode}
                   isChecked={editorOptions.liveQueryMode}
+                  id={"liveQueryToggle"}
                 />
               </div>
             </article>

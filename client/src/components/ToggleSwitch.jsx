@@ -20,9 +20,12 @@ export function ToggleSwitch({
   isChecked,
   disabled,
   displayMode,
+  id,
 }) {
   const { reverseMode } = useContext(ReverseContext);
-  const isAlwaysToggled = reverseMode && toggleName in alwaysToggledInReverse;
+  const isAlwaysToggled =
+    reverseMode &&
+    (toggleName in alwaysToggledInReverse || id === "liveQueryToggle");
   const isAlwaysOff =
     displayMode === "all" && toggleName in alwaysOffWhileDisplayAll;
   let tooltipMessage;

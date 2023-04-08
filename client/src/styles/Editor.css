@@ -119,6 +119,10 @@ h6 {
   font-size: 12px;
 }
 
+.metrics__container .unavailable {
+  color: rgb(105, 105, 105);
+}
+
 .copy-btn,
 .submit-query-button {
   margin: 0.5rem;
