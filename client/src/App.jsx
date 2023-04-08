@@ -69,7 +69,7 @@ const App = () => {
     if (reverseMode) {
       setDisplayMode("activeOnly");
       setGhostMode("on");
-      setActiveTypeIDs(new Set([vSchema.queryName.name]));
+      if (vSchema) setActiveTypeIDs(new Set([vSchema.queryName.name]));
     } else {
       setActiveTypeIDs(null);
     }

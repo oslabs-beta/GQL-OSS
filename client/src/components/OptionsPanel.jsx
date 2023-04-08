@@ -55,7 +55,7 @@ export function OptionsPanel({
           <div>
             <ToggleSwitch
               toggleName="active only"
-              labelLeft="Off"
+              labelLeft="off"
               labelRight="On"
               isChecked={displayMode === "activeOnly"}
               handleChange={toggleDisplayMode}

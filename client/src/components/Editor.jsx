@@ -476,16 +476,14 @@ export default function Editor({
               Submit
             </button>
             <div className="reverse-toggle-switch-container">
-              {schema && (
-                <ToggleSwitch
-                  toggleName="Reverse Mode"
-                  labelLeft="off"
-                  labelRight="on"
-                  isChecked={reverseMode}
-                  handleChange={() => setReverseMode((prevMode) => !prevMode)}
-                  disabled={schema === null}
-                />
-              )}
+              <ToggleSwitch
+                toggleName="Reverse Mode"
+                labelLeft="off"
+                labelRight="on"
+                isChecked={reverseMode}
+                handleChange={() => setReverseMode((prevMode) => !prevMode)}
+                // disabled={schema === null}
+              />
             </div>
             <span className="operation-error-msg"></span>
           </section>
