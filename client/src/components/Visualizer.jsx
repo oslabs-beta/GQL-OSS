@@ -141,14 +141,14 @@ const Visualizer = ({
     const { edges } = store.getState();
     for (const edge of edges) {
       // Should only be ghost if it's NOT active and is an active node's potential next lead
-      if (activeTypeIDs?.has(edge.source) && !activeTypeIDs?.has(edge.target)) {
+      if (activeTypeIDs?.has(edge.source)) {
         updatedGhostEdges.add(edge.id);
         updatedGhostNodes.add(edge.target);
       }
     }
     setGhostNodeIDs(updatedGhostNodes);
     setGhostEdgeIDs(updatedGhostEdges);
-  }, [activeEdgeIDs]);
+  }, [ghostMode, activeEdgeIDs, displayMode]);
 
   /* Update Active Type Nodes */
   // Whenever the display mode or active type ID's change, update the nodes' properties to reflect the changes
