@@ -7,13 +7,11 @@ import Split from "react-split";
 import "./styles/App.css";
 import getActivesFromQuery from "./utils/getActivesFromQuery";
 
-const DEFAULT_ENDPOINT = "https://countries.trevorblades.com/";
-
 const App = () => {
   /********************************************** State & Refs *************************************************/
 
   // TODO: redux refactor (for only the necessary global pieces)
-  const [endpoint, setEndpoint] = useState(DEFAULT_ENDPOINT);
+  const [endpoint, setEndpoint] = useState(null);
 
   /* Setting default highlight/edge colors */
   const colors = {
