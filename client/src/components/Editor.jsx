@@ -328,9 +328,9 @@ export default function Editor({
     const data = await result.next();
 
     // update metrics
-    const newMetrics = calculate_metrics(endpoint);
-    newMetrics.lastResponseType = "Query";
-    updateMetrics(newMetrics);
+    // const newMetrics = calculate_metrics(endpoint);
+    // newMetrics.lastResponseType = "Query";
+    // updateMetrics(newMetrics);
 
     // Display the results in results pane
     resultsModel?.setValue(

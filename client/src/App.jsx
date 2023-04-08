@@ -88,9 +88,6 @@ const App = () => {
       <nav className="toolbar">
         <div className="logo__container"></div>
         {/* TODO: Make the fullscreen button a custom control input component that goes with the other buttons */}
-        <button className="fullscreen-btn" onClick={fullscreenVisualizer}>
-          Fullscreen
-        </button>
         <Endpoint
           endpoint={endpoint}
           setEndpoint={setEndpoint}

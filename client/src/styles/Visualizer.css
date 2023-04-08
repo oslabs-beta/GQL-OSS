@@ -59,3 +59,8 @@
 .react-flow__controls button:last-of-type {
   border-bottom: none;
 }
+
+.react-flow__controls-button svg {
+  height: 100%;
+  width: 100%;
+}

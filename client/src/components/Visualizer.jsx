@@ -11,6 +11,7 @@ import ReactFlow, {
   useReactFlow,
   useUpdateNodeInternals,
   MarkerType,
+  ControlButton,
 } from "reactflow";
 import { OptionsPanel } from "./OptionsPanel";
 import TypeNode from "./TypeNode";
@@ -18,6 +19,7 @@ import createGraphLayout from "../utils/createGraphLayout";
 import "reactflow/dist/style.css";
 import "../styles/Visualizer.css";
 import { defaultVisualizerOptions } from "../utils/defaultVisualizerOptions";
+import { FullscreenArrow } from "./FullscreenArrow";
 
 /* Custom Node */
 // Declared outside of component to prevent re-declaration upon every render
@@ -65,8 +67,8 @@ const Visualizer = ({
   const { showControls, showMinimap } = visualizerOptions;
 
   //Triggers for "Expand All" and "Collapse All" functionality
-  const [collapseTrigger, setCollapseTrigger] = useState(0)
-  const [expandTrigger, setExpandTrigger] = useState(0)
+  const [collapseTrigger, setCollapseTrigger] = useState(0);
+  const [expandTrigger, setExpandTrigger] = useState(0);
 
   /********************************************** useEFfect's *************************************************/
 
@@ -161,7 +163,14 @@ const Visualizer = ({
     setTimeout(() => {
       generateGraph();
     }, 0);
-  }, [activeTypeIDs, displayMode, ghostNodeIDs, ghostMode, collapseTrigger, expandTrigger]);
+  }, [
+    activeTypeIDs,
+    displayMode,
+    ghostNodeIDs,
+    ghostMode,
+    collapseTrigger,
+    expandTrigger,
+  ]);
 
   /* Update Active Edges  */
   // Whenever the display mode or active edge ID's change, update the edges' properties to reflect the changes
@@ -337,13 +346,17 @@ const Visualizer = ({
   };
 
   // /* Collapsing and expanding all nodes */
-  const collapseAll = () => {setCollapseTrigger((collapseTrigger) => collapseTrigger + 1)}
-  const expandAll = () => {setExpandTrigger((expandTrigger) => expandTrigger + 1)}
+  const collapseAll = () => {
+    setCollapseTrigger((collapseTrigger) => collapseTrigger + 1);
+  };
+  const expandAll = () => {
+    setExpandTrigger((expandTrigger) => expandTrigger + 1);
+  };
 
   // /* Resetting the trigger for collapsing nodes to prevent buggy functionality when changing Display Mode */
   useEffect(() => {
-    setCollapseTrigger(0)
-    setExpandTrigger(0)
+    setCollapseTrigger(0);
+    setExpandTrigger(0);
   }, [displayMode, ghostMode]);
 
   function updateColors(colorCode, colorTarget) {
@@ -390,8 +403,13 @@ const Visualizer = ({
     );
   }
 
-  
-  
+  /******************************************* Helper Functions *************************************************/
+
+  const fullscreenVisualizer = () => {
+    const el = document.querySelector(".visualizer-container");
+    el.requestFullscreen();
+  };
+
   /************************************************ Render ******************************************************/
 
   return (
@@ -412,7 +430,7 @@ const Visualizer = ({
         zoom={1}
         proOptions={{ hideAttribution: true }}
       >
-        <Background variant={"dots"} size={1.5} gap={55} color={"#a28a8a"}/>
+        <Background variant={"dots"} size={1.5} gap={55} color={"#a28a8a"} />
         <OptionsPanel
           visualizerOptions={visualizerOptions}
           toggleTargetPosition={toggleTargetPosition}
@@ -428,7 +446,13 @@ const Visualizer = ({
           expandAll={expandAll}
         />
         <Background />
-        {showControls && <Controls />}
+        {showControls && (
+          <Controls>
+            <ControlButton onClick={fullscreenVisualizer}>
+              <FullscreenArrow />
+            </ControlButton>
+          </Controls>
+        )}
         {showMinimap && <MiniMap nodeColor={nodeColor} pannable={true} />}
       </ReactFlow>
     </div>

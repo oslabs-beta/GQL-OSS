@@ -25,9 +25,9 @@ export const Endpoint = ({
     setSchema(schema);
     const parsedSchemaData = parseReceivedSchema(schema);
     setVSchema(parsedSchemaData.visualizerSchema);
-    const newMetrics = calculate_metrics(endpointText);
-    newMetrics.lastResponseType = "Introspection";
-    updateMetrics(newMetrics);
+    // const newMetrics = calculate_metrics(endpointText);
+    // newMetrics.lastResponseType = "Introspection";
+    // updateMetrics(newMetrics);
   };
 
   const getEndpointButtonName = () => {
