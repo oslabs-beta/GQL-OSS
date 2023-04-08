@@ -91,12 +91,6 @@ const App = () => {
     }
   };
 
-  const fullscreenVisualizer = () => {
-    const el = document.querySelector(".visualizer-container");
-    el.requestFullscreen();
-  };
-
-  /************************************************ Helper Functions ********************************************/
   function updateMetrics(newMetricsProperties) {
     setMetrics({
       ...metrics,
