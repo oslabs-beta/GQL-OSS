@@ -13,6 +13,8 @@ export const ContextProvider = ({ children }) => {
   const [revQueryType, setRevQueryType] = useState(null);
   const [revActiveRelationships, setRevActiveRelationships] = useState(null);
   const [revClickedField, setRevClickedField] = useState(null);
+  const [isCollision, setIsCollision] = useState(false);
+  const [isRevModeError, setIsRevModeError] = useState(false);
 
   console.log(`revQueryObj: `, revQueryObj);
   console.log("revActiveTypesNFields:", revActiveTypesNFields);
@@ -346,6 +348,7 @@ export const ContextProvider = ({ children }) => {
 
         //checking for collision
         if (numberOfActiveRelationships > 1) {
+          setIsCollision(true);
           //******** COLLISION MANAGEMENT HERE*******//
           //BIG PICTURE: get info user to build user interface so they help us resolve a collision
 
@@ -734,6 +737,7 @@ export const ContextProvider = ({ children }) => {
         setRevQueryObj([...revQueryObjUpdated.current]);
       }
     } catch (error) {
+      setIsRevModeError(true);
       console.error(error);
     }
   }, [revClickedField]);
