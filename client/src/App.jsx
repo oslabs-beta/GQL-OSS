@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Endpoint } from "./components/Endpoint";
 import Editor from "./components/Editor";
 import Visualizer from "./components/Visualizer";
+import { HelpButton } from "./components/HelpButton";
 import Split from "react-split";
 import "./styles/App.css";
 import getActivesFromQuery from "./utils/getActivesFromQuery";
@@ -98,6 +99,11 @@ const App = () => {
           setVSchema={setVSchema}
           updateMetrics={updateMetrics}
         />
+        <div className="toolbar__header-container">
+          <h1 className="toolbar__header">GraphQL One Stop Shop</h1>
+          <div className="logo__container"></div>
+        </div>
+        <HelpButton />
       </nav>
 
       <Split

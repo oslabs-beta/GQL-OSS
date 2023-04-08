@@ -391,8 +391,26 @@ export default function Editor({
       else return;
       // retrieve the contents of the uriFile
       const operations = editor.getModel(Uri.file(uriFile)).getValue().trim();
+
+      // remove comments from copied operations text
+      // complex regex: https://regex101.com/r/B8WkuX/1
+      // will filter comments:
+      //   /* This Will Be Removed */
+      //
+      //   /*
+      //    * This Will Also Be Removed
+      //   */
+      //
+      //    // so will almost all of these as long as they aren't preceeded by a semicolon
+      //
+      // removes: comments
+      // removes: # a pair of pound signs and everything between them #
+      const filteredOperations = operations
+        .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, "$1")
+        .replace(/#[^#]*#/, "");
+
       // copy to clipboard
-      await navigator.clipboard.writeText(operations);
+      await navigator.clipboard.writeText(filteredOperations);
       const copyButton = e.target;
       copyButton.innerText = "copied!";
       setTimeout(() => (copyButton.innerText = "copy"), 800);
