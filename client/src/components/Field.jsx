@@ -27,8 +27,12 @@ const Field = ({
   const [handlePosition, setHandlePosition] = useState("right");
   const store = useStoreApi();
 
-  const { setRevClickedField, revActiveTypesNFields, reverseMode } =
-    useContext(ReverseContext);
+  const {
+    setRevClickedField,
+    revActiveTypesNFields,
+    revActiveRelationships,
+    reverseMode,
+  } = useContext(ReverseContext);
 
   const fieldActive = {
     backgroundColor: fieldHighlightColor + "ca",
@@ -95,8 +99,17 @@ const Field = ({
 
   const reverseClickHandler = () => {
     if (!reverseMode) return;
+
     if (revActiveTypesNFields === null || revActiveTypesNFields[typeName]) {
-      setRevClickedField({ typeName, fieldName, relationship, args });
+      const numberOfActiveRelationships =
+        revActiveRelationships?.get(typeName).length;
+      console.log(`numberOfActiveRelationships`, numberOfActiveRelationships);
+
+      if (numberOfActiveRelationships > 1) {
+        alert(`COLISSION HAS OCCURED!`);
+      } else {
+        setRevClickedField({ typeName, fieldName, relationship, args });
+      }
     } else {
       console.log(`DOES NOT PASS`);
       // setRevClickedField({ typeName, fieldName, relationship });
