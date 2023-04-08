@@ -5,7 +5,7 @@ const elk = new Elk({
     "elk.algorithm": "layered",
     "elk.direction": "RIGHT",
     "elk.spacing.nodeNode": "130",
-    "elk.layered.spacing.nodeNodeBetweenLayers": "110",
+    "elk.layered.spacing.nodeNodeBetweenLayers": "100",
     "elk.layered.noOverlap": true,
     // 'elk.padding': '[top=50, bottom=50, left=50, right=50]',
     "elk.edgeRouting": "SPLINES",

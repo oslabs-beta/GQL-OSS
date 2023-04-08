@@ -64,6 +64,7 @@ const Field = ({
         },
         hidden: false,
         active: false,
+        isGhost: false,
       });
     }
   }, []);

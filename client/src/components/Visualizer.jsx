@@ -218,8 +218,6 @@ const Visualizer = ({
           ...edge,
           markerEnd: {
             ...edge.markerEnd,
-            // TODO: refactor colors (many different paths you can take here)
-            // e.g. global variables, color pickers, color schemes, dynamic color mappings
             color: isActive
               ? customColors["edgeHighlight"]
               : customColors["edgeDefault"],
