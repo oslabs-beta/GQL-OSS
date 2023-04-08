@@ -122,7 +122,7 @@ const Visualizer = ({
   // Whenever the initialization state of the nodes changes from false to true, regraph them
   useEffect(() => {
     if (!nodesInitialized) return;
-    console.log("generating graph in cuz nodes are initialized");
+    // console.log("generating graph in cuz nodes are initialized");
     generateGraph(true);
   }, [nodesInitialized]);
 
@@ -184,9 +184,9 @@ const Visualizer = ({
     });
     // Queue graph generation (async) to explicitly occur AFTER nodes are set
     setTimeout(() => {
-      console.log(
-        "generating graph cuz activeTypeIDs, displayMode, ghostNodeIDs, ghostMode, collapseTrigger, or expandTrigger changed"
-      );
+      // console.log(
+      //   "generating graph cuz activeTypeIDs, displayMode, ghostNodeIDs, ghostMode, collapseTrigger, or expandTrigger changed"
+      // );
       generateGraph();
     }, 0);
   }, [
@@ -269,13 +269,13 @@ const Visualizer = ({
     }
     // Generate graph layout from React Flow nodes & edges by processing through Elk
     if (initial || displayMode === "all") {
-      console.log("here for some reason");
+      // console.log("here for some reason");
       graphedNodes = await createGraphLayout(currNodes, edges);
     } else if (displayMode === "activeOnly") {
-      console.log("activeNodes: ", activeNodes);
-      console.log("activeEdges: ", activeEdges);
+      // console.log("activeNodes: ", activeNodes);
+      // console.log("activeEdges: ", activeEdges);
       graphedNodes = await createGraphLayout(activeNodes, activeEdges);
-      console.log("graphed nodes: ", graphedNodes);
+      // console.log("graphed nodes: ", graphedNodes);
     }
 
     // Remap React Flow nodes to reflect the graph layout
