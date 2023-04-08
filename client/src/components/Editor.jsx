@@ -337,6 +337,7 @@ export default function Editor({
       defaultResults + JSON.stringify(data.value, null, 2)
     );
 
+    // switch to the editor tab if not in live query mode
     if (!auto) setActiveLowerEditor("results");
   };
 
