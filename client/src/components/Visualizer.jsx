@@ -148,7 +148,7 @@ const Visualizer = ({
     }
     setGhostNodeIDs(updatedGhostNodes);
     setGhostEdgeIDs(updatedGhostEdges);
-  }, [ghostMode, activeEdgeIDs, displayMode]);
+  }, [ghostMode, activeEdgeIDs]);
 
   /* Update Active Type Nodes */
   // Whenever the display mode or active type ID's change, update the nodes' properties to reflect the changes
@@ -297,7 +297,7 @@ const Visualizer = ({
     }
     // Queue fitView to explicitly occur AFTER the graphed nodes have asynchronously been set
     // if (displayMode === "activeOnly" || ghostMode === "on" || initial)
-    setTimeout(() => flowInstance.fitView(), 0);
+    if (ghostMode === "off") setTimeout(() => flowInstance.fitView(), 0);
     // You can configure this to fitView after every change when displayMode === 'all' as well,
     // however that UX feels slightly worse
   };

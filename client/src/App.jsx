@@ -59,6 +59,8 @@ const App = () => {
     setActiveTypeIDs(null);
     setActiveFieldIDs(null);
     setActiveEdgeIDs(null);
+    setGhostNodeIDs(new Set());
+    setGhostEdgeIDs(new Set());
     setDisplayMode("all");
     setReverseMode(false);
   }, [vSchema]);
@@ -73,6 +75,8 @@ const App = () => {
     }
     setActiveFieldIDs(null);
     setActiveEdgeIDs(null);
+    setGhostNodeIDs(new Set());
+    setGhostEdgeIDs(new Set());
   }, [reverseMode]);
 
   useEffect(() => {
