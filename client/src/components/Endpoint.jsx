@@ -17,7 +17,7 @@ export const Endpoint = ({
 }) => {
   // state for controlled input
   const epInputRef = useRef();
-  const [endpointText, setEndpointText] = useState(endpoint);
+  const [endpointText, setEndpointText] = useState(DEFAULT_ENDPOINT);
   const { resetReverseContext } = useContext(ReverseContext);
 
   const setEPAndFetchSchema = async () => {

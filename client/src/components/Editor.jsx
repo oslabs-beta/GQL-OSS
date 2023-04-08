@@ -319,24 +319,6 @@ export default function Editor({
       }
       return;
     }
-    //TESTING FOR REVERSE MODE
-    const DUMMY_OBJ = {
-      operation: "continents",
-      fields: [
-        "code",
-        "name",
-        { countries: [`code`, `name`, { languages: [`name`, `native`] }] },
-      ],
-    };
-
-    const { query } = gqlQB.query(DUMMY_OBJ);
-    console.log(query);
-    const formatted = formatReverseQuery(query);
-    // console.log(formatted);
-
-    const queryModel = editor.getModel(Uri.file("operation.graphql"));
-    // queryModel?.setValue(formatted);
-    //LAST LINE OF TESTING FOR REVERSE MODE
 
     // Grab the code from the variables pane
     const variables = editor.getModel(Uri.file("variables.json")).getValue();
@@ -359,8 +341,10 @@ export default function Editor({
 
     // update metrics
     const newMetrics = calculate_metrics(endpoint);
-    newMetrics.lastResponseType = "Query";
-    updateMetrics(newMetrics);
+    if (newMetrics) {
+      newMetrics.lastResponseType = "Query";
+      updateMetrics(newMetrics);
+    }
 
     // Display the results in results pane
     resultsModel?.setValue(

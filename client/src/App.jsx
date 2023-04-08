@@ -8,8 +8,6 @@ import "./styles/App.css";
 import getActivesFromQuery from "./utils/getActivesFromQuery";
 import ReverseContext from "./context/ReverseContext";
 
-const DEFAULT_ENDPOINT = "https://countries.trevorblades.com/";
-
 /* Setting default highlight/edge colors */
 const DEFAULT_COLORS = {
   fieldHighlight: "#283145",
@@ -21,7 +19,7 @@ const App = () => {
   /********************************************** State & Refs *************************************************/
 
   // TODO: redux refactor (for only the necessary global pieces)
-  const [endpoint, setEndpoint] = useState(DEFAULT_ENDPOINT);
+  const [endpoint, setEndpoint] = useState(null);
   const [schema, setSchema] = useState(null);
   const [vSchema, setVSchema] = useState(null);
   const [query, setQuery] = useState(null);
