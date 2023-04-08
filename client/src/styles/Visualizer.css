@@ -22,6 +22,10 @@
   background: #1d1e22;
 }
 
+/* .react-flow__background {
+  z-index: -3;
+} */
+
 .react-flow__attribution {
   background: #1d1e25;
 }

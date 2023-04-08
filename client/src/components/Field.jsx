@@ -27,7 +27,7 @@ const Field = ({
   const [handlePosition, setHandlePosition] = useState("right");
   const store = useStoreApi();
 
-  const { setRevClickedField, revActiveTypesNFields } =
+  const { setRevClickedField, revActiveTypesNFields, reverseMode } =
     useContext(ReverseContext);
 
   const fieldActive = {
@@ -59,9 +59,13 @@ const Field = ({
           height: 28,
           strokeWidth: 0.7,
         },
-        style: { stroke: edgeDefaultColor, strokeWidth: "1.1" },
+        style: {
+          stroke: edgeDefaultColor,
+          strokeWidth: "1.1",
+        },
         hidden: false,
         active: false,
+        isGhost: false,
       });
     }
   }, []);
@@ -90,6 +94,7 @@ const Field = ({
   }
 
   const reverseClickHandler = () => {
+    if (!reverseMode) return;
     if (revActiveTypesNFields === null || revActiveTypesNFields[typeName]) {
       setRevClickedField({ typeName, fieldName, relationship, args });
     } else {
@@ -100,7 +105,9 @@ const Field = ({
 
   return (
     <div
-      className={`field ${active ? "active" : ""}`}
+      className={`field ${active ? "active" : ""} ${
+        reverseMode ? "reverse-mode" : ""
+      }`}
       style={active ? fieldActive : {}}
       onClick={reverseClickHandler}
     >

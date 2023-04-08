@@ -34,6 +34,9 @@
 .toggle-switch__label-left {
   transform: translateX(-4px);
 }
+.unavailable {
+  color: rgb(105, 105, 105);
+}
 
 .toggle-switch__label-right {
   transform: translateX(4px);
@@ -53,8 +56,8 @@
   background-color: #bbb;
   background-color: #4a4a54;
   background-color: #333337;
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
 }
 
 .toggle-slider:before {
@@ -70,8 +73,8 @@
   background-color: #262735;
   background-color: #26262ff3;
   /* #262735 */
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
   /* border: 1px gray solid; */
   /* border: 1px #43434d solid; */
   border: 1px #61616c solid;

@@ -10,17 +10,28 @@ import "../styles/Editor.css";
 import { gql } from "graphql-tag";
 import * as gqlQB from "gql-query-builder";
 import Split from "react-split";
+import { ToggleSwitch } from "./ToggleSwitch";
 import { DEFAULT_EDITOR_OPTIONS } from "../utils/defaultEditorOptions";
 import { calculate_metrics } from "../utils/metrics";
-import { ToggleSwitch } from "./ToggleSwitch";
-
 import ReverseContext from "../context/ReverseContext";
 
-/* Default Initial Display for Query Operations */
+/* Default Initial Display for Operations */
 const defaultOperations =
   // localStorage.getItem("operations") ??
   `
 # GQL Request Pane #
+
+query {
+
+}
+`;
+
+/* Default Initial Display for Reverse-Mode Operations */
+const defaultReverseOperations =
+  // localStorage.getItem("operations") ??
+  `
+# Reverse Mode #
+# Build a query in the visualizer #
 
 query {
 
@@ -86,7 +97,8 @@ export default function Editor({
 
   const [MonacoGQLAPI, setMonacoGQLAPI] = useState(null);
 
-  const ctx = useContext(ReverseContext);
+  const { formattedQuery, reverseMode, setReverseMode, resetReverseContext } =
+    useContext(ReverseContext);
   // below line is preferable but crashes the app on context save bcz for a moment context object does not exist.
   //in production should work fine
   // const { revQueryObj } = useContext(ReverseContext);
@@ -230,6 +242,24 @@ export default function Editor({
     variablesEditor?.addAction(queryAction);
   }, [variablesEditor]);
 
+  useEffect(() => {
+    if (!formattedQuery) return;
+    editor
+      .getModel(Uri.file("operation.graphql"))
+      ?.setValue(
+        "\n# Reverse Mode #\n# Build a query in the visualizer #\n\n" +
+          formattedQuery
+      );
+  }, [formattedQuery]);
+
+  useEffect(() => {
+    if (reverseMode) resetReverseContext();
+    queryEditor?.updateOptions({ readOnly: reverseMode });
+    editor
+      .getModel(Uri.file("operation.graphql"))
+      ?.setValue(reverseMode ? defaultReverseOperations : defaultOperations);
+  }, [reverseMode]);
+
   /****************************************** Helper Functions ********************************************/
   // NOT CONNECTED OR TESTED
   // function for toggling the RealTimeFetching for querys
@@ -289,24 +319,6 @@ export default function Editor({
       }
       return;
     }
-    //TESTING FOR REVERSE MODE
-    const DUMMY_OBJ = {
-      operation: "continents",
-      fields: [
-        "code",
-        "name",
-        { countries: [`code`, `name`, { languages: [`name`, `native`] }] },
-      ],
-    };
-
-    const { query } = gqlQB.query(DUMMY_OBJ);
-    console.log(query);
-    const formatted = formatReverseQuery(query);
-    // console.log(formatted);
-
-    const queryModel = editor.getModel(Uri.file("operation.graphql"));
-    // queryModel?.setValue(formatted);
-    //LAST LINE OF TESTING FOR REVERSE MODE
 
     // Grab the code from the variables pane
     const variables = editor.getModel(Uri.file("variables.json")).getValue();
@@ -328,9 +340,11 @@ export default function Editor({
     const data = await result.next();
 
     // update metrics
-    // const newMetrics = calculate_metrics(endpoint);
-    // newMetrics.lastResponseType = "Query";
-    // updateMetrics(newMetrics);
+    const newMetrics = calculate_metrics(endpoint);
+    if (newMetrics) {
+      newMetrics.lastResponseType = "Query";
+      updateMetrics(newMetrics);
+    }
 
     // Display the results in results pane
     resultsModel?.setValue(
@@ -394,8 +408,26 @@ export default function Editor({
       else return;
       // retrieve the contents of the uriFile
       const operations = editor.getModel(Uri.file(uriFile)).getValue().trim();
+
+      // remove comments from copied operations text
+      // complex regex: https://regex101.com/r/B8WkuX/1
+      // will filter comments:
+      //   /* This Will Be Removed */
+      //
+      //   /*
+      //    * This Will Also Be Removed
+      //   */
+      //
+      //    // so will almost all of these as long as they aren't preceeded by a semicolon
+      //
+      // removes: comments
+      // removes: # a pair of pound signs and everything between them #
+      const filteredOperations = operations
+        .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, "$1")
+        .replace(/#[^#]*#/gm, "");
+
       // copy to clipboard
-      await navigator.clipboard.writeText(operations);
+      await navigator.clipboard.writeText(filteredOperations);
       const copyButton = e.target;
       copyButton.innerText = "copied!";
       setTimeout(() => (copyButton.innerText = "copy"), 800);
@@ -444,6 +476,25 @@ export default function Editor({
             >
               Submit
             </button>
+            <div className="reverse-toggle-switch-container">
+              <ToggleSwitch
+                toggleName="Reverse Mode"
+                labelLeft="off"
+                labelRight="on"
+                isChecked={reverseMode}
+                handleChange={() => {
+                  setReverseMode((prevMode) => {
+                    if (prevMode === false)
+                      setEditorOptions((prevOptions) => ({
+                        ...prevOptions,
+                        liveQueryMode: true,
+                      }));
+                    return !prevMode;
+                  });
+                }}
+                // disabled={schema === null}
+              />
+            </div>
             <span className="operation-error-msg"></span>
           </section>
           <section className="lower-editor-section">
@@ -494,18 +545,21 @@ export default function Editor({
             <article className="metrics__container">
               {metrics && (
                 <p className="metrics__text">
-                  {metrics.lastResponseType} time:{" "}
-                  <span className="metrics__data">{metrics.responseTime}</span>{" "}
+                  {metrics.lastResponseType} response time:{" "}
+                  <span className="metrics__data">
+                    {metrics.responseTime.toFixed(0)}
+                  </span>{" "}
                   ms
                 </p>
               )}
               <div className="RT-toggle__container">
                 <h6 className="RT-toggle__text">Live:</h6>
                 <ToggleSwitch
-                  labelLeft={"off"}
-                  labelRight={"on"}
+                  labelLeft="off"
+                  labelRight="on"
                   handleChange={toggleLiveQueryMode}
                   isChecked={editorOptions.liveQueryMode}
+                  id={"liveQueryToggle"}
                 />
               </div>
             </article>

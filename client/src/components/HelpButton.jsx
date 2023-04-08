@@ -4,7 +4,7 @@ import "../styles/HelpButton.css";
 export const HelpButton = () => {
   return (
     <section className="help-button__container">
-      <a href="https://github.com/oslabs-beta/GQL-OSS">
+      <a href="https://github.com/oslabs-beta/GQL-OSS" target="blank">
         <div className="help-button">
           <div className="sideA">?</div>
           <div className="sideB">

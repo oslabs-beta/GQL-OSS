@@ -12,6 +12,14 @@
   background: #283145ca;
 }
 
+.field.reverse-mode {
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+.field.reverse-mode:hover {
+  background: #283145ca;
+}
+
 .field-data {
   display: flex;
   align-items: center;
