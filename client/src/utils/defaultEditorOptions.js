@@ -1,5 +1,5 @@
 export const DEFAULT_EDITOR_OPTIONS = {
-  liveQueryMode: false, // boolean. enables/disables debouncer to provide real-time query fetching as a query is generated
+  liveQueryMode: true, // boolean. enables/disables debouncer to provide real-time query fetching as a query is generated
   enableMiniMap: false, // boolean
   verticalScrollbar: "hidden", // 'visible' || 'hidden'
   horizontalScrollbar: "hidden", // 'visible' || 'hidden'

@@ -12,12 +12,23 @@ export const ContextProvider = ({ children }) => {
   const [revQueryType, setRevQueryType] = useState(null);
   const [revActiveRelationships, setRevActiveRelationships] = useState(null);
   const [revClickedField, setRevClickedField] = useState(null);
+  const [formattedQuery, setFormattedQuery] = useState(null);
+  const [reverseMode, setReverseMode] = useState(false);
 
   // console.log(`revQueryObj: `, revQueryObj);
   // console.log("revActiveTypesNFields:", revActiveTypesNFields);
   // console.log(`revActiveRelationships: `, revActiveRelationships);
 
   const revQueryObjUpdated = useRef(revQueryObj);
+
+  const resetReverseContext = () => {
+    setRevQueryObj(null);
+    setRevClickedField(null);
+    setRevActiveTypesNFields(null);
+    setRevActiveRelationships(null);
+    setFormattedQuery(null);
+    setRevQueryType(null);
+  };
 
   useEffect(() => {
     if (revQueryObj) {
@@ -30,6 +41,7 @@ export const ContextProvider = ({ children }) => {
       // console.log(`fedQuery IS: `, fedQuery);
 
       const formatted = formatReverseQuery(fedQuery);
+      setFormattedQuery(formatted);
       console.log(`OUTPUT IS BELOW: `);
       console.log(formatted);
     }
@@ -37,7 +49,8 @@ export const ContextProvider = ({ children }) => {
   }, [revQueryObj]);
 
   useEffect(() => {
-    if (revClickedField === null) return;
+    if (revClickedField === null || !reverseMode) return;
+    console.log("HERE");
 
     const { fieldName, typeName, relationship, args } = revClickedField;
 
@@ -577,9 +590,19 @@ export const ContextProvider = ({ children }) => {
       value={{
         revQueryObj,
         setRevQueryObj,
+        revClickedField,
         setRevClickedField,
         revActiveTypesNFields,
+        setRevActiveTypesNFields,
         revActiveRelationships,
+        setRevActiveRelationships,
+        formattedQuery,
+        setFormattedQuery,
+        revQueryType,
+        setRevQueryType,
+        resetReverseContext,
+        reverseMode,
+        setReverseMode,
       }}
     >
       {children}

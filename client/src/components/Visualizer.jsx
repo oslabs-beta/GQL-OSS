@@ -65,8 +65,8 @@ const Visualizer = ({
   const { showControls, showMinimap } = visualizerOptions;
 
   //Triggers for "Expand All" and "Collapse All" functionality
-  const [collapseTrigger, setCollapseTrigger] = useState(0)
-  const [expandTrigger, setExpandTrigger] = useState(0)
+  const [collapseTrigger, setCollapseTrigger] = useState(0);
+  const [expandTrigger, setExpandTrigger] = useState(0);
 
   /********************************************** useEFfect's *************************************************/
 
@@ -105,7 +105,7 @@ const Visualizer = ({
               },
               isGhost: false,
               activeFieldIDs: currentActiveFieldIDs.current,
-              ghostNodeIDs: displayMode,
+              ghostNodeIDs,
               visualizerOptions,
               customColors: customColors,
               collapseTrigger: 0,
@@ -122,8 +122,33 @@ const Visualizer = ({
   // Whenever the initialization state of the nodes changes from false to true, regraph them
   useEffect(() => {
     if (!nodesInitialized) return;
+    console.log("generating graph in cuz nodes are initialized");
     generateGraph(true);
   }, [nodesInitialized]);
+
+  /* Update Ghost Type Nodes and Edges */
+  /*
+  POTENTIAL PROBLEM: the preceding UseEffects(mapping through the nodes)
+  must happen before the proceeding UseEffect(deriving a list of Ghost Type IDs by parsing through "active nodes").
+  Then, the preceding UseEffects must happen a SECOND time to apply the changes made via "ghost node/edge ids".
+
+  Is there a way to simplify this process?
+  */
+  useEffect(() => {
+    const updatedGhostEdges = new Set();
+    const updatedGhostNodes = new Set();
+
+    const { edges } = store.getState();
+    for (const edge of edges) {
+      // Should only be ghost if it's NOT active and is an active node's potential next lead
+      if (activeTypeIDs?.has(edge.source)) {
+        updatedGhostEdges.add(edge.id);
+        updatedGhostNodes.add(edge.target);
+      }
+    }
+    setGhostNodeIDs(updatedGhostNodes);
+    setGhostEdgeIDs(updatedGhostEdges);
+  }, [ghostMode, activeEdgeIDs]);
 
   /* Update Active Type Nodes */
   // Whenever the display mode or active type ID's change, update the nodes' properties to reflect the changes
@@ -132,10 +157,10 @@ const Visualizer = ({
     setNodes((prevNodes) => {
       return prevNodes.map((node) => {
         const isActive = activeTypeIDs?.has(node.id) ? true : false;
-        const isGhost = ghostNodeIDs?.includes(node.id) ? true : false;
+        const isGhost = ghostNodeIDs?.has(node.id) ? true : false;
         let isHidden;
         if (
-          displayMode !== "activeOnly" ||
+          displayMode === "all" ||
           isActive ||
           (isGhost && ghostMode === "on")
         )
@@ -159,9 +184,19 @@ const Visualizer = ({
     });
     // Queue graph generation (async) to explicitly occur AFTER nodes are set
     setTimeout(() => {
+      console.log(
+        "generating graph cuz activeTypeIDs, displayMode, ghostNodeIDs, ghostMode, collapseTrigger, or expandTrigger changed"
+      );
       generateGraph();
     }, 0);
-  }, [activeTypeIDs, displayMode, ghostNodeIDs, ghostMode, collapseTrigger, expandTrigger]);
+  }, [
+    activeTypeIDs,
+    displayMode,
+    collapseTrigger,
+    ghostNodeIDs,
+    ghostMode,
+    expandTrigger,
+  ]);
 
   /* Update Active Edges  */
   // Whenever the display mode or active edge ID's change, update the edges' properties to reflect the changes
@@ -169,10 +204,10 @@ const Visualizer = ({
     setEdges((prevEdges) => {
       return prevEdges.map((edge) => {
         const isActive = activeEdgeIDs?.has(edge.id) ? true : false;
-        const isGhost = ghostEdgeIDs?.includes(edge.id) ? true : false;
+        const isGhost = ghostEdgeIDs?.has(edge.id) ? true : false;
         let isHidden;
         if (
-          displayMode !== "activeOnly" ||
+          displayMode === "all" ||
           isActive ||
           (isGhost && ghostMode === "on")
         )
@@ -183,8 +218,6 @@ const Visualizer = ({
           ...edge,
           markerEnd: {
             ...edge.markerEnd,
-            // TODO: refactor colors (many different paths you can take here)
-            // e.g. global variables, color pickers, color schemes, dynamic color mappings
             color: isActive
               ? customColors["edgeHighlight"]
               : customColors["edgeDefault"],
@@ -212,28 +245,6 @@ const Visualizer = ({
     });
   }, [activeEdgeIDs, displayMode, ghostNodeIDs, ghostMode]);
 
-  /* Update Ghost Type Nodes and Edges */
-  /*
-  POTENTIAL PROBLEM: the preceding UseEffects(mapping through the nodes)
-  must happen before the proceeding UseEffect(deriving a list of Ghost Type IDs by parsing through "active nodes").
-  Then, the preceding UseEffects must happen a SECOND time to apply the changes made via "ghost node/edge ids".
-
-  Is there a way to simplify this process?
-  */
-  useEffect(() => {
-    const updatedGhostEdges = [];
-    const updatedGhostNodes = [];
-
-    for (const edge of edges) {
-      if (activeTypeIDs?.has(edge.source)) {
-        updatedGhostEdges.push(edge.id);
-        updatedGhostNodes.push(edge.target);
-      }
-      setGhostNodeIDs(updatedGhostNodes);
-      setGhostEdgeIDs(updatedGhostEdges);
-    }
-  }, [ghostMode, activeEdgeIDs, displayMode]);
-
   /* When Display Mode Changes, Fit Nodes to View */
   useEffect(() => {
     setTimeout(() => flowInstance.fitView(), 0);
@@ -248,17 +259,24 @@ const Visualizer = ({
     const currNodes = Array.from(nodeInternals.values());
     let graphedNodes, activeNodes, activeEdges;
     if (displayMode === "activeOnly" && ghostMode === "on") {
-      activeNodes = currNodes.filter((node) => node.data.isGhost);
-      activeEdgeIDs = edges.filter((edge) => edge.active || edge.isGhost);
-    } else if (displayMode === "activeOnly") {
+      activeNodes = currNodes.filter(
+        (node) => node.data.isGhost || node.data.active
+      );
+      activeEdges = edges.filter((edge) => edge.active || edge.isGhost);
+    } else if (displayMode === "activeOnly" && ghostMode === "off") {
       activeNodes = currNodes.filter((node) => node.data.active);
       activeEdges = edges.filter((edge) => edge.active);
     }
     // Generate graph layout from React Flow nodes & edges by processing through Elk
-    if (initial || displayMode === "all")
+    if (initial || displayMode === "all") {
+      console.log("here for some reason");
       graphedNodes = await createGraphLayout(currNodes, edges);
-    else if (displayMode === "activeOnly")
+    } else if (displayMode === "activeOnly") {
+      console.log("activeNodes: ", activeNodes);
+      console.log("activeEdges: ", activeEdges);
       graphedNodes = await createGraphLayout(activeNodes, activeEdges);
+      console.log("graphed nodes: ", graphedNodes);
+    }
 
     // Remap React Flow nodes to reflect the graph layout
     if (initial) setNodes(graphedNodes); // Just map to initial state
@@ -276,8 +294,8 @@ const Visualizer = ({
       });
     }
     // Queue fitView to explicitly occur AFTER the graphed nodes have asynchronously been set
-    if (displayMode === "activeOnly" || initial)
-      setTimeout(() => flowInstance.fitView(), 0);
+    // if (displayMode === "activeOnly" || ghostMode === "on" || initial)
+    if (ghostMode === "off") setTimeout(() => flowInstance.fitView(), 0);
     // You can configure this to fitView after every change when displayMode === 'all' as well,
     // however that UX feels slightly worse
   };
@@ -337,13 +355,17 @@ const Visualizer = ({
   };
 
   // /* Collapsing and expanding all nodes */
-  const collapseAll = () => {setCollapseTrigger((collapseTrigger) => collapseTrigger + 1)}
-  const expandAll = () => {setExpandTrigger((expandTrigger) => expandTrigger + 1)}
+  const collapseAll = () => {
+    setCollapseTrigger((collapseTrigger) => collapseTrigger + 1);
+  };
+  const expandAll = () => {
+    setExpandTrigger((expandTrigger) => expandTrigger + 1);
+  };
 
   // /* Resetting the trigger for collapsing nodes to prevent buggy functionality when changing Display Mode */
   useEffect(() => {
-    setCollapseTrigger(0)
-    setExpandTrigger(0)
+    setCollapseTrigger(0);
+    setExpandTrigger(0);
   }, [displayMode, ghostMode]);
 
   function updateColors(colorCode, colorTarget) {
@@ -390,8 +412,6 @@ const Visualizer = ({
     );
   }
 
-  
-  
   /************************************************ Render ******************************************************/
 
   return (
@@ -412,7 +432,7 @@ const Visualizer = ({
         zoom={1}
         proOptions={{ hideAttribution: true }}
       >
-        <Background variant={"dots"} size={1.5} gap={55} color={"#a28a8a"}/>
+        <Background variant={"dots"} size={1.5} gap={55} color={"#a28a8a"} />
         <OptionsPanel
           visualizerOptions={visualizerOptions}
           toggleTargetPosition={toggleTargetPosition}
@@ -426,6 +446,7 @@ const Visualizer = ({
           toggleGhostMode={toggleGhostMode}
           collapseAll={collapseAll}
           expandAll={expandAll}
+          generateGraph={generateGraph}
         />
         <Background />
         {showControls && <Controls />}

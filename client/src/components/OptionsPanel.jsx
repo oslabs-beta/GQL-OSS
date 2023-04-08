@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Panel } from "reactflow";
 import "../styles/OptionsPanel.css";
 import { ToggleSwitch } from "./ToggleSwitch";
 import { ColorPicker } from "./ColorPicker";
 import { motion } from "framer-motion";
+import ReverseContext from "../context/ReverseContext";
 import { Pushbutton } from "./Pushbutton";
 
 export function OptionsPanel({
@@ -19,12 +20,19 @@ export function OptionsPanel({
   toggleGhostMode,
   collapseAll,
   expandAll,
+  generateGraph,
 }) {
   const { targetPosition, showMinimap, showControls } = visualizerOptions;
-
+  const { reverseMode } = useContext(ReverseContext);
   const [collapsed, setCollapsed] = useState(false);
-  // const [rotateIcon, setRotateIcon] = useState(false)
-  // useEffect(() => console.log('CUSTOMCOLORS::::::: ',customColors['nodeHighlight']), [])
+
+  useEffect(() => {
+    if (!reverseMode && displayMode === "activeOnly" && ghostMode === "on") {
+      toggleDisplayMode();
+      toggleGhostMode();
+    }
+  }, [reverseMode]);
+
   return (
     <>
       <Panel position="top-right" className="options-panel__container">
@@ -46,13 +54,27 @@ export function OptionsPanel({
         {!collapsed && (
           <div>
             <ToggleSwitch
-              toggleName="target Position"
+              toggleName="active only"
+              labelLeft="off"
+              labelRight="On"
+              isChecked={displayMode === "activeOnly"}
+              handleChange={toggleDisplayMode}
+            />
+            <ToggleSwitch
+              toggleName="ghost mode"
+              labelLeft="off"
+              labelRight="on"
+              isChecked={ghostMode === "on"}
+              handleChange={toggleGhostMode}
+              displayMode={displayMode}
+            />
+            <ToggleSwitch
+              toggleName="target position"
               labelLeft="left"
               labelRight="top"
               isChecked={targetPosition === "top"}
               handleChange={toggleTargetPosition}
             />
-            
             <ToggleSwitch
               toggleName="show minimap"
               labelLeft="off"
@@ -92,29 +114,9 @@ export function OptionsPanel({
               target="edgeHighlight"
               defaultColor={customColors}
             />
-            <Pushbutton
-              buttonText="Expand All"
-              handleClick={expandAll}
-            />
-            <Pushbutton
-              buttonText="Collapse All"
-              handleClick={collapseAll}
-            />
-            <ToggleSwitch
-              toggleName="Active Only"
-              labelLeft="Off"
-              labelRight="On"
-              isChecked={displayMode === "activeOnly"}
-              handleChange={toggleDisplayMode}
-            />
-            {displayMode === "activeOnly" &&
-            <ToggleSwitch
-              toggleName="Ghost Mode"
-              labelLeft="off"
-              labelRight="on"
-              isChecked={ghostMode === "on"}
-              handleChange={toggleGhostMode}
-            />}
+            <Pushbutton buttonText="Expand All" handleClick={expandAll} />
+            <Pushbutton buttonText="Collapse All" handleClick={collapseAll} />
+            <Pushbutton buttonText="Regraph" handleClick={generateGraph} />
           </div>
         )}
       </Panel>

@@ -86,7 +86,9 @@
   width: 100%;
   display: flex;
   align-items: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #373636;
+  font-size: 14px;
+  font-style: italic;
   padding: 0 1rem;
   position: relative;
 }
@@ -111,9 +113,14 @@
   transform: translateX(-10px);
 }
 
-.metrics__container p, h6 {
+.metrics__container p,
+h6 {
   color: rgba(255, 255, 255, 0.7);
   font-size: 12px;
+}
+
+.metrics__container .unavailable {
+  color: rgb(105, 105, 105);
 }
 
 .copy-btn,
@@ -177,4 +184,11 @@
 .operation-error-msg.active {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
+}
+
+.reverse-toggle-switch-container {
+  position: absolute;
+  bottom: 5px;
+  left: 20px;
+  color: rgb(196, 196, 196);
 }
