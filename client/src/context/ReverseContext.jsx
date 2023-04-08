@@ -8,14 +8,16 @@ const ReverseContext = createContext({});
 
 export const ContextProvider = ({ children }) => {
   const [revQueryObj, setRevQueryObj] = useState(null);
+  const [revCurFields, setRevCurFields] = useState(null);
   const [revActiveTypesNFields, setRevActiveTypesNFields] = useState(null);
   const [revQueryType, setRevQueryType] = useState(null);
   const [revActiveRelationships, setRevActiveRelationships] = useState(null);
   const [revClickedField, setRevClickedField] = useState(null);
 
-  // console.log(`revQueryObj: `, revQueryObj);
-  // console.log("revActiveTypesNFields:", revActiveTypesNFields);
-  // console.log(`revActiveRelationships: `, revActiveRelationships);
+  console.log(`revQueryObj: `, revQueryObj);
+  console.log("revActiveTypesNFields:", revActiveTypesNFields);
+  console.log(`revActiveRelationships: `, revActiveRelationships);
+  console.log(`revCurFields: `, revCurFields);
 
   const revQueryObjUpdated = useRef(revQueryObj);
 
@@ -120,8 +122,17 @@ export const ContextProvider = ({ children }) => {
         [relationship]: [],
       };
 
+      //Create Object#4
+      //This obj will keep an exact record of all of the fields that live within our revQueryObj. It does not care if the fields have a relationship, it's only storing the values/names of the fields themselves in an array belonging to that particular field. It is VERY important that they keys be given not just the name of the field, but also the name of the type the field belongs to, eg continents/Query. This obj SHOULD be useful for helping us sort through identical field names conflicts.
+      const revCurFieldName = `${field}/${typeName}`;
+      const revCurFieldsInit = {
+        [revCurFieldName]: [],
+      };
+
       //initialize reverse mode first active state
       setRevQueryObj(revQueryRoot);
+      //ADD TO HERE
+      setRevCurFields(revCurFieldsInit);
       setRevActiveTypesNFields(actives);
       setRevActiveRelationships(revRelationships);
       setRevQueryType(typeName.toLowerCase());
@@ -145,9 +156,9 @@ export const ContextProvider = ({ children }) => {
     // STEP#2
     if (revActiveRelationships.size === 2) {
       //first thing: Get the correct starting operation
+
       //if user has clicked query again, the reference is going to be the overall array
       const revQueryRootName = [...revActiveRelationships.keys()][0];
-
       if (typeName === revQueryRootName) {
         //consider first if field name takes arg. if so, just add to field name
         //args is an array containing all possible args as vals
@@ -178,6 +189,7 @@ export const ContextProvider = ({ children }) => {
           //TODO: This fieldName + vars String will create a BAD UX/UI when collisions occur and the field name w/ vars (only for query and mutations field) appears for the user to select. Gonna have to filter out the paranthesis and the chars within it, and then make sure if the user selects THAT field, field w/ vars, to resolve the collision, that the parenthesis and its contexts are present in the response too, since that field is actually saved as a reference w/ those vars, for convenience
           field = `${fieldName}${innerStr}`;
         } else {
+          // no args, so field can just be set to the fieldName (won't have any args)
           field = fieldName;
         }
 
@@ -185,7 +197,9 @@ export const ContextProvider = ({ children }) => {
           operation: field,
           fields: [],
         };
+        //push newly created operation into the root revQueryObj array, which is stored in the revQueryObjUpdated ref
         revQueryObjUpdated.current.push(newOperation);
+
         //UPDATE STATE
         //update relationships
         setRevActiveRelationships((prevRevActiveRelations) => {
@@ -214,19 +228,23 @@ export const ContextProvider = ({ children }) => {
           };
         });
 
+        //update revCurFields
+        const revCurFieldName = `${field}/${typeName}`;
+        setRevCurFields((prevRevCurFields) => {
+          return {
+            ...prevRevCurFields,
+            [revCurFieldName]: [],
+          };
+        });
+
         //reassign query Obj
         setRevQueryObj([...revQueryObjUpdated.current]);
         //return to end operation
         return;
       }
-      // else {
-      //   //if user has clicked the type their first click was related to
-      // }
 
+      //If we reached here, user has clicked the type that is NOT in Query type
       // if user clicked a non active field, user should be prompted: CHECKED AND PASSED
-
-      // const [curOperation] = revActiveRelationships.get(typeName);
-      // console.log(`curOperation IS: `, curOperation);
 
       //check if field has relationship
       if (relationship) {
@@ -272,7 +290,41 @@ export const ContextProvider = ({ children }) => {
           };
         }
       });
-      //reassign query Obj
+
+      //update revCurFields
+      //get the name of the parent/root field
+
+      // console.log(`CURRENT typeName IS: `, typeName);
+      // console.log(
+      //   `CURRENT revActiveRelationships.get(typeName) IS: `,
+      //   revActiveRelationships.get(typeName)
+      // );
+      const { field, type } = revActiveRelationships.get(typeName)[0];
+      const revCurFieldName = `${field}/${type}`;
+      //need to grab the same array of the parent/root field in the revCurFields obj and push
+      const curFieldCopy = revCurFields[revCurFieldName].slice();
+      curFieldCopy.push(fieldName);
+
+      // console.log(`CURRENT curFieldCopy IS`, curFieldCopy);
+
+      setRevCurFields((prevRevCurFields) => {
+        if (relationship) {
+          const curFieldRelationshipName = `${fieldName}/${typeName}`;
+          return {
+            ...prevRevCurFields,
+            [revCurFieldName]: curFieldCopy,
+            [curFieldRelationshipName]: [],
+          };
+        } else {
+          //since no relationship exists in this case, no relationship key/val pair will be added
+          return {
+            ...prevRevCurFields,
+            [revCurFieldName]: curFieldCopy,
+          };
+        }
+      });
+
+      //reassign rev query Obj
       setRevQueryObj([...revQueryObjUpdated.current]);
       //return to end operation
       return;
@@ -305,15 +357,22 @@ export const ContextProvider = ({ children }) => {
         const userClarification = prompt(
           `User has to click which relationship to follow!\nClick field "${fieldName}" can go into the following query fields:\n${rebuiltStr}Please choose one!`
         );
+        const [userClarifiedField, userClarifiedType] =
+          userClarification.split(`/`);
+        console.log(`CURRENT userClarifiedField IS`, userClarification);
+        // console.log(`CURRENT userClarifiedType IS`, userClarifiedType);
 
-        // console.log(`userClarification`, userClarification);
+        // const rootRelationship = revActiveRelationships.get(typeName);
+        // console.log(`CURRENT rootRelationship IS: `, rootRelationship);
 
         //receiving value from user, find the correct reference
         const [reference, isRevRoot, isOperation] = findCorrectReference(
-          userClarification,
+          userClarifiedField,
           revQueryObjUpdated,
           revActiveRelationships,
-          revActiveTypesNFields
+          revCurFields,
+          userClarification,
+          fieldName
         );
         // console.log(`COLLISION reference IS: `, reference);
         // console.log(`COLLISION isRevRoot IS: `, isRevRoot);
@@ -333,7 +392,7 @@ export const ContextProvider = ({ children }) => {
           // console.log(`userClarification IS: `, userClarification);
           //handles scenario where in a collision, the field chosen has a relationship
           if (relationship && !isOperation) {
-            reference[userClarification].push({ [fieldName]: [] });
+            reference[userClarifiedField].push({ [fieldName]: [] });
             //handles scenario where in a collion, the chosen field is a scalar
           } else if (relationship && isOperation) {
             reference.fields.push({ [fieldName]: [] });
@@ -341,7 +400,7 @@ export const ContextProvider = ({ children }) => {
           } else if (!relationship && isOperation) {
             reference.fields.push(fieldName);
           } else {
-            reference[userClarification].push(fieldName);
+            reference[userClarifiedField].push(fieldName);
           }
         }
 
@@ -355,6 +414,7 @@ export const ContextProvider = ({ children }) => {
           const mapValue = updatedMap.get(relationship);
 
           // check if map at relationship already exists and has length
+          // console.log(`mapValue IS: `, mapValue);
           //if so, push into it
           //if not, just create new map key/val pair, with key being the relationship and val and array w/ object w/ corresponding fields
           if (mapValue && mapValue.length > 0) {
@@ -362,11 +422,14 @@ export const ContextProvider = ({ children }) => {
               field: fieldName,
               type: typeName,
             });
-          } else if (mapValue && mapValue.length === 0) {
+          } else if ((mapValue && mapValue.length === 0) || !mapValue) {
             updatedMap.set(relationship, [
               { field: fieldName, type: typeName },
             ]);
           }
+          // else if (!mapValue) {
+          //   updatedMap.set(relationship, []);
+          // }
           return updatedMap;
         });
 
@@ -402,6 +465,47 @@ export const ContextProvider = ({ children }) => {
           }
         });
 
+        //update rev current fields
+        // console.log(`STUDY THIS HERE: `, revActiveRelationships);
+        const { field: rootField, type: rootType } = revActiveRelationships
+          .get(typeName)
+          .find((type) => {
+            if (
+              userClarifiedField === type.field &&
+              userClarifiedType === type.type
+            ) {
+              return type;
+            } else {
+              // is there a case where this doesn't return anything??
+            }
+          });
+        // console.log(`CURRENT rootField & rootType IS`, rootField, rootType);
+        const revCurFieldName = `${rootField}/${rootType}`;
+        // console.log(`CURRENT revCurFieldName IS`, revCurFieldName);
+
+        //need to grab the same array of the parent/root field in the revCurFields obj and push
+        const curFieldCopy = revCurFields[revCurFieldName].slice();
+        curFieldCopy.push(fieldName);
+        // console.log(`CURRENT curFieldCopy IS`, curFieldCopy);
+
+        setRevCurFields((prevRevCurFields) => {
+          if (relationship) {
+            const curFieldRelationshipName = `${fieldName}/${typeName}`;
+            return {
+              ...prevRevCurFields,
+              [revCurFieldName]: curFieldCopy,
+              [curFieldRelationshipName]: [],
+            };
+          } else {
+            //since no relationship exists in this case, no relationship key/val pair will be added
+            return {
+              ...prevRevCurFields,
+              [revCurFieldName]: curFieldCopy,
+            };
+          }
+        });
+
+        //update rev query obj
         setRevQueryObj([...revQueryObjUpdated.current]);
         // console.log(`END OF THE ROAD HERE`);
         return;
@@ -422,17 +526,27 @@ export const ContextProvider = ({ children }) => {
       // console.log(`FIRST referenceStr IS: `, referenceStr);
 
       if (relationship) {
-        // console.log(`WHAT IS THE RELATIONSHIP?? `, relationship);
-        //if clicked field does not have a relationship, reference will be null
+        //get root relationship to send into recursive func to allow a comparison of the cur field ref w/ it's current shape in state. This will be especially helpful to resolving identical field names conflict when they occur
+        const { field: rootField, type: rootType } = revActiveRelationships.get(
+          typeName
+        )[0] || { field: fieldName, type: typeName };
+
+        const rootRefString = `${rootField}/${rootType}`;
+        console.log(`FIRST CURRENT rootRefString IS: `, rootRefString);
+
         //since recursive funtion findCorrectReference did not find a relationship association to it, since it's a scalar
+
         const [reference, isRevRoot, isOperation] = findCorrectReference(
           referenceStr,
           revQueryObjUpdated,
           revActiveRelationships,
-          revActiveTypesNFields
+          revCurFields,
+          rootRefString,
+          fieldName
         );
-        // console.log(`FIRST reference IS: `, reference);
-        // console.log(`FIRST isRevRoot IS: `, isRevRoot);
+        console.log(`FIRST reference IS: `, reference);
+        console.log(`FIRST isRevRoot IS: `, isRevRoot);
+        console.log(`FIRST isOperation IS: `, isOperation);
 
         // if newly clicked field has refenrece, repeat the above idea where you create a new obj w/ field name as key
         //and values is an empty arr
@@ -470,6 +584,7 @@ export const ContextProvider = ({ children }) => {
           field = fieldName;
         }
 
+        //update rev active relationships
         setRevActiveRelationships((prevRevActiveRelations) => {
           const updatedMap = new Map(
             JSON.parse(JSON.stringify(Array.from(prevRevActiveRelations)))
@@ -504,21 +619,57 @@ export const ContextProvider = ({ children }) => {
           reference[referenceStr] &&
             reference[referenceStr].push({ [fieldName]: [] });
         }
+
+        //update rev current fields
+        //first consider if isRevRoot scenario. Account also for variables
+        if (isRevRoot) {
+          const revCurFieldName = `${field}/${typeName}`;
+          setRevCurFields((prevRevCurFields) => {
+            return {
+              ...prevRevCurFields,
+              [revCurFieldName]: [],
+            };
+          });
+        } else {
+          const { field: rootField, type: rootType } =
+            revActiveRelationships.get(typeName)[0];
+          const revCurFieldName = `${rootField}/${rootType}`;
+          // console.log(`CURRENT rootField & rootType IS`, rootField, rootType);
+          // console.log(`CURRENT curFieldCopy IS`, revCurFieldName);
+
+          //need to grab the same array of the parent/root field in the revCurFields obj and push
+          const curFieldCopy = revCurFields[revCurFieldName].slice();
+          curFieldCopy.push(fieldName);
+          // console.log(`CURRENT curFieldCopy IS`, curFieldCopy);
+
+          setRevCurFields((prevRevCurFields) => {
+            const curFieldRelationshipName = `${fieldName}/${typeName}`;
+            return {
+              ...prevRevCurFields,
+              [revCurFieldName]: curFieldCopy,
+              [curFieldRelationshipName]: [],
+            };
+          });
+        }
       } else {
         //No relationship, so, SCALAR! This conditional runs when all the active relationships (in the Map) are less than 2 (all of the actives will be 1, except for query, which has an empty array, so an array of 0). This is the case, for example of the user is just clicking on a bunch of scalars and barely any relationship fields.
 
         //Get current picture current/clicked field's objType relationship reference.
-        //This will be an array
-        const clickedFieldTypeRelationship =
-          revActiveRelationships.get(typeName);
+        //This will be an array w/ an obj. Deconstruct the obj to get necessary values
+        const { field: rootField, type: rootType } =
+          revActiveRelationships.get(typeName)[0];
 
-        //if the num (length) of the relationships is more than 1, have to promp further user input
+        const rootRefString = `${rootField}/${rootType}`;
+
+        console.log(`SECOND CURRENT rootRefString IS: `, rootRefString);
 
         const [reference, isRevRoot, isOperation] = findCorrectReference(
-          clickedFieldTypeRelationship[0].field,
+          rootField,
           revQueryObjUpdated,
           revActiveRelationships,
-          revActiveTypesNFields
+          revCurFields,
+          rootRefString,
+          fieldName
         );
         // console.log(`SECOND reference IS: `, reference);
         // console.log(`SECOND isRevRoot IS: `, isRevRoot);
@@ -531,7 +682,7 @@ export const ContextProvider = ({ children }) => {
           reference.fields.push(fieldName);
         } else {
           //These references are found nested in the fields array, from the originally made revQueryRoot obj in Step#1
-          reference[clickedFieldTypeRelationship[0].field].push(fieldName);
+          reference[rootField].push(fieldName);
         }
       }
 
@@ -567,6 +718,33 @@ export const ContextProvider = ({ children }) => {
           };
         }
       });
+
+      //update rev current fields
+      //updating of isRevRoot has already been done. Skip it here. Since isRevRoot is not defined in this scope, get root name thru look up of its reference in the activesRelationship obj
+      const revQueryRootName = [...revActiveRelationships.keys()][0];
+
+      if (typeName !== revQueryRootName) {
+        const { field: rootField, type: rootType } =
+          revActiveRelationships.get(typeName)[0];
+        const revCurFieldName = `${rootField}/${rootType}`;
+        // console.log(`CURRENT rootField & rootType IS`, rootField, rootType);
+        // console.log(`CURRENT curFieldCopy IS`, revCurFieldName);
+
+        //need to grab the same array of the parent/root field in the revCurFields obj and push
+        const curFieldCopy = revCurFields[revCurFieldName].slice();
+        curFieldCopy.push(fieldName);
+        // console.log(`CURRENT curFieldCopy IS`, curFieldCopy);
+
+        setRevCurFields((prevRevCurFields) => {
+          // const curFieldRelationshipName = `${fieldName}/${typeName}`;
+          return {
+            ...prevRevCurFields,
+            [revCurFieldName]: curFieldCopy,
+            // [curFieldRelationshipName]: [],
+          };
+        });
+      }
+
       //update revQueryObj
       setRevQueryObj([...revQueryObjUpdated.current]);
     }

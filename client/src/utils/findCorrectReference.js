@@ -2,7 +2,9 @@ const findCorrectReference = (
   referenceStr,
   revQueryObjUpdated,
   revActiveRelationships,
-  revActiveTypesNFields
+  revCurFields,
+  rootRefString,
+  selectedField
 ) => {
   // console.log(`referenceStr IS: `, referenceStr);
   // console.log(`revQueryObj IS: `, revQueryObj);
@@ -16,7 +18,7 @@ const findCorrectReference = (
     fields = revQueryObjUpdated.current
   ) => {
     // console.log(`COUNT: `, ++count);
-    // console.log(`referenceStr: `, referenceStr);
+    console.log(`referenceStr: `, referenceStr);
     // console.log(`fields: `, fields);
     // console.log(`found: `, found);
 
@@ -51,19 +53,58 @@ const findCorrectReference = (
         ) {
           // **** // FAILED ATTEMPT AT SOLVING THE DUPLICATE FIELD NAME PROBLEM
           //Createa a current snapshot of the objType state through stringifying it's values as store in the actives types n fields obj and comparing it with the current reference's current fields. Will have to iterate through the cur types to get its fields, saving them into an array, and in case of an obj, just store the key in the array. Then JSON.stringify it and compare it to the stringified version of it in active types n fields
-          // console.log(`this is the FIELD`, field);
-          // const stringifiedField = JSON.stringify(field);
-          // console.log(`stringifiedField IS`, stringifiedField);
-          // console.log(`revActiveTypesNFields for cur: `, revActiveTypesNFields);
-          // **** // FAILED ATTEMPT AT SOLVING THE DUPLICATE FIELD NAME PROBLEM
+          // console.log(`CURRENT referenceStr IS: `, referenceStr);
+          console.log(`CURRENT this is the FIELD`, field);
 
-          if (field?.operation === referenceStr) {
-            isOperation = true;
+          //check if current field is an opperation level field. if so, change the necesssary references for the recreated copies. This change is only necessary for the copies. The field reference itself needs to be passed on to the correcTypeRef if there was a match.
+          ///DOOO IT HERE!!
+
+          let recreatedCurField;
+
+          if (!field.hasOwnProperty(`operation`)) {
+            //first recreate the current field root, this is the array where the currently selected field will be pushed into if it passes the checks
+            recreatedCurField = field[referenceStr].map((el) => {
+              if (!Array.isArray(el) && typeof el === `object`) {
+                //handle that cur field value is an object
+                const [key] = Object.keys(el);
+                return key;
+              } else {
+                return el;
+              }
+            });
+          } else {
+            recreatedCurField = field.fields.map((el) => {
+              if (!Array.isArray(el) && typeof el === `object`) {
+                //handle that cur field value is an object
+                const [key] = Object.keys(el);
+                return key;
+              } else {
+                return el;
+              }
+            });
           }
 
-          // console.log(`MATCHED!`);
-          correctTypeRef = field;
-          found = true;
+          //second, recreate the current snapshot of the exact field/type reference, as stored in state in the obj revCurFields
+          const recreatedRootSnapshot = revCurFields[rootRefString].slice();
+          console.log(`CURRENT recreatedCurField for cur: `, recreatedCurField);
+          console.log(
+            `CURRENT recreatedFieldSnapshot for cur: `,
+            recreatedRootSnapshot
+          );
+
+          //Now convert these copies into their own JSON.stringigy string, and check if they are equal.
+          const stringifiedCurField = JSON.stringify(recreatedCurField);
+          const stringifiedRootSnapshot = JSON.stringify(recreatedCurField);
+
+          //if both of the strings are equal, it is HIGHLY PROBABLY that the matched reference is for the intended field/type relationship. This check helps us overcome conflicts when fields w/ identical names are in use, since identical names does not mean identical values. Since the revCurFields keeps a record of all the fields, their relationship to its type, and its values, a comparison allows this check.
+          if (stringifiedCurField === stringifiedRootSnapshot) {
+            if (field?.operation === referenceStr) {
+              isOperation = true;
+            }
+            console.log(`MATCHED!`);
+            correctTypeRef = field;
+            found = true;
+          }
         } else {
           //recurse if field is an object, change fields arg to current field
           if (!Array.isArray(field) && typeof field === `object`) {
