@@ -35,6 +35,7 @@ const TypeNode = ({ data }) => {
           typeName={typeName}
           fieldName={field.fieldName}
           returnType={field.returnType}
+          args={field.args}
           updateEdge={updateEdge}
           relationship={field.relationship}
           fieldHighlightColor={customColors["fieldHighlight"]}

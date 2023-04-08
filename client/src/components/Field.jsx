@@ -14,6 +14,7 @@ const Field = ({
   typeName,
   fieldName,
   returnType,
+  args,
   updateEdge,
   relationship,
   active,
@@ -95,7 +96,7 @@ const Field = ({
   const reverseClickHandler = () => {
     if (!reverseMode) return;
     if (revActiveTypesNFields === null || revActiveTypesNFields[typeName]) {
-      setRevClickedField({ typeName, fieldName, relationship });
+      setRevClickedField({ typeName, fieldName, relationship, args });
     } else {
       console.log(`DOES NOT PASS`);
       // setRevClickedField({ typeName, fieldName, relationship });

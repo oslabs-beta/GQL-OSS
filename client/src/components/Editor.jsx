@@ -13,6 +13,7 @@ import Split from "react-split";
 import { ToggleSwitch } from "./ToggleSwitch";
 import { DEFAULT_EDITOR_OPTIONS } from "../utils/defaultEditorOptions";
 import { calculate_metrics } from "../utils/metrics";
+import { ToggleSwitch } from "./ToggleSwitch";
 
 import ReverseContext from "../context/ReverseContext";
 
@@ -94,6 +95,8 @@ export default function Editor({
   const [activeLowerEditor, setActiveLowerEditor] = useState("results");
   const [editorOptions, setEditorOptions] = useState(DEFAULT_EDITOR_OPTIONS);
 
+  const liveQueryModeRef = useRef(DEFAULT_EDITOR_OPTIONS.liveQueryMode);
+
   const [MonacoGQLAPI, setMonacoGQLAPI] = useState(null);
 
   const { formattedQuery, reverseMode, setReverseMode, resetReverseContext } =
@@ -113,6 +116,10 @@ export default function Editor({
   );
 
   /********************************************** useEFfect's *************************************************/
+  /* update liveQueryModeRef to prevent stale state in queryModel.onDidChangeContent */
+  useEffect(() => {
+    liveQueryModeRef.current = editorOptions.liveQueryMode;
+  }, [editorOptions.liveQueryMode]);
 
   /* Schema Changed: Init MonacoAPI if Needed, Update Config, and Reset Editors */
   useEffect(() => {
@@ -150,7 +157,6 @@ export default function Editor({
       lineNumbersMinChars,
       lineDecorationsWidth,
       lineNumbers,
-      isRealTimeFetching,
     } = editorOptions;
 
     queryEditor ??
@@ -220,19 +226,11 @@ export default function Editor({
     // Assign Change Listeners
     // Debounce to wait 300ms after user stops typing before executing
     // Ref used here for non-stale state
-    // if (isRealTimeFetching) {
     queryModel.onDidChangeContent(
       debounce(300, () => {
-        execOperation(true);
-        // localStorage.setItem("operations", queryModel.getValue());
+        if (liveQueryModeRef.current) execOperation(true);
       })
     );
-    // }
-    // variablesModel.onDidChangeContent(
-    //   debounce(300, () => {
-    //     // localStorage.setItem("variables", variablesModel.getValue());
-    //   })
-    // );
 
     verticalGutterRef.current = document.querySelector(".gutter-vertical");
     upperCopyButton.current = document.querySelector(".upper-copy-btn");
@@ -267,10 +265,10 @@ export default function Editor({
   /****************************************** Helper Functions ********************************************/
   // NOT CONNECTED OR TESTED
   // function for toggling the RealTimeFetching for querys
-  function toggleRealTimeFetching() {
+  function toggleLiveQueryMode() {
     setEditorOptions({
       ...editorOptions,
-      isRealTimeFetching: !editorOptions.isRealTimeFetching,
+      liveQueryMode: !editorOptions.liveQueryMode,
     });
   }
 
@@ -370,6 +368,9 @@ export default function Editor({
     resultsModel?.setValue(
       defaultResults + JSON.stringify(data.value, null, 2)
     );
+
+    // switch to the editor tab if not in live query mode
+    if (!auto) setActiveLowerEditor("results");
   };
 
   /* Keyboard Action For Executing Operation (cmd + enter) */
@@ -542,6 +543,15 @@ export default function Editor({
                   ms
                 </p>
               )}
+              <div className="RT-toggle__container">
+                <h6 className="RT-toggle__text">Live:</h6>
+                <ToggleSwitch
+                  labelLeft={"off"}
+                  labelRight={"on"}
+                  handleChange={toggleLiveQueryMode}
+                  isChecked={editorOptions.liveQueryMode}
+                />
+              </div>
             </article>
           </section>
         </Split>

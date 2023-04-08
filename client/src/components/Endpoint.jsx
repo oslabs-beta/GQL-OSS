@@ -6,6 +6,8 @@ import "../styles/Endpoint.css";
 import ReverseContext from "../context/ReverseContext";
 import { calculate_metrics } from "../utils/metrics";
 
+const DEFAULT_ENDPOINT = "https://countries.trevorblades.com/";
+
 export const Endpoint = ({
   endpoint,
   setEndpoint,
@@ -35,6 +37,12 @@ export const Endpoint = ({
     }
   };
 
+  const getEndpointButtonName = () => {
+    if (!endpoint) return "Set";
+    else if (endpoint === endpointText) return "Refresh";
+    else return "Change";
+  };
+
   return (
     <div className="endpoint__container">
       <label htmlFor="endpoint-input" className="endpoint__label"></label>
@@ -48,7 +56,7 @@ export const Endpoint = ({
         onChange={(e) => setEndpointText(e.target.value)}
       ></input>
       <button onClick={setEPAndFetchSchema} className="endpoint__button">
-        Set Endpoint
+        {`${getEndpointButtonName()} Endpoint`}
       </button>
     </div>
   );

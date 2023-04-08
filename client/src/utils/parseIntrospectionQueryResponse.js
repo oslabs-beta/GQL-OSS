@@ -24,14 +24,25 @@ const parseReceivedSchema = ({ __schema: schema }) => {
     };
     // check to make sure we're only grabbing the types that are object kind and aren't subscriptions and other utility types
     if (
-      type.kind === 'OBJECT' &&
-      !type.name.toLowerCase().includes('subscription') &&
-      !type.name.includes('__')
+      type.kind === "OBJECT" &&
+      !type.name.toLowerCase().includes("subscription") &&
+      !type.name.includes("__")
     ) {
       //access the fields key in each type. fields is an array and we need to iterate through it storing a property to each objtype for each field. Each field will be a diff row in its corresponding node on the visualized.
       type.fields.forEach((field) => {
         const fieldObj = {};
         fieldObj.fieldName = field.name;
+
+        if (field.args.length) {
+          const args = field.args.map((arg) => {
+            const value = arg.type.kind === `NON_NULL` ? true : false;
+            return {
+              name: arg.name,
+              nonNull: value,
+            };
+          });
+          fieldObj.args = args;
+        }
 
         // objType.fields.push(fieldObj);
 
@@ -60,7 +71,7 @@ const parseReceivedSchema = ({ __schema: schema }) => {
         let relationship;
         const returnTypeStack = [];
         while (curObj) {
-          if (curObj.kind !== 'OBJECT' && curObj.kind !== 'SCALAR') {
+          if (curObj.kind !== "OBJECT" && curObj.kind !== "SCALAR") {
             returnTypeStack.push(curObj.kind);
           } else {
             returnTypeStack.push(curObj.name);
@@ -70,9 +81,9 @@ const parseReceivedSchema = ({ __schema: schema }) => {
         }
 
         fieldObj.returnType = returnTypeStack.reduceRight((acc, cur) => {
-          if (cur === 'NON_NULL') {
-            return acc + '!';
-          } else if (cur === 'LIST') {
+          if (cur === "NON_NULL") {
+            return acc + "!";
+          } else if (cur === "LIST") {
             return `[${acc}]`;
           } else {
             return acc + cur;
