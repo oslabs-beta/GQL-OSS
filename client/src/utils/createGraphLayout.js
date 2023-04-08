@@ -9,7 +9,35 @@ const elk = new Elk({
     "elk.layered.noOverlap": true,
     // 'elk.padding': '[top=50, bottom=50, left=50, right=50]',
     "elk.edgeRouting": "SPLINES",
+    // "elk.layered.edgeRouting.splines.mode": "SLOPPY",
     "elk.layered.nodePlacement.strategy": "SIMPLE",
+    "elk.topdownLayout": true,
+    // SIMPLE
+    // INTERACTIVE (@AdvancedPropertyValue)
+    // LINEAR_SEGMENTS
+    // BRANDES_KOEPF
+    // NETWORK_SIMPLEX
+    "elk.layered.layering.strategy": "STRETCH_WIDTH",
+
+    // STRETCH_WIDTH (@ExperimentalPropertyValue)
+    // MIN_WIDTH (@ExperimentalPropertyValue)
+
+    // NETWORK_SIMPLEX
+    // LONGEST_PATH
+    // LONGEST_PATH_SOURCE
+    // COFFMAN_GRAHAM (@AdvancedPropertyValue)
+    // INTERACTIVE (@AdvancedPropertyValue)
+
+    // BF_MODEL_ORDER
+    // DF_MODEL_ORDER
+    // "elk.layered.highDegreeNodes.treatment": true,
+    // // "elk.layered.highDegreeNodes.treeHeight": 1,
+    // "elk.layered.highDegreeNodes.threshold": 18,
+    // "elk.layered.layering.strategy": "COFFMAN_GRAHAM",
+    // "elk.layered.layering.coffmanGraham.layerBound": 3,
+    // "elk.hierarchyHandling": "INCLUDE_CHILDREN",
+    // "elk.layered.crossingMinimization.hierarchicalSweepiness": 1,
+
     // "elk.layered.layering.coffmanGraham.layerBound": 5,
     // "elk.layered.wrapping.cutting.strategy": "MANUAL",
     // 'elk.edgeRouting.splines.mode': 'CONSERVATIVE',
