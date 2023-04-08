@@ -2,17 +2,16 @@ import React, { useEffect, useState, useRef } from "react";
 import { Endpoint } from "./components/Endpoint";
 import Editor from "./components/Editor";
 import Visualizer from "./components/Visualizer";
+import { HelpButton } from "./components/HelpButton";
 import Split from "react-split";
 import "./styles/App.css";
 import getActivesFromQuery from "./utils/getActivesFromQuery";
-
-const DEFAULT_ENDPOINT = "https://countries.trevorblades.com/";
 
 const App = () => {
   /********************************************** State & Refs *************************************************/
 
   // TODO: redux refactor (for only the necessary global pieces)
-  const [endpoint, setEndpoint] = useState(DEFAULT_ENDPOINT);
+  const [endpoint, setEndpoint] = useState(null);
 
   /* Setting default highlight/edge colors */
   const colors = {
@@ -87,6 +86,7 @@ const App = () => {
   return (
     <main>
       <nav className="toolbar">
+        <div className="logo__container"></div>
         {/* TODO: Make the fullscreen button a custom control input component that goes with the other buttons */}
         <button className="fullscreen-btn" onClick={fullscreenVisualizer}>
           Fullscreen
@@ -98,6 +98,8 @@ const App = () => {
           setVSchema={setVSchema}
           updateMetrics={updateMetrics}
         />
+        <h1 className="toolbar__header">GraphQL One Stop Shop</h1>
+        <HelpButton />
       </nav>
 
       <Split

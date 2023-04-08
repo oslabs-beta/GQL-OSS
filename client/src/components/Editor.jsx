@@ -336,6 +336,9 @@ export default function Editor({
     resultsModel?.setValue(
       defaultResults + JSON.stringify(data.value, null, 2)
     );
+
+    // switch to the editor tab if not in live query mode
+    if (!auto) setActiveLowerEditor("results");
   };
 
   /* Keyboard Action For Executing Operation (cmd + enter) */

@@ -5,6 +5,8 @@ import parseReceivedSchema from "../utils/parseIntrospectionQueryResponse";
 import "../styles/Endpoint.css";
 import { calculate_metrics } from "../utils/metrics";
 
+const DEFAULT_ENDPOINT = "https://countries.trevorblades.com/";
+
 export const Endpoint = ({
   endpoint,
   setEndpoint,
@@ -14,7 +16,7 @@ export const Endpoint = ({
 }) => {
   // state for controlled input
   const epInputRef = useRef();
-  const [endpointText, setEndpointText] = useState(endpoint);
+  const [endpointText, setEndpointText] = useState(DEFAULT_ENDPOINT);
 
   const setEPAndFetchSchema = async () => {
     setEndpoint(endpointText);
@@ -26,6 +28,12 @@ export const Endpoint = ({
     const newMetrics = calculate_metrics(endpointText);
     newMetrics.lastResponseType = "Introspection";
     updateMetrics(newMetrics);
+  };
+
+  const getEndpointButtonName = () => {
+    if (!endpoint) return "Set";
+    else if (endpoint === endpointText) return "Refresh";
+    else return "Change";
   };
 
   return (
@@ -41,7 +49,7 @@ export const Endpoint = ({
         onChange={(e) => setEndpointText(e.target.value)}
       ></input>
       <button onClick={setEPAndFetchSchema} className="endpoint__button">
-        Set Endpoint
+        {`${getEndpointButtonName()} Endpoint`}
       </button>
     </div>
   );
