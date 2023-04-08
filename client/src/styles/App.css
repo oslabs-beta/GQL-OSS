@@ -52,8 +52,8 @@ main {
   justify-content: center;
   align-items: center;
   width: 100vw;
-  /* height: 5.5vh; */
-  height: 3rem;
+  height: 5.5vh;
+  /* height: 3rem; */
   border-bottom: 2px double #413c45;
 }
 
