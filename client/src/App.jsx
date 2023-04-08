@@ -1,29 +1,25 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { Endpoint } from "./components/Endpoint";
 import Editor from "./components/Editor";
 import Visualizer from "./components/Visualizer";
+import { HelpButton } from "./components/HelpButton";
 import Split from "react-split";
 import "./styles/App.css";
 import getActivesFromQuery from "./utils/getActivesFromQuery";
+import ReverseContext from "./context/ReverseContext";
 
-const DEFAULT_ENDPOINT = "https://countries.trevorblades.com/";
+/* Setting default highlight/edge colors */
+const DEFAULT_COLORS = {
+  fieldHighlight: "#283145",
+  edgeDefault: "#6495ED",
+  edgeHighlight: "#FF00A2",
+};
 
 const App = () => {
   /********************************************** State & Refs *************************************************/
 
   // TODO: redux refactor (for only the necessary global pieces)
-  const [endpoint, setEndpoint] = useState(DEFAULT_ENDPOINT);
-
-  /* Setting default highlight/edge colors */
-  const colors = {
-    // nodeHighlight: "#91EECF",
-    fieldHighlight: "#283145",
-    // fieldHighlight: "#262B36",
-    // #262B36
-    edgeDefault: "#6495ED",
-    edgeHighlight: "#FF00A2",
-  };
-
+  const [endpoint, setEndpoint] = useState(null);
   const [schema, setSchema] = useState(null);
   const [vSchema, setVSchema] = useState(null);
   const [query, setQuery] = useState(null);
@@ -32,11 +28,13 @@ const App = () => {
   const [activeEdgeIDs, setActiveEdgeIDs] = useState(null);
   const [displayMode, setDisplayMode] = useState("all");
   const editorVizSplit = useRef(null);
-  const [customColors, setCustomColors] = useState(colors);
+  const [customColors, setCustomColors] = useState(DEFAULT_COLORS);
   const [ghostMode, setGhostMode] = useState("off");
-  const [ghostNodeIDs, setGhostNodeIDs] = useState(null);
-  const [ghostEdgeIDs, setGhostEdgeIDs] = useState(null);
+  const [ghostNodeIDs, setGhostNodeIDs] = useState(new Set());
+  const [ghostEdgeIDs, setGhostEdgeIDs] = useState(new Set());
   const [metrics, setMetrics] = useState(null);
+
+  const { reverseMode, setReverseMode } = useContext(ReverseContext);
 
   /********************************************** useEffect's *************************************************/
 
@@ -60,7 +58,31 @@ const App = () => {
     setActiveTypeIDs(null);
     setActiveFieldIDs(null);
     setActiveEdgeIDs(null);
+    setGhostNodeIDs(new Set());
+    setGhostEdgeIDs(new Set());
+    setDisplayMode("all");
+    setReverseMode(false);
   }, [vSchema]);
+
+  useEffect(() => {
+    if (reverseMode) {
+      setDisplayMode("activeOnly");
+      setGhostMode("on");
+      if (vSchema) setActiveTypeIDs(new Set([vSchema.queryName.name]));
+    } else {
+      setActiveTypeIDs(null);
+    }
+    setActiveFieldIDs(null);
+    setActiveEdgeIDs(null);
+    setGhostNodeIDs(new Set());
+    setGhostEdgeIDs(new Set());
+  }, [reverseMode]);
+
+  useEffect(() => {
+    if (displayMode === "all") setGhostMode("off");
+  }, [displayMode]);
+
+  /********************************************** Helper Functions *************************************************/
 
   /* Prevent Left Pane From Forcing Overflow */
   const handleHorizontalDrag = (sizes) => {
@@ -87,6 +109,7 @@ const App = () => {
   return (
     <main>
       <nav className="toolbar">
+        <div className="logo__container"></div>
         {/* TODO: Make the fullscreen button a custom control input component that goes with the other buttons */}
         <button className="fullscreen-btn" onClick={fullscreenVisualizer}>
           Fullscreen
@@ -98,6 +121,8 @@ const App = () => {
           setVSchema={setVSchema}
           updateMetrics={updateMetrics}
         />
+        <h1 className="toolbar__header">GraphQL One Stop Shop</h1>
+        <HelpButton />
       </nav>
 
       <Split
