@@ -348,7 +348,10 @@ export default function Editor({
       // eslint-disable-next-line no-bitwise
       KeyMod.CtrlCmd | KeyCode.Enter,
     ],
-    run: () => execOperation(false),
+    run: () => {
+      execOperation(false);
+      setActiveLowerEditor("results");
+    },
   };
 
   /* Configure Monaco API & Connect to GraphQL Validation */
@@ -454,7 +457,10 @@ export default function Editor({
               copy
             </button>
             <button
-              onClick={() => execOperation(false)}
+              onClick={() => {
+                execOperation(false);
+                setActiveLowerEditor("results");
+              }}
               className="submit-query-button"
             >
               Submit
