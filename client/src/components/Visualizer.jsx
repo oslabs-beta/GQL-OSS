@@ -148,7 +148,7 @@ const Visualizer = ({
     }
     setGhostNodeIDs(updatedGhostNodes);
     setGhostEdgeIDs(updatedGhostEdges);
-  }, [ghostMode, activeEdgeIDs, displayMode]);
+  }, [activeEdgeIDs]);
 
   /* Update Active Type Nodes */
   // Whenever the display mode or active type ID's change, update the nodes' properties to reflect the changes
