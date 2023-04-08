@@ -336,6 +336,8 @@ export default function Editor({
     resultsModel?.setValue(
       defaultResults + JSON.stringify(data.value, null, 2)
     );
+
+    if (!auto) setActiveLowerEditor("results");
   };
 
   /* Keyboard Action For Executing Operation (cmd + enter) */
@@ -348,10 +350,7 @@ export default function Editor({
       // eslint-disable-next-line no-bitwise
       KeyMod.CtrlCmd | KeyCode.Enter,
     ],
-    run: () => {
-      execOperation(false);
-      setActiveLowerEditor("results");
-    },
+    run: () => execOperation(false),
   };
 
   /* Configure Monaco API & Connect to GraphQL Validation */
@@ -394,26 +393,8 @@ export default function Editor({
       else return;
       // retrieve the contents of the uriFile
       const operations = editor.getModel(Uri.file(uriFile)).getValue().trim();
-
-      // remove comments from copied operations text
-      // complex regex: https://regex101.com/r/B8WkuX/1
-      // will filter comments:
-      //   /* This Will Be Removed */
-      //
-      //   /*
-      //    * This Will Also Be Removed
-      //   */
-      //
-      //    // so will almost all of these as long as they aren't preceeded by a semicolon
-      //
-      // removes: comments
-      // removes: # a pair of pound signs and everything between them #
-      const filteredOperations = operations
-        .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, "$1")
-        .replace(/#[^#]*#/, "");
-
       // copy to clipboard
-      await navigator.clipboard.writeText(filteredOperations);
+      await navigator.clipboard.writeText(operations);
       const copyButton = e.target;
       copyButton.innerText = "copied!";
       setTimeout(() => (copyButton.innerText = "copy"), 800);
@@ -457,10 +438,7 @@ export default function Editor({
               copy
             </button>
             <button
-              onClick={() => {
-                execOperation(false);
-                setActiveLowerEditor("results");
-              }}
+              onClick={() => execOperation(false)}
               className="submit-query-button"
             >
               Submit
