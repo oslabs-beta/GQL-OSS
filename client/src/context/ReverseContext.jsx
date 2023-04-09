@@ -58,6 +58,20 @@ export const ContextProvider = ({ children }) => {
 
       const { fieldName, typeName, relationship, args } = revClickedField;
 
+      //made sure that if click already exists for the same field in the Query/Mutation type, that it does NOT get added again. This check will not allow for duplicate fields in the Query/Mutation obj type in rev mode.
+      //top check checks that rev query building has already begun
+      if (revActiveRelationships) {
+        //this access the current relationship reference. If the value is undefined, that mean's the currently selected field has come from the Query/Mutation obj, which is the only revActiveRelationships val w/ an empty arr. Checking if it's false mean's we're dealing with a click from the Query/Mutation type.
+        if (!revActiveRelationships.get(typeName)[0]) {
+          //Check for publicates in revCurFields
+          const curFieldRefString = `${fieldName}/${typeName}`;
+          if (revCurFields[curFieldRefString]) {
+            console.log(`CANNOT ADD DUPLICATES FOR QUERY/MUTATION TYPE`);
+            return;
+          }
+        }
+      }
+
       // **************************************************************************************************************************************** //
       // ******************************************************** FIRST CLICK ******************************************************************* //
       // **************************************************************************************************************************************** //
