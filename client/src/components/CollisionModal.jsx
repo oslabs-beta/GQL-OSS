@@ -12,7 +12,6 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import "../styles/CollisionModal.css";
 import ReverseContext from "../context/ReverseContext";
 
 const CollisionModal = ({ open, setOpen, relationships, fieldInfo }) => {
