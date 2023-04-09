@@ -1,54 +1,32 @@
-export function calculate_metrics() {
-  console.log("running calculate_metrics");
+export function calculateMetrics(endpoint) {
   // Check for performance support
   if (performance === undefined) {
     console.log("Calculate Load Times: performance NOT supported");
     return;
   }
 
-  // Get all PerformanceEntries of type 'Resources'
-  const resources = performance.getEntriesByType("resource");
-  // const allEntries = performance.getEntries();
-  // console.log("resources:", resources);
-
-  // Check for existing resources
-  if (resources === undefined || resources.length <= 0) {
+  // Get all PerformanceEntries of name === endpoint
+  const endpointResources = performance.getEntriesByName(endpoint);
+  // handle possibility of no matching resources
+  if (endpointResources === undefined || endpointResources.length <= 0) {
     console.log(
-      "Calculate Load Times: there are NO new `resource` performance records"
+      "Calculate Load Times: there are NO new `endpoint` performance records"
     );
     return;
   }
-  /*
-  // Filter to show only PerformanceEntries to current endpoint
-  const endpointResources = resources.filter(
-    (resource) => resource.name === endpoint
-  );
-  */
-
-  // console.log("allEntries:", allEntries);
-  // console.log("endpointResources:", endpointResources);
-  console.log("lastResource:", resources[resources.length - 1]);
-
-  // // handle possibility of no resources
-  // if (endpointResources === undefined || endpointResources.length <= 0) {
-  //   console.log(
-  //     "Calculate Load Times: there are NO new `endpoint` performance records"
-  //   );
-  //   return;
-  // }
 
   // Access the most recent interaction with endpoint
-  const lastResource = resources[resources.length - 1];
-  console.log("lastResource:", lastResource);
+  const lastResource = endpointResources.pop();
 
-  // calculate the queryTime
+  // calculate the responseTime
   const responseTime =
     lastResource.fetchStart > 0
       ? lastResource.responseEnd - lastResource.fetchStart
       : "0";
 
+  // assign lastResponseType by checking initiatorType.  Introspection === xmlhttprequest.
   const lastResponseType =
     lastResource.initiatorType === "xmlhttprequest" ? "Introspection" : "Query";
 
-  return { responseTime, lastResponseType };
+  return { responseTime: responseTime.toFixed(0), lastResponseType };
 }

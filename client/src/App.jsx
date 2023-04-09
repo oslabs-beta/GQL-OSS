@@ -9,7 +9,7 @@ import getActivesFromQuery from "./utils/getActivesFromQuery";
 import ReverseContext from "./context/ReverseContext";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import { calculate_metrics } from "./utils/metrics";
+import { calculateMetrics } from "./utils/metrics";
 
 /* Default colors for edges and fields */
 const DEFAULT_COLORS = {
@@ -36,6 +36,8 @@ const App = () => {
   const [ghostNodeIDs, setGhostNodeIDs] = useState(new Set());
   const [ghostEdgeIDs, setGhostEdgeIDs] = useState(new Set());
   const [metrics, setMetrics] = useState(null);
+
+  const endpointRef = useRef(null);
 
   const {
     reverseMode,
@@ -93,6 +95,11 @@ const App = () => {
     if (displayMode === "all") setGhostMode("off");
   }, [displayMode]);
 
+  /* update endpointRef for updateMetrics to access current endpoint */
+  useEffect(() => {
+    endpointRef.current = endpoint;
+  }, [endpoint]);
+
   /********************************************** Helper Functions *************************************************/
 
   /* Prevent Left Pane From Forcing Overflow */
@@ -102,12 +109,11 @@ const App = () => {
     }
   };
 
-  // input: none
-  // output: nonde
-  // needs: endpoint and performance object
+  // accesses performance object
+  // calculates query time of the last PerformanceEntry that interacted w/endpoint
+  // assigns a name ('Introspection' || 'Query') to metrics.lastResponseType
   function updateMetrics() {
-    console.log("running updateMetrics");
-    const newMetricsProperties = calculate_metrics();
+    const newMetricsProperties = calculateMetrics(endpointRef.current);
     if (newMetricsProperties) {
       setMetrics({
         ...metrics,
@@ -115,19 +121,6 @@ const App = () => {
       });
     }
   }
-  // // input: none
-  // // output: nonde
-  // // needs: endpoint and performance object
-  // function updateMetrics(endpointForCalc = endpoint) {
-  //   console.log("running updateMetrics w/endpoint:", endpointForCalc);
-  //   const newMetricsProperties = calculate_metrics(endpointForCalc);
-  //   if (newMetricsProperties) {
-  //     setMetrics({
-  //       ...metrics,
-  //       ...newMetricsProperties,
-  //     });
-  //   }
-  // }
 
   /************************************************ Render ******************************************************/
   return (

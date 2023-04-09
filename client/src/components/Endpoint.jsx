@@ -4,7 +4,6 @@ import { request } from "graphql-request";
 import parseReceivedSchema from "../utils/parseIntrospectionQueryResponse";
 import "../styles/Endpoint.css";
 import ReverseContext from "../context/ReverseContext";
-import { calculate_metrics } from "../utils/metrics";
 
 const DEFAULT_ENDPOINT = "https://countries.trevorblades.com/";
 
