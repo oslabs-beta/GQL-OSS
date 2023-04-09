@@ -7,6 +7,7 @@ import Split from "react-split";
 import "./styles/App.css";
 import getActivesFromQuery from "./utils/getActivesFromQuery";
 import ReverseContext from "./context/ReverseContext";
+import { calculate_metrics } from "./utils/metrics";
 
 /* Setting default highlight/edge colors */
 const DEFAULT_COLORS = {
@@ -91,8 +92,12 @@ const App = () => {
     }
   };
 
-  function updateMetrics(newMetricsProperties) {
-    // if (!newMetricsProperties) setMetrics(null);
+  // input: none
+  // output: nonde
+  // needs: endpoint and performance object
+  function updateMetrics(endpointForCalc = endpoint) {
+    console.log("running updateMetrics w/endpoint:", endpointForCalc);
+    const newMetricsProperties = calculate_metrics(endpointForCalc);
     if (newMetricsProperties) {
       setMetrics({
         ...metrics,

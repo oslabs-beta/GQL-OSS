@@ -29,8 +29,9 @@ export const Endpoint = ({
       const parsedSchemaData = parseReceivedSchema(schema);
       setVSchema(parsedSchemaData.visualizerSchema);
       resetReverseContext();
-      const newMetrics = calculate_metrics(endpointText);
-      updateMetrics(newMetrics);
+      // const newMetrics = calculate_metrics(endpointText);
+      // updateMetrics(newMetrics);
+      updateMetrics(endpointText);
     } catch (e) {
       console.log("Error fetching introspection query: ", e);
     }

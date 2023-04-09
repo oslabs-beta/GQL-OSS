@@ -1,5 +1,5 @@
 export function calculate_metrics(endpoint) {
-  console.log("running calculate_metrics");
+  console.log("running calculate_metrics.  endpoint:", endpoint);
   // Check for performance support
   if (performance === undefined) {
     console.log("Calculate Load Times: performance NOT supported");
@@ -8,7 +8,7 @@ export function calculate_metrics(endpoint) {
 
   // Get all PerformanceEntries of type 'Resources'
   const resources = performance.getEntriesByType("resource");
-  const allEntries = performance.getEntries();
+  // const allEntries = performance.getEntries();
 
   // Check for existing resources
   if (resources === undefined || resources.length <= 0) {
@@ -18,13 +18,16 @@ export function calculate_metrics(endpoint) {
     return;
   }
 
+  // console.log("resources:", resources);
+
   // Filter to show only PerformanceEntries to current endpoint
   const endpointResources = resources.filter(
     (resource) => resource.name === endpoint
   );
 
   // console.log("allEntries:", allEntries);
-  console.log("endpointResources:", endpointResources);
+  // console.log("endpointResources:", endpointResources);
+  console.log("lastResource:", resources[resources.length - 1]);
 
   // handle possibility of no resources
   if (endpointResources === undefined || endpointResources.length <= 0) {
@@ -39,7 +42,7 @@ export function calculate_metrics(endpoint) {
   // Access the most recent interaction with endpoint
   const lastEndpointInteraction =
     endpointResources[endpointResources.length - 1];
-  console.log(lastEndpointInteraction);
+  console.log("lastEndpointInteraction:", lastEndpointInteraction);
   // calculate the queryTime
   const responseTime =
     lastEndpointInteraction.fetchStart > 0
@@ -53,17 +56,3 @@ export function calculate_metrics(endpoint) {
 
   return { responseTime, lastResponseType };
 }
-
-// make a request
-// those request performance metrics are stored in performance object
-// find the request to a specific endpoint
-// calc the time of that request using responseEnd - fetchStart
-
-/*
-Filter all requests
-- get all requests of type === 'resource'
-- filter by name === endpoint
-- if initiatorType === 'xmlhttprequest',  'Introspection'
-- if initiatorType === 'fetch', 'Query'
-- 'Mutation'?
-*/
