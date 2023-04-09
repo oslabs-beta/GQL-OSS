@@ -9,9 +9,9 @@ const findCorrectReference = (
   let correctTypeRef = null;
   let isRevRoot = false;
   let isOperation = false;
-  console.log(`CURRENT referenceStr IS: `, referenceStr);
-  console.log(`CURRENT rootRefString IS: `, rootRefString);
-  console.log(`CURRENT selectedField IS: `, selectedField);
+  // console.log(`CURRENT referenceStr IS: `, referenceStr);
+  // console.log(`CURRENT rootRefString IS: `, rootRefString);
+  // console.log(`CURRENT selectedField IS: `, selectedField);
 
   //Grabs the query/mutation name. Will be useful in checking if the passed in reference string belongs to the outter most/top layer array of the revQueryObjUpdated.current
   const revQueryRootName = [...revActiveRelationships.keys()][0];
@@ -20,8 +20,8 @@ const findCorrectReference = (
     found = false,
     fields = revQueryObjUpdated.current
   ) => {
-    console.log(`CURRENT found IS: `, found);
-    console.log(`CURRENT fields IS: `, fields);
+    // console.log(`CURRENT found IS: `, found);
+    // console.log(`CURRENT fields IS: `, fields);
 
     //check for special condition that a field belongs to the root fields
     //outter most/ top level array created in Step#1 in revQueryRoot obj
@@ -79,18 +79,18 @@ const findCorrectReference = (
           //Now convert these copies into their own JSON.stringigy string, and check if they are equal.
           const stringifiedCurField = JSON.stringify(recreatedCurField);
           const stringifiedRootSnapshot = JSON.stringify(recreatedRootSnapshot);
-          console.log(
-            `CURRENT stringifiedCurField, stringifiedRootSnapshot IS: `,
-            stringifiedCurField,
-            stringifiedRootSnapshot
-          );
+          // console.log(
+          //   `CURRENT stringifiedCurField, stringifiedRootSnapshot IS: `,
+          //   stringifiedCurField,
+          //   stringifiedRootSnapshot
+          // );
 
           //if both of the strings are equal, it is HIGHLY PROBABLY that the matched reference is for the intended field/type relationship. This check helps us overcome conflicts when fields w/ identical names are in use, since identical names does not mean identical values. Since the revCurFields keeps a record of all the fields, their relationship to its type, and its values, a comparison allows this check.
           if (stringifiedCurField === stringifiedRootSnapshot) {
             if (field?.operation === referenceStr) {
               isOperation = true;
             }
-            console.log(`DID WE MAKE IT IN HERE?`);
+            // console.log(`DID WE MAKE IT IN HERE?`);
             correctTypeRef = field;
             found = true;
           }

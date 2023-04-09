@@ -18,10 +18,10 @@ export const ContextProvider = ({ children }) => {
   const [isRevModeError, setIsRevModeError] = useState(false);
   const [reverseModeError, setReverseModeError] = useState(null);
 
-  console.log(`revQueryObj: `, revQueryObj);
-  console.log("revActiveTypesNFields:", revActiveTypesNFields);
-  console.log(`revActiveRelationships: `, revActiveRelationships);
-  console.log(`revCurFields: `, revCurFields);
+  // console.log(`revQueryObj: `, revQueryObj);
+  // console.log("revActiveTypesNFields:", revActiveTypesNFields);
+  // console.log(`revActiveRelationships: `, revActiveRelationships);
+  // console.log(`revCurFields: `, revCurFields);
 
   const revQueryObjUpdated = useRef(revQueryObj);
 
@@ -42,12 +42,10 @@ export const ContextProvider = ({ children }) => {
       if (revQueryType.includes(`mutation`)) {
         fedQuery = query.replace(`query`, `mutation`);
       }
-      console.log(`fedQuery IS: `, fedQuery);
+      // console.log(`fedQuery IS: `, fedQuery);
 
       const formatted = formatReverseQuery(fedQuery);
       setFormattedQuery(formatted);
-      // console.log(`OUTPUT IS BELOW: `);
-      // console.log(formatted);
     }
     revQueryObjUpdated.current = revQueryObj;
   }, [revQueryObj]);
@@ -58,7 +56,6 @@ export const ContextProvider = ({ children }) => {
       console.log("HERE");
 
       const { fieldName, typeName, relationship, args } = revClickedField;
-      console.log("revclickedField is: ", revClickedField);
 
       //made sure that if click already exists for the same field in the Query/Mutation type, that it does NOT get added again. This check will not allow for duplicate fields in the Query/Mutation obj type in rev mode.
       //top check checks that rev query building has already begun

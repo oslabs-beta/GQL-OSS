@@ -121,7 +121,6 @@ const Field = ({
         setRevClickedField(fieldInfo);
       }
     } else {
-      console.log(`DOES NOT PASS`);
       setReverseModeError("There are no possible active routes to this field");
       // setRevClickedField({ typeName, fieldName, relationship });
     }
