@@ -16,6 +16,7 @@ export const ContextProvider = ({ children }) => {
   const [formattedQuery, setFormattedQuery] = useState(null);
   const [reverseMode, setReverseMode] = useState(false);
   const [isRevModeError, setIsRevModeError] = useState(false);
+  const [reverseModeError, setReverseModeError] = useState(null);
 
   // console.log(`revQueryObj: `, revQueryObj);
   // console.log("revActiveTypesNFields:", revActiveTypesNFields);
@@ -788,6 +789,8 @@ export const ContextProvider = ({ children }) => {
         resetReverseContext,
         reverseMode,
         setReverseMode,
+        reverseModeError,
+        setReverseModeError,
       }}
     >
       {children}

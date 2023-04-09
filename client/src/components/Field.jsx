@@ -38,6 +38,7 @@ const Field = ({
     revActiveTypesNFields,
     revActiveRelationships,
     reverseMode,
+    setReverseModeError,
   } = useContext(ReverseContext);
 
   const fieldActive = {
@@ -122,7 +123,7 @@ const Field = ({
       }
     } else {
       console.log(`DOES NOT PASS`);
-      setClickOutOfBounds(true);
+      setReverseModeError("There are no possible active routes to this field");
       // setRevClickedField({ typeName, fieldName, relationship });
       // SHOW SNACKBAR HERE
     }

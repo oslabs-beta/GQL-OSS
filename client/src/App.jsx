@@ -7,6 +7,8 @@ import Split from "react-split";
 import "./styles/App.css";
 import getActivesFromQuery from "./utils/getActivesFromQuery";
 import ReverseContext from "./context/ReverseContext";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 /* Setting default highlight/edge colors */
 const DEFAULT_COLORS = {
@@ -34,7 +36,8 @@ const App = () => {
   const [ghostEdgeIDs, setGhostEdgeIDs] = useState(new Set());
   const [metrics, setMetrics] = useState(null);
 
-  const { reverseMode, setReverseMode } = useContext(ReverseContext);
+  const { reverseMode, setReverseMode, reverseModeError, setReverseModeError } =
+    useContext(ReverseContext);
 
   /********************************************** useEffect's *************************************************/
 
@@ -152,6 +155,18 @@ const App = () => {
           />
         </section>
       </Split>
+      {reverseModeError && (
+        <Snackbar
+          open={reverseModeError !== null}
+          autoHideDuration={1700}
+          onClose={() => setReverseModeError(null)}
+          anchorOrigin={{ vertical: "center", horizontal: "center" }}
+        >
+          <Alert severity="warning" sx={{ width: "100%" }}>
+            {reverseModeError}
+          </Alert>
+        </Snackbar>
+      )}
     </main>
   );
 };
