@@ -15,13 +15,12 @@ export const ContextProvider = ({ children }) => {
   const [revClickedField, setRevClickedField] = useState(null);
   const [formattedQuery, setFormattedQuery] = useState(null);
   const [reverseMode, setReverseMode] = useState(false);
-  const [isCollision, setIsCollision] = useState(false);
   const [isRevModeError, setIsRevModeError] = useState(false);
 
-  console.log(`revQueryObj: `, revQueryObj);
-  console.log("revActiveTypesNFields:", revActiveTypesNFields);
-  console.log(`revActiveRelationships: `, revActiveRelationships);
-  console.log(`revCurFields: `, revCurFields);
+  // console.log(`revQueryObj: `, revQueryObj);
+  // console.log("revActiveTypesNFields:", revActiveTypesNFields);
+  // console.log(`revActiveRelationships: `, revActiveRelationships);
+  // console.log(`revCurFields: `, revCurFields);
 
   const revQueryObjUpdated = useRef(revQueryObj);
 
@@ -46,8 +45,8 @@ export const ContextProvider = ({ children }) => {
 
       const formatted = formatReverseQuery(fedQuery);
       setFormattedQuery(formatted);
-      console.log(`OUTPUT IS BELOW: `);
-      console.log(formatted);
+      // console.log(`OUTPUT IS BELOW: `);
+      // console.log(formatted);
     }
     revQueryObjUpdated.current = revQueryObj;
   }, [revQueryObj]);
@@ -360,11 +359,23 @@ export const ContextProvider = ({ children }) => {
           revActiveRelationships.get(typeName).length;
 
         //checking for collision
-        if (numberOfActiveRelationships > 1) {
-          setIsCollision(true);
+        //clarified fields will have this property set to true, meaning selected field was a collision. These will enter the condition while others will go on
+
+        // console.log(
+        //   `CURRENT revClickedField.isClarifiedField IS: `,
+        //   revClickedField.isClarifiedField
+        // );
+        if (revClickedField.isClarifiedField) {
+          const { userClarification, relationship, typeName, fieldName } =
+            revClickedField;
+          // console.log(`CURRENT userClarification IS: `, userClarification);
+          // console.log(`CURRENT relationship IS: `, relationship);
+
           //******** COLLISION MANAGEMENT HERE*******//
           //BIG PICTURE: get info user to build user interface so they help us resolve a collision
 
+          /*
+          PREVIOUS TO THE EXISTING OF A UI THAT ALLOWS A USER TO CLARIFY WHICH FIELD THEY WANT THEIR SELECTED FIELD TO GO INTO THIS WAS THE CODE THAT WAS USED TO TEST COLLISION MANAGEMENT
           //rebuilt string created a string w/ the different options the user has, of which the user will click one, and that one will become the new string that the findCorrectReference utils func will use to look up as the reference for the selected field
           const rebuiltStr = revActiveRelationships
             .get(typeName)
@@ -378,6 +389,9 @@ export const ContextProvider = ({ children }) => {
           const userClarification = prompt(
             `User has to click which relationship to follow!\nClick field "${fieldName}" can go into the following query fields:\n${rebuiltStr}Please choose one!`
           );
+          */
+
+          //UNION IS HERE!!! UNION IS HERE!!! UNION IS HERE!!! UNION IS HERE!!! UNION IS HERE!!! UNION IS HERE!!! UNION IS HERE!!! UNION IS HERE!!!
           //creates vars for the field and its type that the user has selected. userClarifiedType will be used when updating the rev current fields below, when reverse mode state is being updated when handling a collision
           const [userClarifiedField, userClarifiedType] =
             userClarification.split(`/`);

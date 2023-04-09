@@ -9,6 +9,7 @@ import {
 import ReverseContext from "../context/ReverseContext";
 
 import "../styles/Field.css";
+import CollisionPrompt from "./CollisionPrompt";
 
 const Field = ({
   typeName,
@@ -26,6 +27,8 @@ const Field = ({
   const updateNodeInternals = useUpdateNodeInternals();
   const [handlePosition, setHandlePosition] = useState("right");
   const store = useStoreApi();
+
+  const [collisionComp, setCollisionComp] = useState(null);
 
   const {
     setRevClickedField,
@@ -103,12 +106,14 @@ const Field = ({
     if (revActiveTypesNFields === null || revActiveTypesNFields[typeName]) {
       const numberOfActiveRelationships =
         revActiveRelationships?.get(typeName).length;
-      console.log(`numberOfActiveRelationships`, numberOfActiveRelationships);
 
+      const fieldInfo = { typeName, fieldName, relationship, args };
       if (numberOfActiveRelationships > 1) {
         alert(`COLISSION HAS OCCURED!`);
+        //when you delete the CollisionPrompt component from this Field component, make sure to delete it also from the return jsx!
+        setCollisionComp(<CollisionPrompt fieldInfo={fieldInfo} />);
       } else {
-        setRevClickedField({ typeName, fieldName, relationship, args });
+        setRevClickedField(fieldInfo);
       }
     } else {
       console.log(`DOES NOT PASS`);
@@ -127,6 +132,7 @@ const Field = ({
       <div className="field-data">
         <p className="field-name">{fieldName}</p>
         <p className="return-type">{returnType}</p>
+        {collisionComp}
       </div>
       {relationship && (
         <Handle
