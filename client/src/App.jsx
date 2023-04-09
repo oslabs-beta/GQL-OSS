@@ -95,9 +95,9 @@ const App = () => {
   // input: none
   // output: nonde
   // needs: endpoint and performance object
-  function updateMetrics(endpointForCalc = endpoint) {
-    console.log("running updateMetrics w/endpoint:", endpointForCalc);
-    const newMetricsProperties = calculate_metrics(endpointForCalc);
+  function updateMetrics() {
+    console.log("running updateMetrics");
+    const newMetricsProperties = calculate_metrics();
     if (newMetricsProperties) {
       setMetrics({
         ...metrics,
@@ -105,6 +105,19 @@ const App = () => {
       });
     }
   }
+  // // input: none
+  // // output: nonde
+  // // needs: endpoint and performance object
+  // function updateMetrics(endpointForCalc = endpoint) {
+  //   console.log("running updateMetrics w/endpoint:", endpointForCalc);
+  //   const newMetricsProperties = calculate_metrics(endpointForCalc);
+  //   if (newMetricsProperties) {
+  //     setMetrics({
+  //       ...metrics,
+  //       ...newMetricsProperties,
+  //     });
+  //   }
+  // }
 
   /************************************************ Render ******************************************************/
 

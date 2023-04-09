@@ -31,7 +31,7 @@ export const Endpoint = ({
       resetReverseContext();
       // const newMetrics = calculate_metrics(endpointText);
       // updateMetrics(newMetrics);
-      updateMetrics(endpointText);
+      updateMetrics();
     } catch (e) {
       console.log("Error fetching introspection query: ", e);
     }
