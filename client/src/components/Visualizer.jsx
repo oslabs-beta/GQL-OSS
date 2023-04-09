@@ -193,6 +193,8 @@ const Visualizer = ({
     }, 0);
   }, [
     activeTypeIDs,
+    activeFieldIDs,
+    activeEdgeIDs,
     displayMode,
     collapseTrigger,
     ghostNodeIDs,

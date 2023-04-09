@@ -36,8 +36,13 @@ const App = () => {
   const [ghostEdgeIDs, setGhostEdgeIDs] = useState(new Set());
   const [metrics, setMetrics] = useState(null);
 
-  const { reverseMode, setReverseMode, reverseModeError, setReverseModeError } =
-    useContext(ReverseContext);
+  const {
+    reverseMode,
+    setReverseMode,
+    reverseModeError,
+    setReverseModeError,
+    resetReverseContext,
+  } = useContext(ReverseContext);
 
   /********************************************** useEffect's *************************************************/
 
@@ -65,6 +70,7 @@ const App = () => {
     setGhostEdgeIDs(new Set());
     setDisplayMode("all");
     setReverseMode(false);
+    resetReverseContext();
   }, [vSchema]);
 
   useEffect(() => {
@@ -79,6 +85,7 @@ const App = () => {
     setActiveEdgeIDs(null);
     setGhostNodeIDs(new Set());
     setGhostEdgeIDs(new Set());
+    resetReverseContext();
   }, [reverseMode]);
 
   useEffect(() => {
@@ -155,18 +162,19 @@ const App = () => {
           />
         </section>
       </Split>
-      {reverseModeError && (
-        <Snackbar
-          open={reverseModeError !== null}
-          autoHideDuration={1700}
-          onClose={() => setReverseModeError(null)}
-          anchorOrigin={{ vertical: "center", horizontal: "center" }}
-        >
-          <Alert severity="warning" sx={{ width: "100%" }}>
-            {reverseModeError}
-          </Alert>
-        </Snackbar>
-      )}
+
+      <Snackbar
+        open={reverseModeError !== null}
+        autoHideDuration={1700}
+        onClose={() => {
+          setReverseModeError(null);
+        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert severity="warning" sx={{ width: "100%" }}>
+          {reverseModeError}
+        </Alert>
+      </Snackbar>
     </main>
   );
 };
