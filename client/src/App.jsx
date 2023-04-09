@@ -9,7 +9,7 @@ import getActivesFromQuery from "./utils/getActivesFromQuery";
 import ReverseContext from "./context/ReverseContext";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import { calculateMetrics } from "./utils/metrics";
+import { calculateMetrics } from "./utils/calculateMetrics";
 
 /* Default colors for edges and fields */
 const DEFAULT_COLORS = {
