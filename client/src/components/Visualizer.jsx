@@ -11,6 +11,7 @@ import ReactFlow, {
   useReactFlow,
   useUpdateNodeInternals,
   MarkerType,
+  ControlButton,
 } from "reactflow";
 import { OptionsPanel } from "./OptionsPanel";
 import TypeNode from "./TypeNode";
@@ -18,6 +19,7 @@ import createGraphLayout from "../utils/createGraphLayout";
 import "reactflow/dist/style.css";
 import "../styles/Visualizer.css";
 import { defaultVisualizerOptions } from "../utils/defaultVisualizerOptions";
+import { FullscreenArrow } from "./FullscreenArrow";
 
 /* Custom Node */
 // Declared outside of component to prevent re-declaration upon every render
@@ -412,6 +414,13 @@ const Visualizer = ({
     );
   }
 
+  /******************************************* Helper Functions *************************************************/
+
+  const fullscreenVisualizer = () => {
+    const el = document.querySelector(".visualizer-container");
+    el.requestFullscreen();
+  };
+
   /************************************************ Render ******************************************************/
 
   return (
@@ -449,7 +458,13 @@ const Visualizer = ({
           generateGraph={generateGraph}
         />
         <Background />
-        {showControls && <Controls />}
+        {showControls && (
+          <Controls>
+            <ControlButton onClick={fullscreenVisualizer}>
+              <FullscreenArrow />
+            </ControlButton>
+          </Controls>
+        )}
         {showMinimap && <MiniMap nodeColor={nodeColor} pannable={true} />}
       </ReactFlow>
     </div>
