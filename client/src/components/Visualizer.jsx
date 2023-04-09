@@ -235,7 +235,7 @@ const Visualizer = ({
               : customColors["edgeDefault"],
             strokeWidth: isActive ? "2" : "1.1",
           },
-          zIndex: isActive ? 1 : "auto",
+          zIndex: isActive ? "auto" : -1,
           hidden: isHidden,
           // hidden: displayMode === "activeOnly" && !isActive,
           active: isActive,

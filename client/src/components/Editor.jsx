@@ -261,7 +261,7 @@ export default function Editor({
 
   useEffect(() => {
     if (reverseMode) resetReverseContext();
-    queryEditor?.updateOptions({ readOnly: reverseMode });
+    // queryEditor?.updateOptions({ readOnly: reverseMode });
     editor
       .getModel(Uri.file("operation.graphql"))
       ?.setValue(reverseMode ? defaultReverseOperations : defaultOperations);

@@ -68,3 +68,12 @@
   height: 100%;
   width: 100%;
 }
+.react-flow__node-typeNode {
+  z-index: 2;
+}
+.type-node__container {
+  z-index: 2;
+}
+.type-node {
+  z-index: 2;
+}
