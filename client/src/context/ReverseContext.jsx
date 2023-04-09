@@ -17,10 +17,10 @@ export const ContextProvider = ({ children }) => {
   const [reverseMode, setReverseMode] = useState(false);
   const [isRevModeError, setIsRevModeError] = useState(false);
 
-  // console.log(`revQueryObj: `, revQueryObj);
-  // console.log("revActiveTypesNFields:", revActiveTypesNFields);
-  // console.log(`revActiveRelationships: `, revActiveRelationships);
-  // console.log(`revCurFields: `, revCurFields);
+  console.log(`revQueryObj: `, revQueryObj);
+  console.log("revActiveTypesNFields:", revActiveTypesNFields);
+  console.log(`revActiveRelationships: `, revActiveRelationships);
+  console.log(`revCurFields: `, revCurFields);
 
   const revQueryObjUpdated = useRef(revQueryObj);
 
@@ -41,7 +41,7 @@ export const ContextProvider = ({ children }) => {
       if (revQueryType.includes(`mutation`)) {
         fedQuery = query.replace(`query`, `mutation`);
       }
-      // console.log(`fedQuery IS: `, fedQuery);
+      console.log(`fedQuery IS: `, fedQuery);
 
       const formatted = formatReverseQuery(fedQuery);
       setFormattedQuery(formatted);
@@ -438,28 +438,31 @@ export const ContextProvider = ({ children }) => {
           //***** UPDATE REVERSE MODE STATE ******/ //
           // *************************************** //
 
-          setRevActiveRelationships((prevRevActiveRelations) => {
-            const updatedMap = new Map(
-              JSON.parse(JSON.stringify(Array.from(prevRevActiveRelations)))
-            );
-            const mapValue = updatedMap.get(relationship);
+          //this state only needs to be updated when a selected field has a relationship
+          if (relationship) {
+            setRevActiveRelationships((prevRevActiveRelations) => {
+              const updatedMap = new Map(
+                JSON.parse(JSON.stringify(Array.from(prevRevActiveRelations)))
+              );
+              const mapValue = updatedMap.get(relationship);
 
-            // check if map at relationship already exists and has length
+              // check if map at relationship already exists and has length
 
-            //if so, push into arr for that type's active relationships. This case will be useful in signalling that a collision will occur if a field is clicked in the type that now has more than 1 relationship. Note that if currently mapValue length is 1, and it's currently being updated meaning that after it is update it will be two meaning a collion is set to occur.
-            if (mapValue && mapValue.length > 0) {
-              mapValue.push({
-                field: fieldName,
-                type: typeName,
-              });
-              //if not, just create new map key/val pair, with key being the relationship and val and array w/ object w/ corresponding fields
-            } else if ((mapValue && mapValue.length === 0) || !mapValue) {
-              updatedMap.set(relationship, [
-                { field: fieldName, type: typeName },
-              ]);
-            }
-            return updatedMap;
-          });
+              //if so, push into arr for that type's active relationships. This case will be useful in signalling that a collision will occur if a field is clicked in the type that now has more than 1 relationship. Note that if currently mapValue length is 1, and it's currently being updated meaning that after it is update it will be two meaning a collion is set to occur.
+              if (mapValue && mapValue.length > 0) {
+                mapValue.push({
+                  field: fieldName,
+                  type: typeName,
+                });
+                //if not, just create new map key/val pair, with key being the relationship and val and array w/ object w/ corresponding fields
+              } else if ((mapValue && mapValue.length === 0) || !mapValue) {
+                updatedMap.set(relationship, [
+                  { field: fieldName, type: typeName },
+                ]);
+              }
+              return updatedMap;
+            });
+          }
 
           //update rev active types n fields
           const curType = revActiveTypesNFields[typeName].slice();

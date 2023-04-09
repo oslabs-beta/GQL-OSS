@@ -37,6 +37,7 @@ const formatReverseQuery = (reverseQueryStr) => {
       //if a closing tab actually has another field proceeding it
       //val of next proceeding char
       const predictNext = reverseQueryStr[i + 2];
+      console.log(`predictNext`, predictNext);
       if (
         reverseQueryStr[i + 2] &&
         reverseQueryStr[i + 2] !== `}` &&
@@ -57,7 +58,19 @@ const formatReverseQuery = (reverseQueryStr) => {
         reformatedQuery += char;
       }
     } else {
-      reformatedQuery += char;
+      const prev = reverseQueryStr[i - 2];
+      const last3 =
+        reverseQueryStr[i - 3] +
+        reverseQueryStr[i - 2] +
+        reverseQueryStr[i - 1];
+
+      if (prev === `}`) {
+        reformatedQuery += `\t${char}`;
+      } else if (last3 === `   `) {
+        reformatedQuery += `\n\t${char}`;
+      } else {
+        reformatedQuery += char;
+      }
     }
   }
 
