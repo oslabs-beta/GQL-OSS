@@ -12,13 +12,6 @@ main {
   width: 100%;
 }
 
-/* .split {
-  display: flex;
-  flex-direction: row;
-  height: calc(100vh - 50px);
-  width: 100vw;
-} */
-
 .gutter {
   background-color: #413c45;
   background-repeat: no-repeat;
@@ -107,13 +100,4 @@ main {
   height: 2rem;
   width: 3rem;
   transform: translateY(-2px);
-}
-
-/* .editor-section{
-  display: flex;
-  width: 100%;
-} */
-
-.MuiPaper-root {
-  background: black;
 }

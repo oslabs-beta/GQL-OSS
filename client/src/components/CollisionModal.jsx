@@ -16,31 +16,34 @@ import "../styles/CollisionModal.css";
 import ReverseContext from "../context/ReverseContext";
 
 const CollisionModal = ({ open, setOpen, relationships, fieldInfo }) => {
-  // console.log("source types: ", relationships);
+  /********************************************************* State *********************************************************/
+
   const { setRevClickedField } = useContext(ReverseContext);
-  console.log("here");
   const [source, setSource] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  /********************************************************* UI Mapping *********************************************************/
+
+  /* Map each reverse relationship of a clicked field with collisions to menu items (dropdown choices) */
   const menuItems = relationships.map((relationship) => {
     return (
       <MenuItem
-        key={`${relationship.field}/${relationship.type}`}
+        key={`${relationship.field}/${relationship.type}`} // The format setup in Reverse Context
         value={`${relationship.field}/${relationship.type}`}
       >
         {`${relationship.type}/${relationship.field}`}
       </MenuItem>
     );
   });
+
+  /********************************************************* Helper Fn's *********************************************************/
   const handleClose = (event, reason) => {
     if ((reason && reason === "backdropClick") || source === null) {
       setSnackbarOpen(true);
       return;
     }
-    console.log("source type: ", source);
-    // fieldInfo.typeName = sourceType;
-    console.log("field info: ", fieldInfo);
-    console.log("revclickedfield: ", setRevClickedField);
     setRevClickedField({
+      // Triggers collision management in Reverse Context
       userClarification: source,
       relationship: fieldInfo.relationship,
       isClarifiedField: true,
@@ -49,12 +52,16 @@ const CollisionModal = ({ open, setOpen, relationships, fieldInfo }) => {
     });
     setOpen(false);
   };
+
   const handleSnackbarClose = (event, reason) => {
     setSnackbarOpen(false);
   };
+
   const handleSourceChange = (event) => {
     setSource(event.target.value);
   };
+
+  /********************************************************* Render *********************************************************/
 
   return (
     <div className="collision-modal-container">
@@ -97,7 +104,7 @@ const CollisionModal = ({ open, setOpen, relationships, fieldInfo }) => {
         </DialogActions>
         <Snackbar
           open={snackbarOpen}
-          autoHideDuration={2000}
+          autoHideDuration={1700}
           onClose={handleSnackbarClose}
           anchorOrigin={{ vertical: "center", horizontal: "center" }}
         >

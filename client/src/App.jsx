@@ -10,7 +10,7 @@ import ReverseContext from "./context/ReverseContext";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
-/* Setting default highlight/edge colors */
+/* Default colors for edges and fields */
 const DEFAULT_COLORS = {
   fieldHighlight: "#283145",
   edgeDefault: "#6495ED",

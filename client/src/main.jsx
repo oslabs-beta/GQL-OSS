@@ -7,6 +7,7 @@ import "./styles/main.css";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
+/* MUI dark palette */
 const darkTheme = createTheme({
   palette: {
     mode: "dark",

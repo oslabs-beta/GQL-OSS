@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
-import { Handle, useUpdateNodeInternals } from "reactflow";
+import { Handle } from "reactflow";
 import Field from "./Field";
 import "../styles/TypeNode.css";
 
@@ -13,17 +13,18 @@ const TypeNode = ({ data }) => {
     displayMode,
     visualizerOptions,
     customColors,
-    isGhost,
     collapseTrigger,
     expandTrigger,
   } = data;
-  const [fieldElements, setFieldElements] = useState();
 
+  /********************************************************** State *******************************************************/
+
+  const [fieldElements, setFieldElements] = useState();
+  const [altHandles, setAltHandles] = useState();
+  const [collapsed, setCollapsed] = useState(false);
   const { targetPosition } = visualizerOptions;
 
-  // const containerStyleActive = {
-  //   border: `2px solid ${customColors["nodeHighlight"]}`,
-  // };
+  /********************************************************** useEffect's *******************************************************/
 
   // Any time the active field ID's change, remap the fields
   useEffect(() => {
@@ -44,14 +45,12 @@ const TypeNode = ({ data }) => {
             activeFieldIDs?.has(`${typeName}/${field.fieldName}`) ? true : false
           }
           displayMode={displayMode}
-          
         />
       ))
     );
   }, [activeFieldIDs, customColors]);
 
   // creating "altHandles" -- a collection of source handles with the EXACT same ID as field source handles, rendered whenever the field collapses (edges automatically snap to them)
-  const [altHandles, setAltHandles] = useState();
   useEffect(() => {
     setAltHandles(
       fields.map((field) => (
@@ -66,17 +65,23 @@ const TypeNode = ({ data }) => {
     );
   }, []);
 
-  const [collapsed, setCollapsed] = useState(false);
-  
-  const forceCollapse = () => {
-    if(!collapsed) setCollapsed(true)
-  }
-  const forceUncollapse = () => {
-    if(collapsed) setCollapsed(false)
-  }
+  useEffect(() => {
+    if (collapseTrigger > 0) forceCollapse();
+  }, [collapseTrigger]);
+  useEffect(() => {
+    if (expandTrigger > 0) forceUncollapse();
+  }, [expandTrigger]);
 
-  useEffect(() => {if(collapseTrigger  > 0) forceCollapse()}, [collapseTrigger])
-  useEffect(() => {if(expandTrigger > 0) forceUncollapse()}, [expandTrigger])
+  /********************************************************** Helper Fn's *******************************************************/
+
+  const forceCollapse = () => {
+    if (!collapsed) setCollapsed(true);
+  };
+  const forceUncollapse = () => {
+    if (collapsed) setCollapsed(false);
+  };
+
+  /********************************************************** Render *******************************************************/
 
   return (
     <div className={`type-node ${active ? "gradient-border2" : ""}`}>
@@ -86,7 +91,6 @@ const TypeNode = ({ data }) => {
           position={targetPosition === "left" ? "left" : "top"}
           id={typeName}
           isConnectable={false}
-          
           className={
             targetPosition === "left"
               ? "type-node__handle-target-left"

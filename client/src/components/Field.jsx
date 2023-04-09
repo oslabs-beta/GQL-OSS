@@ -9,8 +9,6 @@ import {
 import ReverseContext from "../context/ReverseContext";
 import "../styles/Field.css";
 import CollisionModal from "./CollisionModal";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
 
 const Field = ({
   typeName,
@@ -20,19 +18,16 @@ const Field = ({
   updateEdge,
   relationship,
   active,
-  displayMode,
   fieldHighlightColor,
   edgeDefaultColor,
 }) => {
-  console.log("?");
+  /********************************************************** State *******************************************************/
   const nodes = useNodes();
   const updateNodeInternals = useUpdateNodeInternals();
   const [handlePosition, setHandlePosition] = useState("right");
   const store = useStoreApi();
   const [collisionModalOpen, setCollisionModalOpen] = useState(false);
   const [collisionRelationships, setCollisionRelationships] = useState([]);
-  const [clickOutOfBounds, setClickOutOfBounds] = useState(false);
-
   const {
     setRevClickedField,
     revActiveTypesNFields,
@@ -44,6 +39,8 @@ const Field = ({
   const fieldActive = {
     backgroundColor: fieldHighlightColor + "ca",
   };
+
+  /********************************************************** useEffect's *******************************************************/
 
   useEffect(() => {
     // In vSchema:
@@ -80,6 +77,8 @@ const Field = ({
       });
     }
   }, []);
+
+  /********************************************************** Helper Fn's *******************************************************/
 
   /* Dynamically shift around the handles */
   // I originally tried to store curr and target nodes in state
@@ -125,9 +124,10 @@ const Field = ({
       console.log(`DOES NOT PASS`);
       setReverseModeError("There are no possible active routes to this field");
       // setRevClickedField({ typeName, fieldName, relationship });
-      // SHOW SNACKBAR HERE
     }
   };
+
+  /********************************************************** Render *******************************************************/
 
   return (
     <div>
