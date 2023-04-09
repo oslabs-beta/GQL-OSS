@@ -249,8 +249,8 @@ export default function Editor({
 
   useEffect(() => {
     if (!formattedQuery) return;
-    console.log("formatted query: ", formattedQuery);
-    console.log("revqueryobj: ", revQueryObj);
+    // console.log("formatted query: ", formattedQuery);
+    // console.log("revqueryobj: ", revQueryObj);
     editor
       .getModel(Uri.file("operation.graphql"))
       ?.setValue(
