@@ -34,7 +34,7 @@ const CollisionPrompt = ({ fieldInfo }) => {
   }, []);
 
   useEffect(() => {
-    console.log(`collisionClarifiedObj IS: `, collisionClarifiedObj);
+    // console.log(`collisionClarifiedObj IS: `, collisionClarifiedObj);
     setRevClickedField(collisionClarifiedObj);
   }, [collisionClarifiedObj]);
 

@@ -52,12 +52,24 @@ const formatReverseQuery = (reverseQueryStr) => {
       if (reverseQueryStr[i - 1] === `{` || reverseQueryStr[i - 1] === `,`) {
         reformatedQuery += ``;
       } else {
-        //TO DO: To perfect formatting query on multiple Query type fields chosen, revise
-        //code in this else statement
         reformatedQuery += char;
       }
     } else {
-      reformatedQuery += char;
+      //this var is helpful in creating a tab after a closed curly "}", where technically the tab num has decreased, BUT there's still another field to be put in after the "}". This is the case when multiple Query/Mutation fields are selected
+      const prev = reverseQueryStr[i - 2];
+      //this var is helpful in determining new lines for where only fields from the Query/Mutation have been chosen. Instead of lining them up left to right of each other, there are always 3 spaces separating these fields in this case
+      const last3 =
+        reverseQueryStr[i - 3] +
+        reverseQueryStr[i - 2] +
+        reverseQueryStr[i - 1];
+
+      if (prev === `}`) {
+        reformatedQuery += `\t${char}`;
+      } else if (last3 === `   `) {
+        reformatedQuery += `\n\t${char}`;
+      } else {
+        reformatedQuery += char;
+      }
     }
   }
 

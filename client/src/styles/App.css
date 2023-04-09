@@ -12,13 +12,6 @@ main {
   width: 100%;
 }
 
-/* .split {
-  display: flex;
-  flex-direction: row;
-  height: calc(100vh - 50px);
-  width: 100vw;
-} */
-
 .gutter {
   background-color: #413c45;
   background-repeat: no-repeat;
@@ -102,14 +95,9 @@ main {
 .logo__container {
   position: absolute;
   left: 1rem;
-  background-image: url('../images/logo.png');
-  background-size:cover;
+  background-image: url("../images/logo.png");
+  background-size: cover;
   height: 2rem;
   width: 3rem;
   transform: translateY(-2px);
 }
-
-/* .editor-section{
-  display: flex;
-  width: 100%;
-} */

@@ -16,6 +16,7 @@ export const ContextProvider = ({ children }) => {
   const [formattedQuery, setFormattedQuery] = useState(null);
   const [reverseMode, setReverseMode] = useState(false);
   const [isRevModeError, setIsRevModeError] = useState(false);
+  const [reverseModeError, setReverseModeError] = useState(null);
 
   // console.log(`revQueryObj: `, revQueryObj);
   // console.log("revActiveTypesNFields:", revActiveTypesNFields);
@@ -45,8 +46,6 @@ export const ContextProvider = ({ children }) => {
 
       const formatted = formatReverseQuery(fedQuery);
       setFormattedQuery(formatted);
-      // console.log(`OUTPUT IS BELOW: `);
-      // console.log(formatted);
     }
     revQueryObjUpdated.current = revQueryObj;
   }, [revQueryObj]);
@@ -57,6 +56,20 @@ export const ContextProvider = ({ children }) => {
       console.log("HERE");
 
       const { fieldName, typeName, relationship, args } = revClickedField;
+
+      //made sure that if click already exists for the same field in the Query/Mutation type, that it does NOT get added again. This check will not allow for duplicate fields in the Query/Mutation obj type in rev mode.
+      //top check checks that rev query building has already begun
+      if (revActiveRelationships) {
+        //this access the current relationship reference. If the value is undefined, that mean's the currently selected field has come from the Query/Mutation obj, which is the only revActiveRelationships val w/ an empty arr. Checking if it's false mean's we're dealing with a click from the Query/Mutation type.
+        if (!revActiveRelationships.get(typeName)[0]) {
+          //Check for publicates in revCurFields
+          const curFieldRefString = `${fieldName}/${typeName}`;
+          if (revCurFields[curFieldRefString]) {
+            console.log(`CANNOT ADD DUPLICATES FOR QUERY/MUTATION TYPE`);
+            return;
+          }
+        }
+      }
 
       // **************************************************************************************************************************************** //
       // ******************************************************** FIRST CLICK ******************************************************************* //
@@ -438,28 +451,31 @@ export const ContextProvider = ({ children }) => {
           //***** UPDATE REVERSE MODE STATE ******/ //
           // *************************************** //
 
-          setRevActiveRelationships((prevRevActiveRelations) => {
-            const updatedMap = new Map(
-              JSON.parse(JSON.stringify(Array.from(prevRevActiveRelations)))
-            );
-            const mapValue = updatedMap.get(relationship);
+          //this state only needs to be updated when a selected field has a relationship
+          if (relationship) {
+            setRevActiveRelationships((prevRevActiveRelations) => {
+              const updatedMap = new Map(
+                JSON.parse(JSON.stringify(Array.from(prevRevActiveRelations)))
+              );
+              const mapValue = updatedMap.get(relationship);
 
-            // check if map at relationship already exists and has length
+              // check if map at relationship already exists and has length
 
-            //if so, push into arr for that type's active relationships. This case will be useful in signalling that a collision will occur if a field is clicked in the type that now has more than 1 relationship. Note that if currently mapValue length is 1, and it's currently being updated meaning that after it is update it will be two meaning a collion is set to occur.
-            if (mapValue && mapValue.length > 0) {
-              mapValue.push({
-                field: fieldName,
-                type: typeName,
-              });
-              //if not, just create new map key/val pair, with key being the relationship and val and array w/ object w/ corresponding fields
-            } else if ((mapValue && mapValue.length === 0) || !mapValue) {
-              updatedMap.set(relationship, [
-                { field: fieldName, type: typeName },
-              ]);
-            }
-            return updatedMap;
-          });
+              //if so, push into arr for that type's active relationships. This case will be useful in signalling that a collision will occur if a field is clicked in the type that now has more than 1 relationship. Note that if currently mapValue length is 1, and it's currently being updated meaning that after it is update it will be two meaning a collion is set to occur.
+              if (mapValue && mapValue.length > 0) {
+                mapValue.push({
+                  field: fieldName,
+                  type: typeName,
+                });
+                //if not, just create new map key/val pair, with key being the relationship and val and array w/ object w/ corresponding fields
+              } else if ((mapValue && mapValue.length === 0) || !mapValue) {
+                updatedMap.set(relationship, [
+                  { field: fieldName, type: typeName },
+                ]);
+              }
+              return updatedMap;
+            });
+          }
 
           //update rev active types n fields
           const curType = revActiveTypesNFields[typeName].slice();
@@ -787,6 +803,8 @@ export const ContextProvider = ({ children }) => {
         resetReverseContext,
         reverseMode,
         setReverseMode,
+        reverseModeError,
+        setReverseModeError,
       }}
     >
       {children}

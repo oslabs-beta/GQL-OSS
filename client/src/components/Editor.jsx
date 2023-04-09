@@ -97,8 +97,13 @@ export default function Editor({
 
   const [MonacoGQLAPI, setMonacoGQLAPI] = useState(null);
 
-  const { formattedQuery, reverseMode, setReverseMode, resetReverseContext } =
-    useContext(ReverseContext);
+  const {
+    formattedQuery,
+    reverseMode,
+    setReverseMode,
+    resetReverseContext,
+    revQueryObj,
+  } = useContext(ReverseContext);
   // below line is preferable but crashes the app on context save bcz for a moment context object does not exist.
   //in production should work fine
   // const { revQueryObj } = useContext(ReverseContext);
@@ -244,6 +249,8 @@ export default function Editor({
 
   useEffect(() => {
     if (!formattedQuery) return;
+    // console.log("formatted query: ", formattedQuery);
+    // console.log("revqueryobj: ", revQueryObj);
     editor
       .getModel(Uri.file("operation.graphql"))
       ?.setValue(
