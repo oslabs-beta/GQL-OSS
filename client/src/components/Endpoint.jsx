@@ -30,7 +30,6 @@ export const Endpoint = ({
       setVSchema(parsedSchemaData.visualizerSchema);
       resetReverseContext();
       const newMetrics = calculate_metrics(endpointText);
-      newMetrics.lastResponseType = "Introspection Query";
       updateMetrics(newMetrics);
     } catch (e) {
       console.log("Error fetching introspection query: ", e);

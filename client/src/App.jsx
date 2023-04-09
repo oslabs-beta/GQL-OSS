@@ -92,10 +92,13 @@ const App = () => {
   };
 
   function updateMetrics(newMetricsProperties) {
-    setMetrics({
-      ...metrics,
-      ...newMetricsProperties,
-    });
+    // if (!newMetricsProperties) setMetrics(null);
+    if (newMetricsProperties) {
+      setMetrics({
+        ...metrics,
+        ...newMetricsProperties,
+      });
+    }
   }
 
   /************************************************ Render ******************************************************/

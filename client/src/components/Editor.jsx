@@ -341,10 +341,7 @@ export default function Editor({
 
     // update metrics
     const newMetrics = calculate_metrics(endpoint);
-    if (newMetrics) {
-      newMetrics.lastResponseType = "Query";
-      updateMetrics(newMetrics);
-    }
+    updateMetrics(newMetrics);
 
     // Display the results in results pane
     resultsModel?.setValue(
@@ -545,7 +542,7 @@ export default function Editor({
             <article className="metrics__container">
               {metrics && (
                 <p className="metrics__text">
-                  {metrics.lastResponseType} response time:{" "}
+                  {metrics.lastResponseType} time:{" "}
                   <span className="metrics__data">
                     {metrics.responseTime.toFixed(0)}
                   </span>{" "}
