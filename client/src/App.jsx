@@ -7,8 +7,10 @@ import Split from "react-split";
 import "./styles/App.css";
 import getActivesFromQuery from "./utils/getActivesFromQuery";
 import ReverseContext from "./context/ReverseContext";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
-/* Setting default highlight/edge colors */
+/* Default colors for edges and fields */
 const DEFAULT_COLORS = {
   fieldHighlight: "#283145",
   edgeDefault: "#6495ED",
@@ -34,7 +36,13 @@ const App = () => {
   const [ghostEdgeIDs, setGhostEdgeIDs] = useState(new Set());
   const [metrics, setMetrics] = useState(null);
 
-  const { reverseMode, setReverseMode } = useContext(ReverseContext);
+  const {
+    reverseMode,
+    setReverseMode,
+    reverseModeError,
+    setReverseModeError,
+    resetReverseContext,
+  } = useContext(ReverseContext);
 
   /********************************************** useEffect's *************************************************/
 
@@ -62,6 +70,7 @@ const App = () => {
     setGhostEdgeIDs(new Set());
     setDisplayMode("all");
     setReverseMode(false);
+    resetReverseContext();
   }, [vSchema]);
 
   useEffect(() => {
@@ -76,6 +85,7 @@ const App = () => {
     setActiveEdgeIDs(null);
     setGhostNodeIDs(new Set());
     setGhostEdgeIDs(new Set());
+    resetReverseContext();
   }, [reverseMode]);
 
   useEffect(() => {
@@ -99,7 +109,6 @@ const App = () => {
   }
 
   /************************************************ Render ******************************************************/
-
   return (
     <main>
       <nav className="toolbar">
@@ -153,6 +162,19 @@ const App = () => {
           />
         </section>
       </Split>
+
+      <Snackbar
+        open={reverseModeError !== null}
+        autoHideDuration={1700}
+        onClose={() => {
+          setReverseModeError(null);
+        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert severity="warning" sx={{ width: "100%" }}>
+          {reverseModeError}
+        </Alert>
+      </Snackbar>
     </main>
   );
 };

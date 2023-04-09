@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, memo } from "react";
 import ReactFlow, {
   Background,
   Controls,
@@ -193,6 +193,8 @@ const Visualizer = ({
     }, 0);
   }, [
     activeTypeIDs,
+    activeFieldIDs,
+    activeEdgeIDs,
     displayMode,
     collapseTrigger,
     ghostNodeIDs,
