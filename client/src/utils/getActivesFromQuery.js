@@ -8,8 +8,9 @@ const getActivesFromQuery = (queryString, vSchema) => {
   const queryObj = gql`
     ${queryString}
   `;
-  // console.log('queryObj: ', queryObj);
-  // console.log('vSchema: ', vSchema);
+  console.log("queryString: ", queryString);
+  console.log("queryObj: ", queryObj);
+  console.log("vSchema: ", vSchema);
 
   // Array of Objects each representing an Object Type in the vSchema
   const vSchemaTypes = vSchema.objectTypes;
@@ -40,13 +41,15 @@ const getActivesFromQuery = (queryString, vSchema) => {
         (field) => field.fieldName === gqlSelection.name.value
       );
       const vSchemaNextType = vSchemaTypes.find(
-        (type) => type.name === vSchemaField.relationship
+        (type) => type.name === vSchemaField?.relationship
       );
-      activeEdgeIDs.add(
-        `${vSchemaType.name}/${gqlSelection.name.value}-${vSchemaNextType.name}`
-      );
-      for (const selection of gqlSelection.selectionSet.selections) {
-        addActives(vSchemaNextType, selection);
+      if (vSchemaField) {
+        activeEdgeIDs.add(
+          `${vSchemaType.name}/${gqlSelection.name.value}-${vSchemaNextType.name}`
+        );
+        for (const selection of gqlSelection.selectionSet.selections) {
+          addActives(vSchemaNextType, selection);
+        }
       }
     }
   };
@@ -56,6 +59,9 @@ const getActivesFromQuery = (queryString, vSchema) => {
       addActives(queryType, gqlSelection);
     }
   }
+  console.log(activeTypeIDs);
+  console.log(activeFieldIDs);
+  console.log(activeEdgeIDs);
   return {
     activeTypeIDs,
     activeFieldIDs,

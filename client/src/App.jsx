@@ -74,6 +74,7 @@ const App = () => {
   }, [vSchema]);
 
   useEffect(() => {
+    setActiveEdgeIDs(null);
     if (reverseMode) {
       setDisplayMode("activeOnly");
       setGhostMode("on");
@@ -82,7 +83,6 @@ const App = () => {
       setActiveTypeIDs(null);
     }
     setActiveFieldIDs(null);
-    setActiveEdgeIDs(null);
     setGhostNodeIDs(new Set());
     setGhostEdgeIDs(new Set());
     resetReverseContext();

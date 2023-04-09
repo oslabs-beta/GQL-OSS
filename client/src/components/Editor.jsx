@@ -212,10 +212,10 @@ export default function Editor({
           smoothScrolling: true,
           automaticLayout: true,
           minimap: {
-            enabled: enableMiniMap,
+            enabled: true,
           },
           scrollbar: {
-            vertical: verticalScrollbar,
+            vertical: true,
             horizontal: horizontalScrollbar,
           },
           glyphMargin,
@@ -254,7 +254,7 @@ export default function Editor({
     editor
       .getModel(Uri.file("operation.graphql"))
       ?.setValue(
-        "\n# Reverse Mode #\n# Build a query in the visualizer #\n\n" +
+        "\n# Reverse Mode #\n# Build a request in the visualizer #\n\n" +
           formattedQuery
       );
   }, [formattedQuery]);
@@ -265,6 +265,9 @@ export default function Editor({
     editor
       .getModel(Uri.file("operation.graphql"))
       ?.setValue(reverseMode ? defaultReverseOperations : defaultOperations);
+    editor.getModel(Uri.file("results.json"))?.setValue(defaultResults);
+    editor.getModel(Uri.file("variables.json"))?.setValue(defaultVariables);
+    setActiveLowerEditor("results");
   }, [reverseMode]);
 
   /****************************************** Helper Functions ********************************************/
@@ -277,47 +280,61 @@ export default function Editor({
     });
   }
 
-  /* Get Operations & Validate
-     Return: {valid:Boolean <, error:String, operationString:String, operationType:String>} */
+  /* Get Operations & Validate (Simple Validation)
+    This function validates before highlighting occurs. Checks that the ops string can even be GQL
+    Return: {valid:Boolean <, error:String, operationString:String, operationType:String>} */
   const getOperationsAndValidate = () => {
     if (!currentSchema.current)
       return { valid: false, error: "Please load a valid schema" };
-
-    const markers = editor.getModelMarkers({
-      resource: Uri.file("operation.graphql"),
-    });
-    if (markers.length) return { valid: false, error: "Syntax error" };
 
     const operations = editor
       .getModel(Uri.file("operation.graphql"))
       .getValue();
 
-    if (!validateBrackets(operations))
-      return { valid: false, error: "Invalid brackets" };
-    if (operations.trim() === "")
-      return { valid: false, error: "Empty operation" };
     try {
       const parsedOperations = gql`
         ${operations}
       `;
+      console.log("parsedOperations: ", parsedOperations);
       return {
         valid: true,
         operationString: operations,
         operationType: parsedOperations.definitions[0].operation,
       };
     } catch (e) {
+      console.log("error: ", e);
       return { valid: false, error: "Invalid operation" };
     }
+  };
+
+  /* Validate Ops Pre Request (Through Fetcher)
+    This function peforms stricter validation on ops to make sure only valid requests are sent
+    Return: {valid:Boolean <, error:String, operationString:String} */
+  const validateOpsStrictPreRequest = (operations) => {
+    const markers = editor.getModelMarkers({
+      resource: Uri.file("operation.graphql"),
+    });
+    if (markers.length) return { valid: false, error: "Syntax error" };
+    if (!validateBrackets(operations))
+      return { valid: false, error: "Invalid brackets" };
+    if (operations.trim() === "")
+      return { valid: false, error: "Empty operation" };
+    return {
+      valid: true,
+      operationString: operations,
+    };
   };
 
   /* Execute Current Operation in Request Pane (cmd + enter / submit button / auto)
     'auto' dictates the mode of execution, false meaning standard,
     true meaning real time (post validation) */
   const execOperation = async function (auto = false) {
+    // Check if the operations are valid for highlighting
+    // (There is more validation within the getActives utility function itself)
     const operations = getOperationsAndValidate();
     if (!operations.valid) {
       if (!auto) {
-        // Show error message
+        // Show error messages only when operations are explicitly executed (not through live/auto)
         operationErrorMsg.current.innerText = operations.error + " 🥺";
         operationErrorMsg.current.classList.add("active");
         setTimeout(() => {
@@ -327,15 +344,35 @@ export default function Editor({
       return;
     }
 
-    // Grab the code from the variables pane
-    const variables = editor.getModel(Uri.file("variables.json")).getValue();
-    // Update query state at top level in order to update active ID's
+    // Update query state at top level in order to update active ID's for highlighting
     setQuery({ queryString: operations.operationString });
+
+    /* Short Circuiting Conditions Pre-Request Sending Through Fetcher */
     // Do NOT automatically execute mutations
     if (auto && operations.operationType === "mutation") return;
+    if (!fetcher.current) return;
+    const operationsPreRequest = validateOpsStrictPreRequest(
+      operations.operationString
+    );
+    if (!operationsPreRequest.valid) {
+      if (!auto) {
+        // Show error message
+        operationErrorMsg.current.innerText =
+          operationsPreRequest.error + " 🥺";
+        operationErrorMsg.current.classList.add("active");
+        setTimeout(() => {
+          operationErrorMsg.current.classList.remove("active");
+        }, 1200);
+      }
+      return;
+    }
+
+    /* All good now to send a real request and receive data response! */
+
+    // Grab the code from the variables pane
+    const variables = editor.getModel(Uri.file("variables.json")).getValue();
     // Create reference to the results pane
     const resultsModel = editor.getModel(Uri.file("results.json"));
-    if (!fetcher.current) return;
     // Make GQL request with given operations, passing in the variables
     const result = await fetcher.current({
       query: operations.operationString,
@@ -358,7 +395,7 @@ export default function Editor({
       defaultResults + JSON.stringify(data.value, null, 2)
     );
 
-    // switch to the editor tab if not in live query mode
+    // Switch to the results tab if not in live query mode
     if (!auto) setActiveLowerEditor("results");
   };
 
