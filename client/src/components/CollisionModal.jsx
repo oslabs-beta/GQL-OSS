@@ -18,7 +18,7 @@ const CollisionModal = ({ open, setOpen, relationships, fieldInfo }) => {
   /********************************************************* State *********************************************************/
 
   const { setRevClickedField } = useContext(ReverseContext);
-  const [source, setSource] = useState(null);
+  const [source, setSource] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   /********************************************************* UI Mapping *********************************************************/
@@ -105,7 +105,7 @@ const CollisionModal = ({ open, setOpen, relationships, fieldInfo }) => {
           open={snackbarOpen}
           autoHideDuration={1700}
           onClose={handleSnackbarClose}
-          anchorOrigin={{ vertical: "center", horizontal: "center" }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         >
           <Alert severity="warning" sx={{ width: "100%" }}>
             Please select an option
