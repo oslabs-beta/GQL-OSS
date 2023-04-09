@@ -7,9 +7,8 @@ import {
   useStoreApi,
 } from "reactflow";
 import ReverseContext from "../context/ReverseContext";
-
 import "../styles/Field.css";
-import CollisionPrompt from "./CollisionPrompt";
+import CollisionModal from "./CollisionModal";
 
 const Field = ({
   typeName,
@@ -19,27 +18,29 @@ const Field = ({
   updateEdge,
   relationship,
   active,
-  displayMode,
   fieldHighlightColor,
   edgeDefaultColor,
 }) => {
+  /********************************************************** State *******************************************************/
   const nodes = useNodes();
   const updateNodeInternals = useUpdateNodeInternals();
   const [handlePosition, setHandlePosition] = useState("right");
   const store = useStoreApi();
-
-  const [collisionComp, setCollisionComp] = useState(null);
-
+  const [collisionModalOpen, setCollisionModalOpen] = useState(false);
+  const [collisionRelationships, setCollisionRelationships] = useState([]);
   const {
     setRevClickedField,
     revActiveTypesNFields,
     revActiveRelationships,
     reverseMode,
+    setReverseModeError,
   } = useContext(ReverseContext);
 
   const fieldActive = {
     backgroundColor: fieldHighlightColor + "ca",
   };
+
+  /********************************************************** useEffect's *******************************************************/
 
   useEffect(() => {
     // In vSchema:
@@ -77,6 +78,8 @@ const Field = ({
     }
   }, []);
 
+  /********************************************************** Helper Fn's *******************************************************/
+
   /* Dynamically shift around the handles */
   // I originally tried to store curr and target nodes in state
   // and assign them only once in useEffect, however ... that created
@@ -104,42 +107,56 @@ const Field = ({
     if (!reverseMode) return;
 
     if (revActiveTypesNFields === null || revActiveTypesNFields[typeName]) {
-      const numberOfActiveRelationships =
-        revActiveRelationships?.get(typeName).length;
+      const curRevActiveRelationships = revActiveRelationships?.get(typeName);
+      const numberOfActiveRelationships = curRevActiveRelationships?.length;
 
       const fieldInfo = { typeName, fieldName, relationship, args };
       if (numberOfActiveRelationships > 1) {
-        alert(`COLISSION HAS OCCURED!`);
+        // alert(`COLISSION HAS OCCURED!`);
         //when you delete the CollisionPrompt component from this Field component, make sure to delete it also from the return jsx!
-        setCollisionComp(<CollisionPrompt fieldInfo={fieldInfo} />);
+        // setCollisionComp(<CollisionPrompt fieldInfo={fieldInfo} />);
+        setCollisionRelationships(curRevActiveRelationships);
+        setCollisionModalOpen(true);
       } else {
         setRevClickedField(fieldInfo);
       }
     } else {
       console.log(`DOES NOT PASS`);
+      setReverseModeError("There are no possible active routes to this field");
       // setRevClickedField({ typeName, fieldName, relationship });
     }
   };
 
+  /********************************************************** Render *******************************************************/
+
   return (
-    <div
-      className={`field ${active ? "active" : ""} ${
-        reverseMode ? "reverse-mode" : ""
-      }`}
-      style={active ? fieldActive : {}}
-      onClick={reverseClickHandler}
-    >
-      <div className="field-data">
-        <p className="field-name">{fieldName}</p>
-        <p className="return-type">{returnType}</p>
-        {collisionComp}
+    <div>
+      <div
+        className={`field ${active ? "active" : ""} ${
+          reverseMode ? "reverse-mode" : ""
+        }`}
+        style={active ? fieldActive : {}}
+        onClick={reverseClickHandler}
+      >
+        <div className="field-data">
+          <p className="field-name">{fieldName}</p>
+          <p className="return-type">{returnType}</p>
+        </div>
+        {relationship && (
+          <Handle
+            type="source"
+            position={handlePosition}
+            isConnectable={false}
+            id={`${typeName}/${fieldName}`}
+          />
+        )}
       </div>
-      {relationship && (
-        <Handle
-          type="source"
-          position={handlePosition}
-          isConnectable={false}
-          id={`${typeName}/${fieldName}`}
+      {collisionModalOpen && (
+        <CollisionModal
+          open={collisionModalOpen}
+          setOpen={setCollisionModalOpen}
+          relationships={collisionRelationships}
+          fieldInfo={{ typeName, fieldName, relationship, args }}
         />
       )}
     </div>
