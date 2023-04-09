@@ -9,6 +9,7 @@ import {
 import ReverseContext from "../context/ReverseContext";
 
 import "../styles/Field.css";
+import CollisionModal from "./CollisionModal";
 
 const Field = ({
   typeName,
@@ -26,6 +27,8 @@ const Field = ({
   const updateNodeInternals = useUpdateNodeInternals();
   const [handlePosition, setHandlePosition] = useState("right");
   const store = useStoreApi();
+  const [collisionModalOpen, setCollisionModalOpen] = useState(false);
+  const [sourceTypes, setSourceTypes] = useState([]);
 
   const { setRevClickedField, revActiveTypesNFields, reverseMode } =
     useContext(ReverseContext);
@@ -101,29 +104,38 @@ const Field = ({
       console.log(`DOES NOT PASS`);
       // setRevClickedField({ typeName, fieldName, relationship });
     }
+    setSourceTypes(["Type1", "Type2", "Type3"]);
+    setCollisionModalOpen(true);
   };
 
   return (
-    <div
-      className={`field ${active ? "active" : ""} ${
-        reverseMode ? "reverse-mode" : ""
-      }`}
-      style={active ? fieldActive : {}}
-      onClick={reverseClickHandler}
-    >
-      <div className="field-data">
-        <p className="field-name">{fieldName}</p>
-        <p className="return-type">{returnType}</p>
+    <>
+      <div
+        className={`field ${active ? "active" : ""} ${
+          reverseMode ? "reverse-mode" : ""
+        }`}
+        style={active ? fieldActive : {}}
+        onClick={reverseClickHandler}
+      >
+        <div className="field-data">
+          <p className="field-name">{fieldName}</p>
+          <p className="return-type">{returnType}</p>
+        </div>
+        {relationship && (
+          <Handle
+            type="source"
+            position={handlePosition}
+            isConnectable={false}
+            id={`${typeName}/${fieldName}`}
+          />
+        )}
       </div>
-      {relationship && (
-        <Handle
-          type="source"
-          position={handlePosition}
-          isConnectable={false}
-          id={`${typeName}/${fieldName}`}
-        />
-      )}
-    </div>
+      <CollisionModal
+        open={collisionModalOpen}
+        setOpen={setCollisionModalOpen}
+        sourceTypes={sourceTypes}
+      />
+    </>
   );
 };
 
