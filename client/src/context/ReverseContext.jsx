@@ -57,6 +57,7 @@ export const ContextProvider = ({ children }) => {
       console.log("HERE");
 
       const { fieldName, typeName, relationship, args } = revClickedField;
+      console.log("revclickedField is: ", revClickedField);
 
       // **************************************************************************************************************************************** //
       // ******************************************************** FIRST CLICK ******************************************************************* //

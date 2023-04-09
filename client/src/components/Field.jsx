@@ -7,10 +7,10 @@ import {
   useStoreApi,
 } from "reactflow";
 import ReverseContext from "../context/ReverseContext";
-
 import "../styles/Field.css";
 import CollisionModal from "./CollisionModal";
-import CollisionPrompt from "./CollisionPrompt";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const Field = ({
   typeName,
@@ -24,14 +24,14 @@ const Field = ({
   fieldHighlightColor,
   edgeDefaultColor,
 }) => {
+  console.log("?");
   const nodes = useNodes();
   const updateNodeInternals = useUpdateNodeInternals();
   const [handlePosition, setHandlePosition] = useState("right");
   const store = useStoreApi();
   const [collisionModalOpen, setCollisionModalOpen] = useState(false);
-  const [sourceTypes, setSourceTypes] = useState([]);
-
-  const [collisionComp, setCollisionComp] = useState(null);
+  const [collisionRelationships, setCollisionRelationships] = useState([]);
+  const [clickOutOfBounds, setClickOutOfBounds] = useState(false);
 
   const {
     setRevClickedField,
@@ -107,27 +107,29 @@ const Field = ({
     if (!reverseMode) return;
 
     if (revActiveTypesNFields === null || revActiveTypesNFields[typeName]) {
-      const numberOfActiveRelationships =
-        revActiveRelationships?.get(typeName).length;
+      const curRevActiveRelationships = revActiveRelationships?.get(typeName);
+      const numberOfActiveRelationships = curRevActiveRelationships?.length;
 
       const fieldInfo = { typeName, fieldName, relationship, args };
       if (numberOfActiveRelationships > 1) {
-        alert(`COLISSION HAS OCCURED!`);
+        // alert(`COLISSION HAS OCCURED!`);
         //when you delete the CollisionPrompt component from this Field component, make sure to delete it also from the return jsx!
-        setCollisionComp(<CollisionPrompt fieldInfo={fieldInfo} />);
+        // setCollisionComp(<CollisionPrompt fieldInfo={fieldInfo} />);
+        setCollisionRelationships(curRevActiveRelationships);
+        setCollisionModalOpen(true);
       } else {
         setRevClickedField(fieldInfo);
       }
     } else {
       console.log(`DOES NOT PASS`);
+      setClickOutOfBounds(true);
       // setRevClickedField({ typeName, fieldName, relationship });
+      // SHOW SNACKBAR HERE
     }
-    setSourceTypes(["Type1", "Type2", "Type3"]);
-    setCollisionModalOpen(true);
   };
 
   return (
-    <>
+    <div>
       <div
         className={`field ${active ? "active" : ""} ${
           reverseMode ? "reverse-mode" : ""
@@ -138,7 +140,6 @@ const Field = ({
         <div className="field-data">
           <p className="field-name">{fieldName}</p>
           <p className="return-type">{returnType}</p>
-          {collisionComp}
         </div>
         {relationship && (
           <Handle
@@ -149,12 +150,15 @@ const Field = ({
           />
         )}
       </div>
-      <CollisionModal
-        open={collisionModalOpen}
-        setOpen={setCollisionModalOpen}
-        sourceTypes={sourceTypes}
-      />
-    </>
+      {collisionModalOpen && (
+        <CollisionModal
+          open={collisionModalOpen}
+          setOpen={setCollisionModalOpen}
+          relationships={collisionRelationships}
+          fieldInfo={{ typeName, fieldName, relationship, args }}
+        />
+      )}
+    </div>
   );
 };
 
