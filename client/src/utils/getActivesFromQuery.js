@@ -5,9 +5,14 @@ const getActivesFromQuery = (queryString, vSchema) => {
   if (queryString === "" || null)
     return { activeFieldIDs: null, activeTypeIDs: null };
 
-  const queryObj = gql`
-    ${queryString}
-  `;
+  let queryObj;
+  try {
+    queryObj = gql`
+      ${queryString}
+    `;
+  } catch (e) {
+    console.log("ERRRORRRRRRRRR: ", e);
+  }
   console.log("queryString: ", queryString);
   console.log("queryObj: ", queryObj);
   console.log("vSchema: ", vSchema);

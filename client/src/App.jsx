@@ -74,18 +74,16 @@ const App = () => {
   }, [vSchema]);
 
   useEffect(() => {
-    setActiveEdgeIDs(null);
     if (reverseMode) {
+      setActiveEdgeIDs(null);
       setDisplayMode("activeOnly");
       setGhostMode("on");
       if (vSchema) setActiveTypeIDs(new Set([vSchema.queryName.name]));
-    } else {
-      setActiveTypeIDs(null);
+      setActiveFieldIDs(null);
+      setGhostNodeIDs(new Set());
+      setGhostEdgeIDs(new Set());
+      resetReverseContext();
     }
-    setActiveFieldIDs(null);
-    setGhostNodeIDs(new Set());
-    setGhostEdgeIDs(new Set());
-    resetReverseContext();
   }, [reverseMode]);
 
   useEffect(() => {

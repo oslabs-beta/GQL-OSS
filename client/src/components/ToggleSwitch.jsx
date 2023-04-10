@@ -31,6 +31,8 @@ export function ToggleSwitch({
   let tooltipMessage;
   if (isAlwaysToggled) tooltipMessage = "Always on in reverse mode";
   else if (isAlwaysOff) tooltipMessage = "Active Only must be on";
+  if (toggleName === "Reverse Mode")
+    tooltipMessage = "Turning this on will reset your data!";
 
   return (
     <div className="toggle-switch">
@@ -43,7 +45,7 @@ export function ToggleSwitch({
           {labelLeft}
         </p>
         <ConditionalWrapper
-          condition={isAlwaysToggled || isAlwaysOff}
+          condition={tooltipMessage}
           wrapper={(children) => (
             <Tooltip title={tooltipMessage}>{children}</Tooltip>
           )}

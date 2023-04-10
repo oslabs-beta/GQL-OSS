@@ -260,13 +260,15 @@ export default function Editor({
   }, [formattedQuery]);
 
   useEffect(() => {
-    if (reverseMode) resetReverseContext();
-    // queryEditor?.updateOptions({ readOnly: reverseMode });
-    editor
-      .getModel(Uri.file("operation.graphql"))
-      ?.setValue(reverseMode ? defaultReverseOperations : defaultOperations);
-    editor.getModel(Uri.file("results.json"))?.setValue(defaultResults);
-    editor.getModel(Uri.file("variables.json"))?.setValue(defaultVariables);
+    if (reverseMode) {
+      resetReverseContext();
+      editor.getModel(Uri.file("results.json"))?.setValue(defaultResults);
+      editor.getModel(Uri.file("variables.json"))?.setValue(defaultVariables);
+      editor
+        .getModel(Uri.file("operation.graphql"))
+        ?.setValue(defaultReverseOperations);
+    }
+    queryEditor?.updateOptions({ readOnly: reverseMode });
     setActiveLowerEditor("results");
   }, [reverseMode]);
 
@@ -291,18 +293,30 @@ export default function Editor({
       .getModel(Uri.file("operation.graphql"))
       .getValue();
 
+    // sanitize the string of any ()
+    const sanitizedOperations = operations.replaceAll(/\([^)]*\)/g, "");
+
     try {
       const parsedOperations = gql`
-        ${operations}
+        ${sanitizedOperations}
       `;
       console.log("parsedOperations: ", parsedOperations);
       return {
         valid: true,
-        operationString: operations,
+        operationString: sanitizedOperations,
         operationType: parsedOperations.definitions[0].operation,
       };
     } catch (e) {
       console.log("error: ", e);
+      // if (e.message.includes("Syntax Error")) {
+      //   return {
+      //     valid: true,
+      //     operationString: sanitizedOperations,
+      //     operationType: operations.toLowerCase().includes("mutation")
+      //       ? "mutation"
+      //       : "query",
+      //   };
+      // }
       return { valid: false, error: "Invalid operation" };
     }
   };
@@ -310,7 +324,10 @@ export default function Editor({
   /* Validate Ops Pre Request (Through Fetcher)
     This function peforms stricter validation on ops to make sure only valid requests are sent
     Return: {valid:Boolean <, error:String, operationString:String} */
-  const validateOpsStrictPreRequest = (operations) => {
+  const getAndValidateOpsStrictPreRequest = () => {
+    const operations = editor
+      .getModel(Uri.file("operation.graphql"))
+      .getValue();
     const markers = editor.getModelMarkers({
       resource: Uri.file("operation.graphql"),
     });
@@ -331,11 +348,11 @@ export default function Editor({
   const execOperation = async function (auto = false) {
     // Check if the operations are valid for highlighting
     // (There is more validation within the getActives utility function itself)
-    const operations = getOperationsAndValidate();
-    if (!operations.valid) {
+    const sanitizedOperations = getOperationsAndValidate();
+    if (!sanitizedOperations.valid) {
       if (!auto) {
         // Show error messages only when operations are explicitly executed (not through live/auto)
-        operationErrorMsg.current.innerText = operations.error + " 🥺";
+        operationErrorMsg.current.innerText = sanitizedOperations.error + " 🥺";
         operationErrorMsg.current.classList.add("active");
         setTimeout(() => {
           operationErrorMsg.current.classList.remove("active");
@@ -343,17 +360,18 @@ export default function Editor({
       }
       return;
     }
+    console.log("AAAA");
+    console.log("operations: ", sanitizedOperations);
 
     // Update query state at top level in order to update active ID's for highlighting
-    setQuery({ queryString: operations.operationString });
+    setQuery({ queryString: sanitizedOperations.operationString });
+    console.log("BBBB");
 
     /* Short Circuiting Conditions Pre-Request Sending Through Fetcher */
     // Do NOT automatically execute mutations
-    if (auto && operations.operationType === "mutation") return;
+    if (auto && sanitizedOperations.operationType === "mutation") return;
     if (!fetcher.current) return;
-    const operationsPreRequest = validateOpsStrictPreRequest(
-      operations.operationString
-    );
+    const operationsPreRequest = getAndValidateOpsStrictPreRequest();
     if (!operationsPreRequest.valid) {
       if (!auto) {
         // Show error message
@@ -366,6 +384,7 @@ export default function Editor({
       }
       return;
     }
+    console.log("opsprerequest: ", operationsPreRequest);
 
     /* All good now to send a real request and receive data response! */
 
@@ -375,7 +394,7 @@ export default function Editor({
     const resultsModel = editor.getModel(Uri.file("results.json"));
     // Make GQL request with given operations, passing in the variables
     const result = await fetcher.current({
-      query: operations.operationString,
+      query: operationsPreRequest.operationString,
       variables: JSONC.parse(variables),
     });
 
