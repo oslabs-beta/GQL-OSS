@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from "react";
 import { Handle } from "reactflow";
 import Field from "./Field";
+import { motion } from "framer-motion";
 import "../styles/TypeNode.css";
 
 const TypeNode = ({ data }) => {
@@ -103,6 +104,12 @@ const TypeNode = ({ data }) => {
       <div className="type-node__container">
         <div onClick={() => setCollapsed(!collapsed)} className="type-heading">
           {typeName}
+          <motion.div
+            animate={{ rotate: collapsed ? 0 : 180 }}
+            className="type-heading__rotating-button"
+          >
+            {"\u25be"}
+          </motion.div>
         </div>
         {!collapsed && (
           <div className="type-node__fields-container">{fieldElements}</div>

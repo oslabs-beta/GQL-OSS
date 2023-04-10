@@ -4,7 +4,6 @@ import { request } from "graphql-request";
 import parseReceivedSchema from "../utils/parseIntrospectionQueryResponse";
 import "../styles/Endpoint.css";
 import ReverseContext from "../context/ReverseContext";
-import { calculate_metrics } from "../utils/metrics";
 
 const DEFAULT_ENDPOINT = "https://countries.trevorblades.com/";
 
@@ -29,9 +28,9 @@ export const Endpoint = ({
       const parsedSchemaData = parseReceivedSchema(schema);
       setVSchema(parsedSchemaData.visualizerSchema);
       resetReverseContext();
-      const newMetrics = calculate_metrics(endpointText);
-      newMetrics.lastResponseType = "Introspection Query";
-      updateMetrics(newMetrics);
+      // const newMetrics = calculate_metrics(endpointText);
+      // updateMetrics(newMetrics);
+      updateMetrics();
     } catch (e) {
       console.log("Error fetching introspection query: ", e);
     }

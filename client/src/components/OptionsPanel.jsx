@@ -42,10 +42,7 @@ export function OptionsPanel({
             onClick={() => setCollapsed(!collapsed)}
           >
             Display Options{" "}
-            <motion.div
-              animate={{ rotate: collapsed ? 0 : 180 }}
-              id="options-panel__rotating-button"
-            >
+            <motion.div animate={{ rotate: collapsed ? 0 : 180 }}>
               {"\u25be"}
             </motion.div>
           </button>

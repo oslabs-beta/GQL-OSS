@@ -12,7 +12,6 @@ import * as gqlQB from "gql-query-builder";
 import Split from "react-split";
 import { ToggleSwitch } from "./ToggleSwitch";
 import { DEFAULT_EDITOR_OPTIONS } from "../utils/defaultEditorOptions";
-import { calculate_metrics } from "../utils/metrics";
 import ReverseContext from "../context/ReverseContext";
 
 /* Default Initial Display for Operations */
@@ -102,6 +101,7 @@ export default function Editor({
     reverseMode,
     setReverseMode,
     resetReverseContext,
+    setMutationMode,
     revQueryObj,
   } = useContext(ReverseContext);
   // below line is preferable but crashes the app on context save bcz for a moment context object does not exist.
@@ -231,6 +231,14 @@ export default function Editor({
     // Ref used here for non-stale state
     queryModel.onDidChangeContent(
       debounce(300, () => {
+        const operations = editor
+          .getModel(Uri.file("operation.graphql"))
+          .getValue();
+        if (operations.includes(`mutation`)) {
+          setMutationMode(true);
+        } else {
+          setMutationMode(false);
+        }
         if (liveQueryModeRef.current) execOperation(true);
       })
     );
@@ -403,11 +411,7 @@ export default function Editor({
     const data = await result.next();
 
     // update metrics
-    const newMetrics = calculate_metrics(endpoint);
-    if (newMetrics) {
-      newMetrics.lastResponseType = "Query";
-      updateMetrics(newMetrics);
-    }
+    updateMetrics();
 
     // Display the results in results pane
     resultsModel?.setValue(
@@ -481,7 +485,7 @@ export default function Editor({
       //    * This Will Also Be Removed
       //   */
       //
-      //    // so will almost all of these as long as they aren't preceeded by a semicolon
+      //    // so will almost all of these as long as they aren't preceeded by a semicolon (a URL)
       //
       // removes: comments
       // removes: # a pair of pound signs and everything between them #
@@ -608,10 +612,8 @@ export default function Editor({
             <article className="metrics__container">
               {metrics && (
                 <p className="metrics__text">
-                  {metrics.lastResponseType} response time:{" "}
-                  <span className="metrics__data">
-                    {metrics.responseTime.toFixed(0)}
-                  </span>{" "}
+                  {metrics.lastResponseType} time:{" "}
+                  <span className="metrics__data">{metrics.responseTime}</span>{" "}
                   ms
                 </p>
               )}

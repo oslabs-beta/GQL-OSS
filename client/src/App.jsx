@@ -9,6 +9,8 @@ import getActivesFromQuery from "./utils/getActivesFromQuery";
 import ReverseContext from "./context/ReverseContext";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { calculateMetrics } from "./utils/calculateMetrics";
+import { Tooltip } from "@mui/material";
 
 /* Default colors for edges and fields */
 const DEFAULT_COLORS = {
@@ -35,6 +37,9 @@ const App = () => {
   const [ghostNodeIDs, setGhostNodeIDs] = useState(new Set());
   const [ghostEdgeIDs, setGhostEdgeIDs] = useState(new Set());
   const [metrics, setMetrics] = useState(null);
+  const [loaderHidden, setLoaderHidden] = useState(true)
+
+  const endpointRef = useRef(null);
 
   const {
     reverseMode,
@@ -42,6 +47,7 @@ const App = () => {
     reverseModeError,
     setReverseModeError,
     resetReverseContext,
+    mutationMode,
   } = useContext(ReverseContext);
 
   /********************************************** useEffect's *************************************************/
@@ -90,6 +96,11 @@ const App = () => {
     if (displayMode === "all") setGhostMode("off");
   }, [displayMode]);
 
+  /* update endpointRef for updateMetrics to access current endpoint */
+  useEffect(() => {
+    endpointRef.current = endpoint;
+  }, [endpoint]);
+
   /********************************************** Helper Functions *************************************************/
 
   /* Prevent Left Pane From Forcing Overflow */
@@ -99,11 +110,17 @@ const App = () => {
     }
   };
 
-  function updateMetrics(newMetricsProperties) {
-    setMetrics({
-      ...metrics,
-      ...newMetricsProperties,
-    });
+  // accesses performance object
+  // calculates query time of the last PerformanceEntry that interacted w/endpoint
+  // assigns a name ('Introspection' || 'Query') to metrics.lastResponseType
+  function updateMetrics() {
+    const newMetricsProperties = calculateMetrics(endpointRef.current);
+    if (newMetricsProperties) {
+      setMetrics({
+        ...metrics,
+        ...newMetricsProperties,
+      });
+    }
   }
 
   /************************************************ Render ******************************************************/
@@ -157,13 +174,15 @@ const App = () => {
             setGhostNodeIDs={setGhostNodeIDs}
             ghostEdgeIDs={ghostEdgeIDs}
             setGhostEdgeIDs={setGhostEdgeIDs}
+            loaderHidden={loaderHidden}
+            setLoaderHidden={setLoaderHidden}
           />
         </section>
       </Split>
 
       <Snackbar
-        open={reverseModeError !== null}
-        autoHideDuration={1700}
+        open={(reverseModeError !== null || mutationMode === true) && vSchema}
+        autoHideDuration={reverseMode === true ? 1700 : null}
         onClose={() => {
           setReverseModeError(null);
         }}
@@ -171,6 +190,8 @@ const App = () => {
       >
         <Alert severity="warning" sx={{ width: "100%" }}>
           {reverseModeError}
+          {mutationMode &&
+            `Mutations require MANUAL submission and WILL affect your data`}
         </Alert>
       </Snackbar>
     </main>

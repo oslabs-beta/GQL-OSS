@@ -85,6 +85,7 @@ main {
 .toolbar__header {
   position: absolute;
   right: 3.5rem;
+  /* left: 1rem; */
   color: whitesmoke;
   font-family: "Poppins", sans-serif;
   font-weight: 300;
@@ -95,9 +96,18 @@ main {
 .logo__container {
   position: absolute;
   left: 1rem;
-  background-image: url("../images/logo.png");
+  /* right: 4rem; */
+  /* background-image: url("../images/logo1.png"); */
+  background-image: url("../images/logo2.png");
+  /* background-image: url("../images/logo3.png"); */
+  /* background-image: url("../images/logo4.png"); */
+  /* background-image: url("../images/logo5.png"); */
+  /* background-image: url("../images/logo6.png"); */
+  /* background-image: url("../images/logo7.png"); */
+  /* background-image: url("../images/logo8.png"); */
   background-size: cover;
-  height: 2rem;
-  width: 3rem;
-  transform: translateY(-2px);
+  height: 2.5rem;
+  width: 4rem;
+  /* height: 2.6rem;
+  width: 2rem; */
 }

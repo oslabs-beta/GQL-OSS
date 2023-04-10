@@ -44,6 +44,8 @@ const Visualizer = ({
   setGhostNodeIDs,
   ghostEdgeIDs,
   setGhostEdgeIDs,
+  loaderHidden,
+  setLoaderHidden,
 }) => {
   /********************************************** State & Refs *************************************************/
 
@@ -81,6 +83,7 @@ const Visualizer = ({
   // If a valid vSchema is passed in, map each Object Type to a Type Node
   useEffect(() => {
     if (!vSchema) return;
+    setLoaderHidden(false)
     setEdges([]);
     setNodes([]);
     // Queue new node setting to explicitly occur AFTER edges & nodes reset
@@ -302,7 +305,10 @@ const Visualizer = ({
     }
     // Queue fitView to explicitly occur AFTER the graphed nodes have asynchronously been set
     // if (displayMode === "activeOnly" || ghostMode === "on" || initial)
-    if (ghostMode === "off") setTimeout(() => flowInstance.fitView(), 0);
+    setTimeout(async () => {
+      if (ghostMode === "off") await flowInstance.fitView()
+      if(!initial) await setTimeout(() => { setLoaderHidden(true)}, 100)
+    }, 0);
     // You can configure this to fitView after every change when displayMode === 'all' as well,
     // however that UX feels slightly worse
   };
@@ -330,6 +336,7 @@ const Visualizer = ({
 
   /* Toggle Display Mode */
   function toggleDisplayMode() {
+    if(displayMode === "activeOnly") setLoaderHidden(false)
     setDisplayMode((prevDisplayMode) =>
       prevDisplayMode === "activeOnly" ? "all" : "activeOnly"
     );
@@ -425,12 +432,18 @@ const Visualizer = ({
     const el = document.querySelector(".visualizer-container");
     el.requestFullscreen();
   };
-
+  
   /************************************************ Render ******************************************************/
 
   return (
     // React Flow instance needs a container that has explicit width and height
     <div className="visualizer-container">
+      <div className={`loading-modal ${loaderHidden ? "hidden" : ""}`}>
+        <span className="loader"></span>
+        <div>
+          <p className="loading-msg">Building your visualization</p>
+        </div>
+      </div>
       <ReactFlow
         defaultViewport={{ x: 0, y: 0, zoom: 0.5 }}
         nodes={nodes}

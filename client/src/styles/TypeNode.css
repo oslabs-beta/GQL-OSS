@@ -34,6 +34,10 @@
 .type-heading {
   padding: 13px 40px;
   font-size: 17px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   /* font-style: italic; */
   /* font-weight: bold; */
   font-weight: 400;
@@ -45,6 +49,27 @@
   /* background: #292b34dd; */
   /* background: #3436437b; */
   /* background: #2a2d43b3; */
+}
+
+.type-heading__rotating-button {
+  position: absolute;
+  right: .8rem;
+  letter-spacing: normal;
+}
+
+.type-heading::after {
+  content: "";
+  border: 1px solid rgb(188, 183, 204);
+  border-radius: 5px;
+  height: 18px;
+  width: 18px;
+  visibility: visible;
+  position: absolute;
+  right: .6rem;
+}
+
+.type-heading:hover {
+  cursor: pointer;
 }
 
 .gradient-border {
