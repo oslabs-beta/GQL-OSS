@@ -22,7 +22,7 @@ const Field = ({
   edgeDefaultColor,
 }) => {
   /********************************************************** State *******************************************************/
-  const nodes = useNodes();
+  // const nodes = useNodes();
   const updateNodeInternals = useUpdateNodeInternals();
   const [handlePosition, setHandlePosition] = useState("right");
   const store = useStoreApi();
@@ -86,22 +86,22 @@ const Field = ({
   // all sorts of unintended behavior
   // You'd think it'd be easier that way ... it seems 'references' got lost in state
   // So here, we're 'brute forcing' instead.
-  if (relationship) {
-    const targetNode = nodes.find((node) => node.id === relationship);
-    const currNode = nodes.find((node) => node.id === typeName);
-    const targetPosition = targetNode.position;
-    const currPosition = currNode.position;
-    if (currPosition.x > targetPosition.x && handlePosition !== "left") {
-      setHandlePosition("left");
-      updateNodeInternals(typeName);
-    } else if (
-      currPosition.x < targetPosition.x &&
-      handlePosition !== "right"
-    ) {
-      setHandlePosition("right");
-      updateNodeInternals(typeName);
-    }
-  }
+  // if (relationship) {
+  //   const targetNode = nodes.find((node) => node.id === relationship);
+  //   const currNode = nodes.find((node) => node.id === typeName);
+  //   const targetPosition = targetNode.position;
+  //   const currPosition = currNode.position;
+  //   if (currPosition.x > targetPosition.x && handlePosition !== "left") {
+  //     setHandlePosition("left");
+  //     updateNodeInternals(typeName);
+  //   } else if (
+  //     currPosition.x < targetPosition.x &&
+  //     handlePosition !== "right"
+  //   ) {
+  //     setHandlePosition("right");
+  //     updateNodeInternals(typeName);
+  //   }
+  // }
 
   const reverseClickHandler = () => {
     if (!reverseMode) return;
