@@ -11,11 +11,11 @@ const getActivesFromQuery = (queryString, vSchema) => {
       ${queryString}
     `;
   } catch (e) {
-    console.log("ERRRORRRRRRRRR: ", e);
+    console.log("error in getActives parsing queryString: ", e);
   }
-  console.log("queryString: ", queryString);
-  console.log("queryObj: ", queryObj);
-  console.log("vSchema: ", vSchema);
+  // console.log("queryString: ", queryString);
+  // console.log("queryObj: ", queryObj);
+  // console.log("vSchema: ", vSchema);
 
   // Array of Objects each representing an Object Type in the vSchema
   const vSchemaTypes = vSchema.objectTypes;
@@ -64,9 +64,9 @@ const getActivesFromQuery = (queryString, vSchema) => {
       addActives(queryType, gqlSelection);
     }
   }
-  console.log(activeTypeIDs);
-  console.log(activeFieldIDs);
-  console.log(activeEdgeIDs);
+  // console.log(activeTypeIDs);
+  // console.log(activeFieldIDs);
+  // console.log(activeEdgeIDs);
   return {
     activeTypeIDs,
     activeFieldIDs,
