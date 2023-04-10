@@ -58,6 +58,7 @@ const TypeNode = ({ data }) => {
           type="source"
           position="right"
           id={`${typeName}/${field.fieldName}`}
+          key={`${typeName}/${field.fieldName}`}
           isConnectable={false}
           style={{ position: "absolute" }}
         />

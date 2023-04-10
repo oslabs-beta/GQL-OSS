@@ -25,19 +25,20 @@ const CollisionModal = ({ open, setOpen, relationships, fieldInfo }) => {
 
   /* Map each reverse relationship of a clicked field with collisions to menu items (dropdown choices) */
   const menuItems = relationships.map((relationship) => {
+    const sanitizedField = relationship.field.replaceAll(/\([^)]*\)/g, "");
     return (
       <MenuItem
         key={`${relationship.field}/${relationship.type}`} // The format setup in Reverse Context
         value={`${relationship.field}/${relationship.type}`}
       >
-        {`${relationship.type}/${relationship.field}`}
+        {`${relationship.type}/${sanitizedField}`}
       </MenuItem>
     );
   });
 
   /********************************************************* Helper Fn's *********************************************************/
   const handleClose = (event, reason) => {
-    if ((reason && reason === "backdropClick") || source === null) {
+    if ((reason && reason === "backdropClick") || source === "") {
       setSnackbarOpen(true);
       return;
     }

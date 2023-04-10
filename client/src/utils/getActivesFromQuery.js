@@ -41,17 +41,17 @@ const getActivesFromQuery = (queryString, vSchema) => {
   const addActives = (vSchemaType, gqlSelection) => {
     activeTypeIDs.add(vSchemaType.name);
     activeFieldIDs.add(`${vSchemaType.name}/${gqlSelection.name.value}`);
+    const vSchemaField = vSchemaType.fields.find(
+      (field) => field.fieldName === gqlSelection.name.value
+    );
+    const vSchemaNextType = vSchemaTypes.find(
+      (type) => type.name === vSchemaField?.relationship
+    );
+    activeEdgeIDs.add(
+      `${vSchemaType.name}/${gqlSelection.name.value}-${vSchemaNextType?.name}`
+    );
     if (gqlSelection.selectionSet) {
-      const vSchemaField = vSchemaType.fields.find(
-        (field) => field.fieldName === gqlSelection.name.value
-      );
-      const vSchemaNextType = vSchemaTypes.find(
-        (type) => type.name === vSchemaField?.relationship
-      );
-      if (vSchemaField) {
-        activeEdgeIDs.add(
-          `${vSchemaType.name}/${gqlSelection.name.value}-${vSchemaNextType.name}`
-        );
+      if (vSchemaField && vSchemaNextType) {
         for (const selection of gqlSelection.selectionSet.selections) {
           addActives(vSchemaNextType, selection);
         }
