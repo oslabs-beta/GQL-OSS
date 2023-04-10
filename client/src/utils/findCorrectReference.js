@@ -90,7 +90,7 @@ const findCorrectReference = (
             if (field?.operation === referenceStr) {
               isOperation = true;
             }
-            // console.log(`DID WE MAKE IT IN HERE?`);
+            // console.log(`MADE IT INTO MATCH!`);
             correctTypeRef = field;
             found = true;
           }
