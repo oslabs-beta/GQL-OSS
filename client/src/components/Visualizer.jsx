@@ -184,6 +184,9 @@ const Visualizer = ({
         return newNode;
       });
     });
+    for (const node of nodes) {
+      updateNodeInternals(node.id);
+    }
     // Queue graph generation (async) to explicitly occur AFTER nodes are set
     setTimeout(() => {
       // console.log(
