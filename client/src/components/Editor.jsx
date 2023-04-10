@@ -31,7 +31,7 @@ const defaultReverseOperations =
   // localStorage.getItem("operations") ??
   `
 # Reverse Mode #
-# Build a query in the visualizer #
+# Build a request in the visualizer #
 
 query {
 
@@ -300,14 +300,14 @@ export default function Editor({
       const parsedOperations = gql`
         ${sanitizedOperations}
       `;
-      console.log("parsedOperations: ", parsedOperations);
+      // console.log("parsedOperations: ", parsedOperations);
       return {
         valid: true,
         operationString: sanitizedOperations,
         operationType: parsedOperations.definitions[0].operation,
       };
     } catch (e) {
-      console.log("error: ", e);
+      // console.log("error: ", e);
       // if (e.message.includes("Syntax Error")) {
       //   return {
       //     valid: true,
@@ -360,12 +360,12 @@ export default function Editor({
       }
       return;
     }
-    console.log("AAAA");
-    console.log("operations: ", sanitizedOperations);
+    // console.log("AAAA");
+    // console.log("operations: ", sanitizedOperations);
 
     // Update query state at top level in order to update active ID's for highlighting
     setQuery({ queryString: sanitizedOperations.operationString });
-    console.log("BBBB");
+    // console.log("BBBB");
 
     /* Short Circuiting Conditions Pre-Request Sending Through Fetcher */
     // Do NOT automatically execute mutations
@@ -384,7 +384,7 @@ export default function Editor({
       }
       return;
     }
-    console.log("opsprerequest: ", operationsPreRequest);
+    // console.log("opsprerequest: ", operationsPreRequest);
 
     /* All good now to send a real request and receive data response! */
 

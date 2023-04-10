@@ -108,6 +108,7 @@ const Field = ({
 
     if (revActiveTypesNFields === null || revActiveTypesNFields[typeName]) {
       const curRevActiveRelationships = revActiveRelationships?.get(typeName);
+      console.log("CRAR: ", curRevActiveRelationships);
       const numberOfActiveRelationships = curRevActiveRelationships?.length;
 
       const fieldInfo = { typeName, fieldName, relationship, args };

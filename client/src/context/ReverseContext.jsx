@@ -51,6 +51,12 @@ export const ContextProvider = ({ children }) => {
   }, [revQueryObj]);
 
   useEffect(() => {
+    console.log("revQueryObj: ", revQueryObj);
+    console.log("revClickedField: ", revClickedField);
+    console.log("revActiveTypesnFields: ", revActiveTypesNFields);
+    console.log("revActiveRElationships: ", revActiveRelationships);
+    console.log("formattedQuery: ", formattedQuery);
+    console.log("revQueryType: ", revQueryType);
     try {
       if (revClickedField === null || !reverseMode) return;
       console.log("HERE");
