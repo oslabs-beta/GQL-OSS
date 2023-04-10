@@ -60,7 +60,7 @@ export function OptionsPanel({
               handleChange={toggleDisplayMode}
             />
             <ToggleSwitch
-              toggleName="ghost mode"
+              toggleName="suggestions"
               labelLeft="off"
               labelRight="on"
               isChecked={ghostMode === "on"}
@@ -82,14 +82,14 @@ export function OptionsPanel({
               handleChange={toggleTargetPosition}
             />
             <ToggleSwitch
-              toggleName="show minimap"
+              toggleName="minimap"
               labelLeft="off"
               labelRight="on"
               isChecked={showMinimap}
               handleChange={toggleMinimap}
             />
             <ToggleSwitch
-              toggleName="show controls"
+              toggleName="controls"
               labelLeft="off"
               labelRight="on"
               isChecked={showControls}

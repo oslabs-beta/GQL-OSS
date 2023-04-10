@@ -315,7 +315,7 @@ const Visualizer = ({
     // however that UX feels slightly worse
 
     // if (!initial)
-    setLoaderHidden(true);
+    setTimeout(() => setLoaderHidden(true), 500);
   };
 
   /* Toggle Target Position */
@@ -341,7 +341,7 @@ const Visualizer = ({
 
   /* Toggle Display Mode */
   function toggleDisplayMode() {
-    if (displayMode === "activeOnly") setLoaderHidden(true);
+    // if (displayMode === "activeOnly") setLoaderHidden(true);
     setDisplayMode((prevDisplayMode) =>
       prevDisplayMode === "activeOnly" ? "all" : "activeOnly"
     );
@@ -445,9 +445,9 @@ const Visualizer = ({
     <div className="visualizer-container">
       <div className={`loading-modal ${loaderHidden ? "hidden" : ""}`}>
         <span className="loader"></span>
-        {/* <div>
-          <p className="loading-msg">Building your visualization</p>
-        </div> */}
+        <div>
+          {/* <p className="loading-msg">Building your visualization</p> */}
+        </div>
       </div>
       <ReactFlow
         defaultViewport={{ x: 0, y: 0, zoom: 0.5 }}

@@ -6,10 +6,10 @@ import ConditionalWrapper from "./ConditionalWrapper";
 
 const alwaysToggledInReverse = {
   "active only": true,
-  "ghost mode": true,
+  suggestions: true,
 };
 const alwaysOffWhileDisplayAll = {
-  "ghost mode": true,
+  suggestions: true,
 };
 
 export function ToggleSwitch({

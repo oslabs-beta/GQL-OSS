@@ -80,10 +80,10 @@
 }
 
 .loading-modal {
-  z-index: 1000;
+  z-index: 1;
   height: 100%;
   width: 100%;
-  background-color: #1d1e22;
+  /* background-color: #1d1e22; */
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -116,29 +116,29 @@
   content: "";
   position: absolute;
   border-radius: 50%;
-  animation: pulsOut 1.8s ease-in-out infinite;
+  animation: pulsOut 1s ease-in-out infinite;
   filter: drop-shadow(0 0 1rem rgba(255, 255, 255, 0.75));
 }
 .loader:before {
   width: 100%;
   padding-bottom: 100%;
-  box-shadow: inset 0 0 0 1rem #fff;
+  box-shadow: inset 0 0 0 1rem rgb(188, 183, 204);
   animation-name: pulsIn;
 }
 .loader:after {
   width: calc(100% - 2rem);
   padding-bottom: calc(100% - 2rem);
-  box-shadow: 0 0 0 0 #fff;
+  box-shadow: 0 0 0 0 rgb(188, 183, 204);
 }
 
 @keyframes pulsIn {
   0% {
-    box-shadow: inset 0 0 0 1rem #fff;
+    box-shadow: inset 0 0 0 1rem rgb(188, 183, 204);
     opacity: 1;
   }
   50%,
   100% {
-    box-shadow: inset 0 0 0 0 #fff;
+    box-shadow: inset 0 0 0 0 rgb(188, 183, 204);
     opacity: 0;
   }
 }
@@ -146,11 +146,11 @@
 @keyframes pulsOut {
   0%,
   50% {
-    box-shadow: 0 0 0 0 #fff;
+    box-shadow: 0 0 0 0 rgb(188, 183, 204);
     opacity: 0;
   }
   100% {
-    box-shadow: 0 0 0 1rem #fff;
+    box-shadow: 0 0 0 1rem rgb(188, 183, 204);
     opacity: 1;
   }
 }

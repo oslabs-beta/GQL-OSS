@@ -88,13 +88,14 @@
   align-items: center;
   border-top: 1px solid #373636;
   font-size: 14px;
-  font-style: italic;
+
   padding: 0 1rem;
   position: relative;
 }
 
 .metrics__text {
   color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
 }
 
 .metrics__data {
@@ -191,4 +192,8 @@ h6 {
   bottom: 5px;
   left: 20px;
   color: rgb(196, 196, 196);
+}
+
+.reverse-toggle-switch-container .toggle-switch__name {
+  margin-bottom: -3px;
 }
