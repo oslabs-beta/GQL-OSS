@@ -582,7 +582,6 @@ export const ContextProvider = ({ children }) => {
             };
 
           const rootRefString = `${rootField}/${rootType}`;
-          // console.log(`RELATIONSHIP CURRENT rootRefString IS: `, rootRefString);
 
           const [reference, isRevRoot, isOperation] = findCorrectReference(
             referenceStr,
