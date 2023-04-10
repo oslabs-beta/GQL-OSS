@@ -185,7 +185,10 @@ const App = () => {
       </Split>
 
       <Snackbar
-        open={(reverseModeError !== null || mutationMode === true) && vSchema}
+        open={
+          (reverseModeError !== null || mutationMode === true) &&
+          vSchema !== null
+        }
         autoHideDuration={reverseMode === true ? 1700 : null}
         onClose={() => {
           setReverseModeError(null);

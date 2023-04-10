@@ -71,6 +71,7 @@ const Visualizer = ({
   //Triggers for "Expand All" and "Collapse All" functionality
   const [collapseTrigger, setCollapseTrigger] = useState(0);
   const [expandTrigger, setExpandTrigger] = useState(0);
+  const [autoregraphMode, setAutoregraphMode] = useState(false);
 
   /********************************************** useEFfect's *************************************************/
 
@@ -192,12 +193,13 @@ const Visualizer = ({
       updateNodeInternals(node.id);
     }
     // Queue graph generation (async) to explicitly occur AFTER nodes are set
-    setTimeout(() => {
-      // console.log(
-      //   "generating graph cuz activeTypeIDs, displayMode, ghostNodeIDs, ghostMode, collapseTrigger, or expandTrigger changed"
-      // );
-      generateGraph();
-    }, 0);
+    if (autoregraphMode)
+      setTimeout(() => {
+        // console.log(
+        //   "generating graph cuz activeTypeIDs, displayMode, ghostNodeIDs, ghostMode, collapseTrigger, or expandTrigger changed"
+        // );
+        generateGraph();
+      }, 0);
   }, [
     activeTypeIDs,
     activeFieldIDs,
@@ -307,14 +309,13 @@ const Visualizer = ({
     // Queue fitView to explicitly occur AFTER the graphed nodes have asynchronously been set
     // if (displayMode === "activeOnly" || ghostMode === "on" || initial)
     setTimeout(async () => {
-      if (ghostMode === "off") await flowInstance.fitView();
-      if (!initial)
-        await setTimeout(() => {
-          setLoaderHidden(true);
-        }, 100);
+      if (ghostMode === "off") flowInstance.fitView();
     }, 0);
     // You can configure this to fitView after every change when displayMode === 'all' as well,
     // however that UX feels slightly worse
+
+    // if (!initial)
+    setLoaderHidden(true);
   };
 
   /* Toggle Target Position */
@@ -340,7 +341,7 @@ const Visualizer = ({
 
   /* Toggle Display Mode */
   function toggleDisplayMode() {
-    if (displayMode === "activeOnly") setLoaderHidden(false);
+    if (displayMode === "activeOnly") setLoaderHidden(true);
     setDisplayMode((prevDisplayMode) =>
       prevDisplayMode === "activeOnly" ? "all" : "activeOnly"
     );
@@ -444,9 +445,9 @@ const Visualizer = ({
     <div className="visualizer-container">
       <div className={`loading-modal ${loaderHidden ? "hidden" : ""}`}>
         <span className="loader"></span>
-        <div>
+        {/* <div>
           <p className="loading-msg">Building your visualization</p>
-        </div>
+        </div> */}
       </div>
       <ReactFlow
         defaultViewport={{ x: 0, y: 0, zoom: 0.5 }}
@@ -478,6 +479,8 @@ const Visualizer = ({
           collapseAll={collapseAll}
           expandAll={expandAll}
           generateGraph={generateGraph}
+          autoregraphMode={autoregraphMode}
+          setAutoregraphMode={setAutoregraphMode}
         />
         <Background />
         {showControls && (
