@@ -10,6 +10,7 @@ import ReverseContext from "./context/ReverseContext";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { calculateMetrics } from "./utils/calculateMetrics";
+import { Tooltip } from "@mui/material";
 
 /* Default colors for edges and fields */
 const DEFAULT_COLORS = {
