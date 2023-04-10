@@ -61,11 +61,11 @@
   content: "";
   border: 1px solid rgb(188, 183, 204);
   border-radius: 5px;
-  height: 41%;
-  width: 11%;
+  height: 18px;
+  width: 18px;
   visibility: visible;
   position: absolute;
-  right: .5rem;
+  right: .6rem;
 }
 
 .type-heading:hover {
