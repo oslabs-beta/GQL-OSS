@@ -19,10 +19,10 @@ export const ContextProvider = ({ children }) => {
   const [reverseModeError, setReverseModeError] = useState(null);
   const [mutationMode, setMutationMode] = useState(false);
 
-  console.log(`revQueryObj: `, revQueryObj);
-  console.log("revActiveTypesNFields:", revActiveTypesNFields);
-  console.log(`revActiveRelationships: `, revActiveRelationships);
-  console.log(`revCurFields: `, revCurFields);
+  // console.log(`revQueryObj: `, revQueryObj);
+  // console.log("revActiveTypesNFields:", revActiveTypesNFields);
+  // console.log(`revActiveRelationships: `, revActiveRelationships);
+  // console.log(`revCurFields: `, revCurFields);
 
   const revQueryObjUpdated = useRef(revQueryObj);
 
@@ -195,7 +195,6 @@ export const ContextProvider = ({ children }) => {
         revActiveRelationships.size === 2 &&
         !revClickedField.isClarifiedField
       ) {
-        console.log(`HMM ONLY SO FAR AS LEVEL 1?`);
         //first thing: Get the correct starting reference. If this click occurs in the Query type, the reference to the query type needs to be specifically handled since it's unique (it's just the top layer array of revQueryObjUpdated). If the click occurs in the type that the first click allowed access to (eg. "continents/Continent"), the reference will be the "fields" value that exists in an object that also has the "operation: 'continents'" key/val pair.
 
         //if user has clicked query again, the reference is going to be the overall array
@@ -390,7 +389,6 @@ export const ContextProvider = ({ children }) => {
       //In this step, we are using recursion to navigate through the DEPTH of the revQueryObjUpdated.current array.
 
       if (revActiveRelationships.size > 2 || revClickedField.isClarifiedField) {
-        console.log(`HMM ONLY SO FAR AS LEVEL 2?`);
         // Getting the number of active relationships(determined by measing the length of that arr) for that obType will help determine if click has led to a collision, since if there is more than one active relationship for a type, this means a collision has occured
         const numberOfActiveRelationships =
           revActiveRelationships.get(typeName).length;
@@ -403,11 +401,10 @@ export const ContextProvider = ({ children }) => {
         //   revClickedField.isClarifiedField
         // );
         if (revClickedField.isClarifiedField) {
-          console.log(`HMM ONLY SO FAR AS LEVEL COLLISION?`);
           const { userClarification, relationship, typeName, fieldName } =
             revClickedField;
-          console.log(`CURRENT userClarification IS: `, userClarification);
-          console.log(`CURRENT relationship IS: `, relationship);
+          // console.log(`CURRENT userClarification IS: `, userClarification);
+          // console.log(`CURRENT relationship IS: `, relationship);
 
           //******** COLLISION MANAGEMENT HERE*******//
           //BIG PICTURE: get info user to build user interface so they help us resolve a collision
