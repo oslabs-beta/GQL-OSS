@@ -116,7 +116,7 @@
   content: "";
   position: absolute;
   border-radius: 50%;
-  animation: pulsOut 1s ease-in-out infinite;
+  animation: pulsOut 1.3s ease-in-out;
   filter: drop-shadow(0 0 1rem rgba(255, 255, 255, 0.75));
 }
 .loader:before {

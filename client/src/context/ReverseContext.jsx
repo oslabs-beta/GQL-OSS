@@ -52,15 +52,15 @@ export const ContextProvider = ({ children }) => {
   }, [revQueryObj]);
 
   useEffect(() => {
-    console.log("revQueryObj: ", revQueryObj);
-    console.log("revClickedField: ", revClickedField);
-    console.log("revActiveTypesnFields: ", revActiveTypesNFields);
-    console.log("revActiveRElationships: ", revActiveRelationships);
-    console.log("formattedQuery: ", formattedQuery);
-    console.log("revQueryType: ", revQueryType);
+    // console.log("revQueryObj: ", revQueryObj);
+    // console.log("revClickedField: ", revClickedField);
+    // console.log("revActiveTypesnFields: ", revActiveTypesNFields);
+    // console.log("revActiveRElationships: ", revActiveRelationships);
+    // console.log("formattedQuery: ", formattedQuery);
+    // console.log("revQueryType: ", revQueryType);
     try {
       if (revClickedField === null || !reverseMode) return;
-      console.log("HERE");
+      // console.log("HERE");
 
       const { fieldName, typeName, relationship, args } = revClickedField;
 
@@ -811,7 +811,10 @@ export const ContextProvider = ({ children }) => {
       setReverseModeError(
         `Whoops 😢. Something went wrong. Consider restarting Reverse Mode.`
       );
-      console.error(error);
+      console.error(
+        "Whoops something went wrong. Consider restarting reverse mode: ",
+        error
+      );
     }
   }, [revClickedField]);
 

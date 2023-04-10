@@ -315,7 +315,7 @@ const Visualizer = ({
     // however that UX feels slightly worse
 
     // if (!initial)
-    setTimeout(() => setLoaderHidden(true), 500);
+    setTimeout(() => setLoaderHidden(true), 550);
   };
 
   /* Toggle Target Position */
