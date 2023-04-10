@@ -71,7 +71,7 @@ const Visualizer = ({
   //Triggers for "Expand All" and "Collapse All" functionality
   const [collapseTrigger, setCollapseTrigger] = useState(0);
   const [expandTrigger, setExpandTrigger] = useState(0);
-  const [autoregraphMode, setAutoregraphMode] = useState(false);
+  const [autoregraphMode, setAutoregraphMode] = useState(true);
 
   /********************************************** useEFfect's *************************************************/
 
