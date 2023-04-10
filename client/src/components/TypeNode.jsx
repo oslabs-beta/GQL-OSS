@@ -11,6 +11,7 @@ const TypeNode = ({ data }) => {
     updateEdge,
     active,
     activeFieldIDs,
+    activeTypeIDs,
     displayMode,
     visualizerOptions,
     customColors,
@@ -46,6 +47,7 @@ const TypeNode = ({ data }) => {
             activeFieldIDs?.has(`${typeName}/${field.fieldName}`) ? true : false
           }
           displayMode={displayMode}
+          activeTypeIDs={activeTypeIDs}
         />
       ))
     );

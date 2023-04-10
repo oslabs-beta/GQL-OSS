@@ -83,7 +83,7 @@ const Visualizer = ({
   // If a valid vSchema is passed in, map each Object Type to a Type Node
   useEffect(() => {
     if (!vSchema) return;
-    setLoaderHidden(false)
+    setLoaderHidden(false);
     setEdges([]);
     setNodes([]);
     // Queue new node setting to explicitly occur AFTER edges & nodes reset
@@ -116,6 +116,7 @@ const Visualizer = ({
               collapseTrigger: 0,
               expandTrigger: 0,
             },
+            hidden: false,
             type: `typeNode`,
           }))
         ),
@@ -306,8 +307,11 @@ const Visualizer = ({
     // Queue fitView to explicitly occur AFTER the graphed nodes have asynchronously been set
     // if (displayMode === "activeOnly" || ghostMode === "on" || initial)
     setTimeout(async () => {
-      if (ghostMode === "off") await flowInstance.fitView()
-      if(!initial) await setTimeout(() => { setLoaderHidden(true)}, 100)
+      if (ghostMode === "off") await flowInstance.fitView();
+      if (!initial)
+        await setTimeout(() => {
+          setLoaderHidden(true);
+        }, 100);
     }, 0);
     // You can configure this to fitView after every change when displayMode === 'all' as well,
     // however that UX feels slightly worse
@@ -336,7 +340,7 @@ const Visualizer = ({
 
   /* Toggle Display Mode */
   function toggleDisplayMode() {
-    if(displayMode === "activeOnly") setLoaderHidden(false)
+    if (displayMode === "activeOnly") setLoaderHidden(false);
     setDisplayMode((prevDisplayMode) =>
       prevDisplayMode === "activeOnly" ? "all" : "activeOnly"
     );
@@ -432,7 +436,7 @@ const Visualizer = ({
     const el = document.querySelector(".visualizer-container");
     el.requestFullscreen();
   };
-  
+
   /************************************************ Render ******************************************************/
 
   return (
