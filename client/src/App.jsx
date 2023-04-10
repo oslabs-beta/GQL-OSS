@@ -37,6 +37,7 @@ const App = () => {
   const [ghostNodeIDs, setGhostNodeIDs] = useState(new Set());
   const [ghostEdgeIDs, setGhostEdgeIDs] = useState(new Set());
   const [metrics, setMetrics] = useState(null);
+  const [loaderHidden, setLoaderHidden] = useState(true)
 
   const endpointRef = useRef(null);
 
@@ -175,6 +176,8 @@ const App = () => {
             setGhostNodeIDs={setGhostNodeIDs}
             ghostEdgeIDs={ghostEdgeIDs}
             setGhostEdgeIDs={setGhostEdgeIDs}
+            loaderHidden={loaderHidden}
+            setLoaderHidden={setLoaderHidden}
           />
         </section>
       </Split>
