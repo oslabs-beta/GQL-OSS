@@ -4,6 +4,8 @@ import { request } from "graphql-request";
 import parseReceivedSchema from "../utils/parseIntrospectionQueryResponse";
 import "../styles/Endpoint.css";
 import ReverseContext from "../context/ReverseContext";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const DEFAULT_ENDPOINT = "https://countries.trevorblades.com/";
 
@@ -18,12 +20,15 @@ export const Endpoint = ({
   const epInputRef = useRef();
   const [endpointText, setEndpointText] = useState(DEFAULT_ENDPOINT);
   const { resetReverseContext } = useContext(ReverseContext);
+  const [endpointError, setEndpointError] = useState("");
 
   const setEPAndFetchSchema = async () => {
-    setEndpoint(endpointText);
+    if (endpointText === "")
+      return setEndpointError("Please enter an endpoint");
     // fetch and parse schema
     try {
       const schema = await request(endpointText, getIntrospectionQuery());
+      setEndpoint(endpointText);
       setSchema(schema);
       const parsedSchemaData = parseReceivedSchema(schema);
       setVSchema(parsedSchemaData.visualizerSchema);
@@ -32,7 +37,8 @@ export const Endpoint = ({
       // updateMetrics(newMetrics);
       updateMetrics();
     } catch (e) {
-      console.log("Error fetching introspection query: ", e);
+      // console.log("Error fetching introspection query: ", e);
+      setEndpointError("Error fetching from this endpoint");
     }
   };
 
@@ -57,6 +63,16 @@ export const Endpoint = ({
       <button onClick={setEPAndFetchSchema} className="endpoint__button">
         {`${getEndpointButtonName()} Endpoint`}
       </button>
+      <Snackbar
+        open={endpointError !== ""}
+        autoHideDuration={1700}
+        onClose={() => setEndpointError("")}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert severity="warning" sx={{ width: "100%" }}>
+          {endpointError}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
