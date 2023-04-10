@@ -37,7 +37,7 @@ const App = () => {
   const [ghostNodeIDs, setGhostNodeIDs] = useState(new Set());
   const [ghostEdgeIDs, setGhostEdgeIDs] = useState(new Set());
   const [metrics, setMetrics] = useState(null);
-  const [loaderHidden, setLoaderHidden] = useState(true)
+  const [loaderHidden, setLoaderHidden] = useState(true);
 
   const endpointRef = useRef(null);
 
@@ -84,7 +84,11 @@ const App = () => {
       setActiveEdgeIDs(null);
       setDisplayMode("activeOnly");
       setGhostMode("on");
-      if (vSchema) setActiveTypeIDs(new Set([vSchema.queryName.name]));
+      if (vSchema) {
+        setActiveTypeIDs(
+          new Set([vSchema.queryName.name, vSchema.mutationName?.name])
+        );
+      }
       setActiveFieldIDs(null);
       setGhostNodeIDs(new Set());
       setGhostEdgeIDs(new Set());
