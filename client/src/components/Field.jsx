@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState, useContext } from "react";
+import React, { memo, useEffect, useState, useContext, useRef } from "react";
 import { Handle } from "reactflow";
 import {
   MarkerType,
@@ -26,11 +26,9 @@ const Field = ({
   const [handlePosition, setHandlePosition] = useState("right");
   const store = useStoreApi();
   const { nodeInternals } = store.getState();
-  const numVisibleNodes = Array.from(nodeInternals.values()).filter(
-    (node) => !node.hidden
-  ).length;
+  const numNodes = useRef(Array.from(nodeInternals.values()).length);
   let nodes;
-  if (numVisibleNodes < 10) nodes = useNodes();
+  if (numNodes.current < 10) nodes = useNodes();
   const [collisionModalOpen, setCollisionModalOpen] = useState(false);
   const [collisionRelationships, setCollisionRelationships] = useState([]);
   const {
