@@ -10,6 +10,7 @@ import ReverseContext from "./context/ReverseContext";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { calculateMetrics } from "./utils/calculateMetrics";
+import { Tooltip } from "@mui/material";
 
 /* Default colors for edges and fields */
 const DEFAULT_COLORS = {
@@ -46,6 +47,7 @@ const App = () => {
     reverseModeError,
     setReverseModeError,
     resetReverseContext,
+    mutationMode,
   } = useContext(ReverseContext);
 
   /********************************************** useEffect's *************************************************/
@@ -181,8 +183,8 @@ const App = () => {
       </Split>
 
       <Snackbar
-        open={reverseModeError !== null}
-        autoHideDuration={1700}
+        open={(reverseModeError !== null || mutationMode === true) && vSchema}
+        autoHideDuration={reverseMode === true ? 1700 : null}
         onClose={() => {
           setReverseModeError(null);
         }}
@@ -190,6 +192,8 @@ const App = () => {
       >
         <Alert severity="warning" sx={{ width: "100%" }}>
           {reverseModeError}
+          {mutationMode &&
+            `Mutations require MANUAL submission and WILL affect your data`}
         </Alert>
       </Snackbar>
     </main>

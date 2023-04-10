@@ -101,6 +101,7 @@ export default function Editor({
     reverseMode,
     setReverseMode,
     resetReverseContext,
+    setMutationMode,
     revQueryObj,
   } = useContext(ReverseContext);
   // below line is preferable but crashes the app on context save bcz for a moment context object does not exist.
@@ -230,6 +231,14 @@ export default function Editor({
     // Ref used here for non-stale state
     queryModel.onDidChangeContent(
       debounce(300, () => {
+        const operations = editor
+          .getModel(Uri.file("operation.graphql"))
+          .getValue();
+        if (operations.includes(`mutation`)) {
+          setMutationMode(true);
+        } else {
+          setMutationMode(false);
+        }
         if (liveQueryModeRef.current) execOperation(true);
       })
     );
