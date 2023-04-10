@@ -149,7 +149,7 @@ const App = () => {
         sizes={[27, 73]}
         minSize={5}
         snapOffset={50}
-        onDrag={handleHorizontalDrag}
+        // onDrag={handleHorizontalDrag}
       >
         <section className="seg-holder editor-section">
           <Editor
