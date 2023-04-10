@@ -40,7 +40,7 @@
   justify-content: center;
   /* font-style: italic; */
   /* font-weight: bold; */
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: 1.5px;
   text-align: center;
   /* border-bottom: 1px solid rgb(188, 183, 204); */
@@ -53,7 +53,7 @@
 
 .type-heading__rotating-button {
   position: absolute;
-  right: .8rem;
+  right: 0.81rem;
   letter-spacing: normal;
 }
 
@@ -65,7 +65,7 @@
   width: 18px;
   visibility: visible;
   position: absolute;
-  right: .6rem;
+  right: 0.6rem;
 }
 
 .type-heading:hover {

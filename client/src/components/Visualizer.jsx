@@ -71,6 +71,7 @@ const Visualizer = ({
   //Triggers for "Expand All" and "Collapse All" functionality
   const [collapseTrigger, setCollapseTrigger] = useState(0);
   const [expandTrigger, setExpandTrigger] = useState(0);
+  const [autoregraphMode, setAutoregraphMode] = useState(true);
 
   /********************************************** useEFfect's *************************************************/
 
@@ -83,7 +84,7 @@ const Visualizer = ({
   // If a valid vSchema is passed in, map each Object Type to a Type Node
   useEffect(() => {
     if (!vSchema) return;
-    setLoaderHidden(false)
+    setLoaderHidden(false);
     setEdges([]);
     setNodes([]);
     // Queue new node setting to explicitly occur AFTER edges & nodes reset
@@ -116,6 +117,7 @@ const Visualizer = ({
               collapseTrigger: 0,
               expandTrigger: 0,
             },
+            hidden: false,
             type: `typeNode`,
           }))
         ),
@@ -187,13 +189,17 @@ const Visualizer = ({
         return newNode;
       });
     });
+    for (const node of nodes) {
+      updateNodeInternals(node.id);
+    }
     // Queue graph generation (async) to explicitly occur AFTER nodes are set
-    setTimeout(() => {
-      // console.log(
-      //   "generating graph cuz activeTypeIDs, displayMode, ghostNodeIDs, ghostMode, collapseTrigger, or expandTrigger changed"
-      // );
-      generateGraph();
-    }, 0);
+    if (autoregraphMode)
+      setTimeout(() => {
+        // console.log(
+        //   "generating graph cuz activeTypeIDs, displayMode, ghostNodeIDs, ghostMode, collapseTrigger, or expandTrigger changed"
+        // );
+        generateGraph();
+      }, 0);
   }, [
     activeTypeIDs,
     activeFieldIDs,
@@ -238,7 +244,7 @@ const Visualizer = ({
               : customColors["edgeDefault"],
             strokeWidth: isActive ? "2" : "1.1",
           },
-          zIndex: isActive ? -1 : -2,
+          zIndex: isActive ? "auto" : -1,
           hidden: isHidden,
           // hidden: displayMode === "activeOnly" && !isActive,
           active: isActive,
@@ -303,11 +309,13 @@ const Visualizer = ({
     // Queue fitView to explicitly occur AFTER the graphed nodes have asynchronously been set
     // if (displayMode === "activeOnly" || ghostMode === "on" || initial)
     setTimeout(async () => {
-      if (ghostMode === "off") await flowInstance.fitView()
-      if(!initial) await setTimeout(() => { setLoaderHidden(true)}, 100)
+      if (ghostMode === "off") flowInstance.fitView();
     }, 0);
     // You can configure this to fitView after every change when displayMode === 'all' as well,
     // however that UX feels slightly worse
+
+    // if (!initial)
+    setTimeout(() => setLoaderHidden(true), 550);
   };
 
   /* Toggle Target Position */
@@ -333,7 +341,7 @@ const Visualizer = ({
 
   /* Toggle Display Mode */
   function toggleDisplayMode() {
-    if(displayMode === "activeOnly") setLoaderHidden(false)
+    // if (displayMode === "activeOnly") setLoaderHidden(true);
     setDisplayMode((prevDisplayMode) =>
       prevDisplayMode === "activeOnly" ? "all" : "activeOnly"
     );
@@ -429,7 +437,7 @@ const Visualizer = ({
     const el = document.querySelector(".visualizer-container");
     el.requestFullscreen();
   };
-  
+
   /************************************************ Render ******************************************************/
 
   return (
@@ -438,7 +446,7 @@ const Visualizer = ({
       <div className={`loading-modal ${loaderHidden ? "hidden" : ""}`}>
         <span className="loader"></span>
         <div>
-          <p className="loading-msg">Building your visualization</p>
+          {/* <p className="loading-msg">Building your visualization</p> */}
         </div>
       </div>
       <ReactFlow
@@ -471,6 +479,8 @@ const Visualizer = ({
           collapseAll={collapseAll}
           expandAll={expandAll}
           generateGraph={generateGraph}
+          autoregraphMode={autoregraphMode}
+          setAutoregraphMode={setAutoregraphMode}
         />
         <Background />
         {showControls && (

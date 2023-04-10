@@ -22,10 +22,15 @@ const Field = ({
   edgeDefaultColor,
 }) => {
   /********************************************************** State *******************************************************/
-  const nodes = useNodes();
   const updateNodeInternals = useUpdateNodeInternals();
   const [handlePosition, setHandlePosition] = useState("right");
   const store = useStoreApi();
+  const { nodeInternals } = store.getState();
+  const numVisibleNodes = Array.from(nodeInternals.values()).filter(
+    (node) => !node.hidden
+  ).length;
+  let nodes;
+  if (numVisibleNodes < 10) nodes = useNodes();
   const [collisionModalOpen, setCollisionModalOpen] = useState(false);
   const [collisionRelationships, setCollisionRelationships] = useState([]);
   const {
@@ -78,15 +83,15 @@ const Field = ({
     }
   }, []);
 
+  // console.log(nodeInternals);
+
   /********************************************************** Helper Fn's *******************************************************/
 
   /* Dynamically shift around the handles */
-  // I originally tried to store curr and target nodes in state
-  // and assign them only once in useEffect, however ... that created
-  // all sorts of unintended behavior
-  // You'd think it'd be easier that way ... it seems 'references' got lost in state
-  // So here, we're 'brute forcing' instead.
-  if (relationship) {
+  // (only under a certain number of nodes for performance)
+  // React Flow API is limited in terms of how to selectively watch nodes
+  // Unfortunately the useNode(<id>) hook is deprecated ... so very limited usage of useNodes() must be used instead
+  if (relationship && nodes) {
     const targetNode = nodes.find((node) => node.id === relationship);
     const currNode = nodes.find((node) => node.id === typeName);
     const targetPosition = targetNode.position;
@@ -105,16 +110,12 @@ const Field = ({
 
   const reverseClickHandler = () => {
     if (!reverseMode) return;
-
     if (revActiveTypesNFields === null || revActiveTypesNFields[typeName]) {
       const curRevActiveRelationships = revActiveRelationships?.get(typeName);
       const numberOfActiveRelationships = curRevActiveRelationships?.length;
 
       const fieldInfo = { typeName, fieldName, relationship, args };
       if (numberOfActiveRelationships > 1) {
-        // alert(`COLISSION HAS OCCURED!`);
-        //when you delete the CollisionPrompt component from this Field component, make sure to delete it also from the return jsx!
-        // setCollisionComp(<CollisionPrompt fieldInfo={fieldInfo} />);
         setCollisionRelationships(curRevActiveRelationships);
         setCollisionModalOpen(true);
       } else {
@@ -122,7 +123,6 @@ const Field = ({
       }
     } else {
       setReverseModeError("There are no possible active routes to this field");
-      // setRevClickedField({ typeName, fieldName, relationship });
     }
   };
 

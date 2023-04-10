@@ -37,7 +37,7 @@ const App = () => {
   const [ghostNodeIDs, setGhostNodeIDs] = useState(new Set());
   const [ghostEdgeIDs, setGhostEdgeIDs] = useState(new Set());
   const [metrics, setMetrics] = useState(null);
-  const [loaderHidden, setLoaderHidden] = useState(true)
+  const [loaderHidden, setLoaderHidden] = useState(true);
 
   const endpointRef = useRef(null);
 
@@ -81,17 +81,19 @@ const App = () => {
 
   useEffect(() => {
     if (reverseMode) {
+      setActiveEdgeIDs(null);
       setDisplayMode("activeOnly");
       setGhostMode("on");
-      if (vSchema) setActiveTypeIDs(new Set([vSchema.queryName.name]));
-    } else {
-      setActiveTypeIDs(null);
+      if (vSchema) {
+        setActiveTypeIDs(
+          new Set([vSchema.queryName.name, vSchema.mutationName?.name])
+        );
+      }
+      setActiveFieldIDs(null);
+      setGhostNodeIDs(new Set());
+      setGhostEdgeIDs(new Set());
+      resetReverseContext();
     }
-    setActiveFieldIDs(null);
-    setActiveEdgeIDs(null);
-    setGhostNodeIDs(new Set());
-    setGhostEdgeIDs(new Set());
-    resetReverseContext();
   }, [reverseMode]);
 
   useEffect(() => {
@@ -183,7 +185,10 @@ const App = () => {
       </Split>
 
       <Snackbar
-        open={(reverseModeError !== null || mutationMode === true) && vSchema}
+        open={
+          (reverseModeError !== null || mutationMode === true) &&
+          vSchema !== null
+        }
         autoHideDuration={reverseMode === true ? 1700 : null}
         onClose={() => {
           setReverseModeError(null);

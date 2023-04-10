@@ -1,4 +1,4 @@
-.Pushbutton{
+/* .Pushbutton {
   background: none;
   border: none;
   outline: none;
@@ -7,14 +7,44 @@
   appearance: none;
   opacity: 75%;
 }
-.Pushbutton button{
+.Pushbutton button {
   background: transparent;
-  color: #F5F5F5;
-  border: 1px groove #F5F5F5;
-  
+  color: #f5f5f5;
+  border: 1px groove #f5f5f5;
+
   font-size: 12px;
   font-weight: 400;
-  border-radius: 5px;
+  border-radius: 4px;
   margin: 5px;
-  
+}
+
+.Pushbutton button:active {
+  box-shadow: inset 2px 2px 4px -2px #000000;
+} */
+
+.Pushbutton button {
+  font-family: "Poppins", sans-serif;
+  padding: 2px 6px;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 7px;
+  background: transparent;
+  color: whitesmoke;
+  outline: 1px solid rgb(188, 183, 204);
+  transition: all 0.1s ease;
+  font-weight: 300;
+  font-size: 11px;
+}
+
+.Pushbutton button:hover {
+  background-color: rgba(56, 56, 72, 0.5);
+  color: white;
+  outline: 1px solid rgb(188, 183, 204);
+  outline-offset: 1px;
+}
+
+.Pushbutton button:active {
+  outline-offset: 2px;
+  background-color: rgba(255, 255, 255, 0.4);
+  color: black;
 }

@@ -21,6 +21,8 @@ export function OptionsPanel({
   collapseAll,
   expandAll,
   generateGraph,
+  autoregraphMode,
+  setAutoregraphMode,
 }) {
   const { targetPosition, showMinimap, showControls } = visualizerOptions;
   const { reverseMode } = useContext(ReverseContext);
@@ -58,12 +60,19 @@ export function OptionsPanel({
               handleChange={toggleDisplayMode}
             />
             <ToggleSwitch
-              toggleName="ghost mode"
+              toggleName="suggestions"
               labelLeft="off"
               labelRight="on"
               isChecked={ghostMode === "on"}
               handleChange={toggleGhostMode}
               displayMode={displayMode}
+            />
+            <ToggleSwitch
+              toggleName="auto regraph"
+              labelLeft="off"
+              labelRight="on"
+              isChecked={autoregraphMode}
+              handleChange={() => setAutoregraphMode((prevMode) => !prevMode)}
             />
             <ToggleSwitch
               toggleName="target position"
@@ -73,14 +82,14 @@ export function OptionsPanel({
               handleChange={toggleTargetPosition}
             />
             <ToggleSwitch
-              toggleName="show minimap"
+              toggleName="minimap"
               labelLeft="off"
               labelRight="on"
               isChecked={showMinimap}
               handleChange={toggleMinimap}
             />
             <ToggleSwitch
-              toggleName="show controls"
+              toggleName="controls"
               labelLeft="off"
               labelRight="on"
               isChecked={showControls}

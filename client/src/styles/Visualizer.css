@@ -69,15 +69,21 @@
   height: 100%;
   width: 100%;
 }
+.react-flow__node-typeNode {
+  z-index: 2;
+}
+.type-node__container {
+  z-index: 2;
+}
+.type-node {
+  z-index: 2;
+}
 
-
-
-
-.loading-modal{
-  z-index: 1000;
+.loading-modal {
+  z-index: 1;
   height: 100%;
   width: 100%;
-  background-color: #1d1e22;
+  /* background-color: #1d1e22; */
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -86,10 +92,10 @@
   gap: 15px;
   /* display: none; */
 }
-.loading-modal p{
+.loading-modal p {
   color: whitesmoke;
 }
-.loading-modal:hidden{
+.loading-modal:hidden {
   display: none;
 }
 
@@ -110,39 +116,41 @@
   content: "";
   position: absolute;
   border-radius: 50%;
-  animation: pulsOut 1.8s ease-in-out infinite;
+  animation: pulsOut 1.3s ease-in-out;
   filter: drop-shadow(0 0 1rem rgba(255, 255, 255, 0.75));
 }
 .loader:before {
   width: 100%;
   padding-bottom: 100%;
-  box-shadow: inset 0 0 0 1rem #fff;
+  box-shadow: inset 0 0 0 1rem rgb(188, 183, 204);
   animation-name: pulsIn;
 }
 .loader:after {
   width: calc(100% - 2rem);
   padding-bottom: calc(100% - 2rem);
-  box-shadow: 0 0 0 0 #fff;
+  box-shadow: 0 0 0 0 rgb(188, 183, 204);
 }
 
 @keyframes pulsIn {
   0% {
-    box-shadow: inset 0 0 0 1rem #fff;
+    box-shadow: inset 0 0 0 1rem rgb(188, 183, 204);
     opacity: 1;
   }
-  50%, 100% {
-    box-shadow: inset 0 0 0 0 #fff;
+  50%,
+  100% {
+    box-shadow: inset 0 0 0 0 rgb(188, 183, 204);
     opacity: 0;
   }
 }
 
 @keyframes pulsOut {
-  0%, 50% {
-    box-shadow: 0 0 0 0 #fff;
+  0%,
+  50% {
+    box-shadow: 0 0 0 0 rgb(188, 183, 204);
     opacity: 0;
   }
   100% {
-    box-shadow: 0 0 0 1rem #fff;
+    box-shadow: 0 0 0 1rem rgb(188, 183, 204);
     opacity: 1;
   }
 }
@@ -154,20 +162,20 @@
   overflow: hidden;
   display: inline-block;
   vertical-align: bottom;
-  -webkit-animation: ellipsis steps(4,end) 2000ms infinite;      
-  animation: ellipsis steps(4,end) 2000ms infinite;
+  -webkit-animation: ellipsis steps(4, end) 2000ms infinite;
+  animation: ellipsis steps(4, end) 2000ms infinite;
   content: "\2026"; /* ascii code for the ellipsis character */
   width: 0px;
 }
 
 @keyframes ellipsis {
   to {
-    width: 1em;    
+    width: 1em;
   }
 }
 
 @-webkit-keyframes ellipsis {
   to {
-    width: 1.25em;    
+    width: 1.25em;
   }
 }

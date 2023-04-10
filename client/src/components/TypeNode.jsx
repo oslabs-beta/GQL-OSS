@@ -11,6 +11,7 @@ const TypeNode = ({ data }) => {
     updateEdge,
     active,
     activeFieldIDs,
+    activeTypeIDs,
     displayMode,
     visualizerOptions,
     customColors,
@@ -46,6 +47,7 @@ const TypeNode = ({ data }) => {
             activeFieldIDs?.has(`${typeName}/${field.fieldName}`) ? true : false
           }
           displayMode={displayMode}
+          activeTypeIDs={activeTypeIDs}
         />
       ))
     );
@@ -59,6 +61,7 @@ const TypeNode = ({ data }) => {
           type="source"
           position="right"
           id={`${typeName}/${field.fieldName}`}
+          key={`${typeName}/${field.fieldName}`}
           isConnectable={false}
           style={{ position: "absolute" }}
         />
@@ -86,19 +89,21 @@ const TypeNode = ({ data }) => {
 
   return (
     <div className={`type-node ${active ? "gradient-border2" : ""}`}>
-      {typeName !== "Root" && typeName !== "Query" && (
-        <Handle
-          type="target"
-          position={targetPosition === "left" ? "left" : "top"}
-          id={typeName}
-          isConnectable={false}
-          className={
-            targetPosition === "left"
-              ? "type-node__handle-target-left"
-              : "type-node__handle-target-top"
-          }
-        />
-      )}
+      {typeName !== "Root" &&
+        typeName !== "Query" &&
+        typeName !== "Mutation" && (
+          <Handle
+            type="target"
+            position={targetPosition === "left" ? "left" : "top"}
+            id={typeName}
+            isConnectable={false}
+            className={
+              targetPosition === "left"
+                ? "type-node__handle-target-left"
+                : "type-node__handle-target-top"
+            }
+          />
+        )}
       {collapsed && altHandles}
       <div className="type-node__container">
         <div onClick={() => setCollapsed(!collapsed)} className="type-heading">

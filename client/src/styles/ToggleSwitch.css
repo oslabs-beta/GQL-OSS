@@ -16,6 +16,10 @@
   font-size: 12px;
   font-weight: 400;
 }
+.react-flow__panel .toggle-switch__name {
+  margin-bottom: -5px;
+  margin-top: -1px;
+}
 
 .toggle-switch__container {
   display: flex;
