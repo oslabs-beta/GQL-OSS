@@ -17,6 +17,7 @@ export const ContextProvider = ({ children }) => {
   const [reverseMode, setReverseMode] = useState(false);
   const [isRevModeError, setIsRevModeError] = useState(false);
   const [reverseModeError, setReverseModeError] = useState(null);
+  const [mutationMode, setMutationMode] = useState(false);
 
   // console.log(`revQueryObj: `, revQueryObj);
   // console.log("revActiveTypesNFields:", revActiveTypesNFields);
@@ -65,7 +66,9 @@ export const ContextProvider = ({ children }) => {
           //Check for publicates in revCurFields
           const curFieldRefString = `${fieldName}/${typeName}`;
           if (revCurFields[curFieldRefString]) {
-            console.log(`CANNOT ADD DUPLICATES FOR QUERY/MUTATION TYPE`);
+            setReverseModeError(
+              `Cannot add duplicate fields for ${typeName} type`
+            );
             return;
           }
         }
@@ -87,7 +90,9 @@ export const ContextProvider = ({ children }) => {
           !typeName.toLowerCase().includes(`root`) &&
           !typeName.toLowerCase().includes(`mutation`)
         ) {
-          console.log(`YA HAVE TO START WITH EITHER QUERY OR MUTATION`);
+          setReverseModeError(
+            `First click in Reverse Mode must be in either the Query or Mutation type`
+          );
           return;
         }
 
@@ -167,6 +172,7 @@ export const ContextProvider = ({ children }) => {
         setRevActiveTypesNFields(actives);
         setRevActiveRelationships(revRelationships);
         setRevQueryType(typeName.toLowerCase());
+        setReverseMode(true);
         //return to end operation
         return;
       }
@@ -576,7 +582,6 @@ export const ContextProvider = ({ children }) => {
             };
 
           const rootRefString = `${rootField}/${rootType}`;
-          // console.log(`RELATIONSHIP CURRENT rootRefString IS: `, rootRefString);
 
           const [reference, isRevRoot, isOperation] = findCorrectReference(
             referenceStr,
@@ -781,6 +786,9 @@ export const ContextProvider = ({ children }) => {
       }
     } catch (error) {
       setIsRevModeError(true);
+      setReverseModeError(
+        `Whoops 😢. Something went wrong. Consider restarting Reverse Mode.`
+      );
       console.error(error);
     }
   }, [revClickedField]);
@@ -805,6 +813,8 @@ export const ContextProvider = ({ children }) => {
         setReverseMode,
         reverseModeError,
         setReverseModeError,
+        mutationMode,
+        setMutationMode,
       }}
     >
       {children}
