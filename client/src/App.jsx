@@ -9,6 +9,7 @@ import getActivesFromQuery from "./utils/getActivesFromQuery";
 import ReverseContext from "./context/ReverseContext";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { calculateMetrics } from "./utils/calculateMetrics";
 
 /* Default colors for edges and fields */
 const DEFAULT_COLORS = {
@@ -35,6 +36,8 @@ const App = () => {
   const [ghostNodeIDs, setGhostNodeIDs] = useState(new Set());
   const [ghostEdgeIDs, setGhostEdgeIDs] = useState(new Set());
   const [metrics, setMetrics] = useState(null);
+
+  const endpointRef = useRef(null);
 
   const {
     reverseMode,
@@ -93,6 +96,11 @@ const App = () => {
     if (displayMode === "all") setGhostMode("off");
   }, [displayMode]);
 
+  /* update endpointRef for updateMetrics to access current endpoint */
+  useEffect(() => {
+    endpointRef.current = endpoint;
+  }, [endpoint]);
+
   /********************************************** Helper Functions *************************************************/
 
   /* Prevent Left Pane From Forcing Overflow */
@@ -102,11 +110,17 @@ const App = () => {
     }
   };
 
-  function updateMetrics(newMetricsProperties) {
-    setMetrics({
-      ...metrics,
-      ...newMetricsProperties,
-    });
+  // accesses performance object
+  // calculates query time of the last PerformanceEntry that interacted w/endpoint
+  // assigns a name ('Introspection' || 'Query') to metrics.lastResponseType
+  function updateMetrics() {
+    const newMetricsProperties = calculateMetrics(endpointRef.current);
+    if (newMetricsProperties) {
+      setMetrics({
+        ...metrics,
+        ...newMetricsProperties,
+      });
+    }
   }
 
   /************************************************ Render ******************************************************/
