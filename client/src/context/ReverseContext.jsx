@@ -69,9 +69,42 @@ export const ContextProvider = ({ children }) => {
       if (revActiveRelationships) {
         //this access the current relationship reference. If the value is undefined, that mean's the currently selected field has come from the Query/Mutation obj, which is the only revActiveRelationships val w/ an empty arr. Checking if it's false mean's we're dealing with a click from the Query/Mutation type.
         if (!revActiveRelationships.get(typeName)[0]) {
+          //consider first if field name takes arg. if so, the arg will simply be added to the field name
+          //args is an array containing all possible args as vals
+          let field;
+          if (args && args.length) {
+            const length = args.length;
+            let innerStr = ``;
+
+            //in case of multiple args, iterate
+            for (let i = 0; i < length; i++) {
+              //only nonNull args should be added, the optional ones, not a priority and clutter up the reverse mode build query
+              if (args[i].nonNull === true) {
+                //first case essentially if there's another arg. If so, make sure the space is added at the end for proper formatting
+                if (args[i + 1]) {
+                  innerStr += `<${args[i].name.toUpperCase()}> `;
+                } else {
+                  //if no more args after current, just add arg name w/out space
+                  innerStr += `<${args[i].name.toUpperCase()}>`;
+                }
+              }
+            }
+
+            //adds parenthesis to vars string
+            if (innerStr.length !== 0) {
+              innerStr = `(${innerStr})`;
+            }
+            //adds inner string to field name.
+            field = `${fieldName}${innerStr}`;
+          } else {
+            field = fieldName;
+          }
+
           //Check for publicates in revCurFields
-          const curFieldRefString = `${fieldName}/${typeName}`;
+          const curFieldRefString = `${field}/${typeName}`;
+          // console.log(`CURRENT curFieldRefString IS: `, curFieldRefString);
           if (revCurFields[curFieldRefString]) {
+            // console.log(`ARE WE ERROR HANDLING?`);
             setReverseModeError(
               `Cannot add duplicate fields for ${typeName} type`
             );
