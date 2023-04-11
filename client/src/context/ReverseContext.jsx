@@ -15,7 +15,6 @@ export const ContextProvider = ({ children }) => {
   const [revClickedField, setRevClickedField] = useState(null);
   const [formattedQuery, setFormattedQuery] = useState(null);
   const [reverseMode, setReverseMode] = useState(false);
-  const [isRevModeError, setIsRevModeError] = useState(false);
   const [reverseModeError, setReverseModeError] = useState(null);
   const [mutationMode, setMutationMode] = useState(false);
 
@@ -52,15 +51,8 @@ export const ContextProvider = ({ children }) => {
   }, [revQueryObj]);
 
   useEffect(() => {
-    // console.log("revQueryObj: ", revQueryObj);
-    // console.log("revClickedField: ", revClickedField);
-    // console.log("revActiveTypesnFields: ", revActiveTypesNFields);
-    // console.log("revActiveRElationships: ", revActiveRelationships);
-    // console.log("formattedQuery: ", formattedQuery);
-    // console.log("revQueryType: ", revQueryType);
     try {
       if (revClickedField === null || !reverseMode) return;
-      // console.log("HERE");
 
       const { fieldName, typeName, relationship, args } = revClickedField;
 
@@ -102,9 +94,8 @@ export const ContextProvider = ({ children }) => {
 
           //Check for publicates in revCurFields
           const curFieldRefString = `${field}/${typeName}`;
-          // console.log(`CURRENT curFieldRefString IS: `, curFieldRefString);
+
           if (revCurFields[curFieldRefString]) {
-            // console.log(`ARE WE ERROR HANDLING?`);
             setReverseModeError(
               `Cannot add duplicate fields for ${typeName} type`
             );
@@ -442,30 +433,10 @@ export const ContextProvider = ({ children }) => {
         if (revClickedField.isClarifiedField) {
           const { userClarification, relationship, typeName, fieldName } =
             revClickedField;
-          // console.log(`CURRENT userClarification IS: `, userClarification);
-          // console.log(`CURRENT relationship IS: `, relationship);
 
           //******** COLLISION MANAGEMENT HERE*******//
           //BIG PICTURE: get info user to build user interface so they help us resolve a collision
 
-          /*
-          PREVIOUS TO THE EXISTING OF A UI THAT ALLOWS A USER TO CLARIFY WHICH FIELD THEY WANT THEIR SELECTED FIELD TO GO INTO THIS WAS THE CODE THAT WAS USED TO TEST COLLISION MANAGEMENT
-          //rebuilt string created a string w/ the different options the user has, of which the user will click one, and that one will become the new string that the findCorrectReference utils func will use to look up as the reference for the selected field
-          const rebuiltStr = revActiveRelationships
-            .get(typeName)
-            .reduce((acc, cur) => {
-              const strForEachField = `  "${cur.field}" in ${cur.type}\n`;
-              return acc + strForEachField;
-            }, ``);
-
-          //prompt the user
-          //TODO: This fieldName + vars String will create a BAD UX/UI when collisions occur and the field name w/ vars (only for query and mutations field) appears for the user to select. Gonna have to filter out the parenthesis and the chars within it, and then make sure if the user selects THAT field, field w/ vars, to resolve the collision, that the parenthesis and its contexts are present in the response to the logic too, since that field is actually saved as a reference w/ those vars, for convenience
-          const userClarification = prompt(
-            `User has to click which relationship to follow!\nClick field "${fieldName}" can go into the following query fields:\n${rebuiltStr}Please choose one!`
-          );
-          */
-
-          //UNION IS HERE!!! UNION IS HERE!!! UNION IS HERE!!! UNION IS HERE!!! UNION IS HERE!!! UNION IS HERE!!! UNION IS HERE!!! UNION IS HERE!!!
           //creates vars for the field and its type that the user has selected. userClarifiedType will be used when updating the rev current fields below, when reverse mode state is being updated when handling a collision
           const [userClarifiedField, userClarifiedType] =
             userClarification.split(`/`);
@@ -646,9 +617,6 @@ export const ContextProvider = ({ children }) => {
             rootRefString,
             fieldName
           );
-          // console.log(`RELATIONSHIP reference IS: `, reference);
-          // console.log(`RELATIONSHIP isRevRoot IS: `, isRevRoot);
-          // console.log(`RELATIONSHIP isOperation IS: `, isOperation);
 
           //consider first if field name takes arg. if so, just add to field name
           //args is an array containing all possible args as vals
@@ -840,7 +808,6 @@ export const ContextProvider = ({ children }) => {
         setRevQueryObj([...revQueryObjUpdated.current]);
       }
     } catch (error) {
-      setIsRevModeError(true);
       setReverseModeError(
         `Whoops 😢. Something went wrong. Consider restarting Reverse Mode.`
       );
