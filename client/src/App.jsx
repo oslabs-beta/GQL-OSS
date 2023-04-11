@@ -125,7 +125,7 @@ const App = () => {
       });
     }
   }
-
+  console.log(reverseModeError);
   /************************************************ Render ******************************************************/
   return (
     <main>
@@ -184,18 +184,26 @@ const App = () => {
       </Split>
 
       <Snackbar
-        open={
-          (reverseModeError !== null || mutationMode === true) &&
-          vSchema !== null
-        }
-        autoHideDuration={reverseMode === true ? 1700 : null}
+        open={reverseModeError !== null && vSchema !== null}
+        autoHideDuration={1700}
         onClose={() => {
           setReverseModeError(null);
         }}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        style={
+          mutationMode === true ? { transform: `translate(-50%,-55px)` } : null
+        }
       >
         <Alert severity="warning" sx={{ width: "100%" }}>
           {reverseModeError}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={mutationMode === true && vSchema !== null}
+        autoHideDuration={null}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert severity="warning" sx={{ width: "100%" }}>
           {mutationMode &&
             `Mutations require MANUAL submission and WILL affect your data`}
         </Alert>
