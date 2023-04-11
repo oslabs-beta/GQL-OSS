@@ -1,8 +1,6 @@
 .options-panel__container {
   --offwhite: rgb(188, 183, 204);
-  /* border: 1px lightgray solid; */
   border: 1px solid var(--offwhite);
-  /* background-color: #fefefe; */
   background-color: #202125dd;
   color: whitesmoke;
   padding: 0.5rem;

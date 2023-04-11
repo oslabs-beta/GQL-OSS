@@ -14,8 +14,9 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import ReverseContext from "../context/ReverseContext";
 
+/* Collision Modal: a MaterialUI-based modal for selecting which specific active route to place a clicked field in reverse mode */
 const CollisionModal = ({ open, setOpen, relationships, fieldInfo }) => {
-  /********************************************************* State *********************************************************/
+  /********************************************************* State **************************************************************/
 
   const { setRevClickedField } = useContext(ReverseContext);
   const [source, setSource] = useState("");
@@ -25,10 +26,10 @@ const CollisionModal = ({ open, setOpen, relationships, fieldInfo }) => {
 
   /* Map each reverse relationship of a clicked field with collisions to menu items (dropdown choices) */
   const menuItems = relationships.map((relationship) => {
-    const sanitizedField = relationship.field.replaceAll(/\([^)]*\)/g, "");
+    const sanitizedField = relationship.field.replaceAll(/\([^)]*\)/g, ""); // Don't display variables (anything inside parens) to user
     return (
       <MenuItem
-        key={`${relationship.field}/${relationship.type}`} // The format setup in Reverse Context
+        key={`${relationship.field}/${relationship.type}`} // The format setup in Reverse Context (inverse is shown to user for readability)
         value={`${relationship.field}/${relationship.type}`}
       >
         {`${relationship.type}/${sanitizedField}`}
@@ -37,13 +38,15 @@ const CollisionModal = ({ open, setOpen, relationships, fieldInfo }) => {
   });
 
   /********************************************************* Helper Fn's *********************************************************/
+
   const handleClose = (event, reason) => {
     if ((reason && reason === "backdropClick") || source === "") {
-      setSnackbarOpen(true);
+      setSnackbarOpen(true); // Force user to select option
+      // Ideally do not force. However, the reverse mode framework currently requires a selection.
       return;
     }
     setRevClickedField({
-      // Triggers collision management in Reverse Context
+      // This object shape triggers collision management in Reverse Context
       userClarification: source,
       relationship: fieldInfo.relationship,
       isClarifiedField: true,
@@ -53,7 +56,7 @@ const CollisionModal = ({ open, setOpen, relationships, fieldInfo }) => {
     setOpen(false);
   };
 
-  const handleSnackbarClose = (event, reason) => {
+  const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
 

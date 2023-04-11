@@ -16,12 +16,18 @@ export const Endpoint = ({
   setVSchema,
   updateMetrics,
 }) => {
-  // state for controlled input
+  /************************************************** State ***********************************************************/
+
   const epInputRef = useRef();
   const [endpointText, setEndpointText] = useState(DEFAULT_ENDPOINT);
   const { resetReverseContext } = useContext(ReverseContext);
   const [endpointError, setEndpointError] = useState("");
 
+  /************************************************** Helper Fn's ***********************************************************/
+
+  /* Note, 'schema' refers to the actual GQL schema
+     whereas 'vSchema' refers to our custom parsed schema
+     shape fine-tuned & simplified for visualization */
   const setEPAndFetchSchema = async () => {
     if (endpointText === "")
       return setEndpointError("Please enter an endpoint");
@@ -37,7 +43,6 @@ export const Endpoint = ({
       // updateMetrics(newMetrics);
       updateMetrics();
     } catch (e) {
-      // console.log("Error fetching introspection query: ", e);
       setEndpointError("Error fetching from this endpoint");
     }
   };
@@ -47,6 +52,8 @@ export const Endpoint = ({
     else if (endpoint === endpointText) return "Refresh";
     else return "Change";
   };
+
+  /************************************************** Render ***********************************************************/
 
   return (
     <div className="endpoint__container">

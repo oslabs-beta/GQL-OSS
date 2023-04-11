@@ -9,7 +9,6 @@
 
 .endpoint__input {
   width: 30rem;
-  /* padding: 0.3rem; */
   margin: 0 0.3rem;
   outline: none;
   background: rgba(0, 0, 0, 0.3);
@@ -26,18 +25,6 @@
 .endpoint__input::placeholder {
   color: rgb(156, 152, 168);
 }
-
-/* .endpoint__button {
-  padding: 10px;
-  background: #292929;
-  border: 1px solid white;
-  border-bottom: 2px solid white;
-  border-left: 2px solid white;
-  border-radius: 5px;
-  color: whitesmoke;
-  font-family: "Poppins", sans-serif;
-  font-weight: 200;
-} */
 
 .endpoint__button {
   font-family: "Poppins", sans-serif;
@@ -64,10 +51,6 @@
   background-color: rgba(255, 255, 255, 0.4);
   color: rgba(0, 0, 0, 0.8);
 }
-/*
-input {
-  color-scheme: dark;
-} */
 
 input:-webkit-autofill,
 input:-webkit-autofill:focus {

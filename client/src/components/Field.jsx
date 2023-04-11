@@ -22,6 +22,13 @@ const Field = ({
   edgeDefaultColor,
 }) => {
   /********************************************************** State *******************************************************/
+
+  /* State pertaining to dynamic handles */
+  /* Unfortunately, useNode(id) is deprecated in modern React Flow
+  It would have made it easier to performantly use dynamic handles for large schemas.
+  Only remnant is a much less performant useNodes hook which was the first approach.
+  It worked well for smaller schemas, but testing led us to restrict dynamic handle functionality
+  to below a certain threshold */
   const updateNodeInternals = useUpdateNodeInternals();
   const [handlePosition, setHandlePosition] = useState("right");
   const store = useStoreApi();
@@ -29,6 +36,7 @@ const Field = ({
   const numNodes = useRef(Array.from(nodeInternals.values()).length);
   let nodes;
   if (numNodes.current < 10) nodes = useNodes();
+
   const [collisionModalOpen, setCollisionModalOpen] = useState(false);
   const [collisionRelationships, setCollisionRelationships] = useState([]);
   const {
@@ -45,10 +53,13 @@ const Field = ({
 
   /********************************************************** useEffect's *******************************************************/
 
+  /* Initialize an edge (arrow) from this field to its proper target, if this field has a relationship */
+  // In vSchema:
+  // 'Relationship' is a key on a field object that only exists if that field points to a Type.
+  // Its value corresponds 1:1 to the object type name and its node's id
+  // i.e. if the relationship is 'Continent,' then that field should have an edge pointing to the
+  // 'Continent' node
   useEffect(() => {
-    // In vSchema:
-    // 'Relationship' is a key on a field object that only exists if that field points to a type.
-    // Its value corresponds 1:1 to the object type name and its node's id
     if (
       relationship &&
       !store
@@ -81,8 +92,6 @@ const Field = ({
     }
   }, []);
 
-  // console.log(nodeInternals);
-
   /********************************************************** Helper Fn's *******************************************************/
 
   /* Dynamically shift around the handles */
@@ -106,6 +115,9 @@ const Field = ({
     }
   }
 
+  /* If Reverse Mode is active, feed the information into Reverse Context, and handle collisions accordingly */
+  /* A 'collision' is when a field is clicked but it is ambiguous which route the user wishes to add it in */
+  /* (The clicks can be in any order) */
   const reverseClickHandler = () => {
     if (!reverseMode) return;
     if (revActiveTypesNFields === null || revActiveTypesNFields[typeName]) {

@@ -35,12 +35,8 @@ main {
 }
 
 .toolbar {
-  /* background-color: #585662; */
-  /* background-color: #2a2c33; */
-  /* background-color: #2a2e33; */
   background-image: url("../images/nav-background.jpeg");
   background-size: contain;
-  /* #2a2c33   #2a2e33*/
   display: flex;
   justify-content: center;
   align-items: center;
