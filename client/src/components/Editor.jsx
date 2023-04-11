@@ -5,14 +5,13 @@ import { createGraphiQLFetcher } from "@graphiql/toolkit";
 import * as JSONC from "jsonc-parser";
 import { debounce } from "../utils/debounce";
 import validateBrackets from "../utils/validateBrackets";
-import formatReverseQuery from "../utils/formatReverseQuery";
 import "../styles/Editor.css";
 import { gql } from "graphql-tag";
-import * as gqlQB from "gql-query-builder";
 import Split from "react-split";
 import { ToggleSwitch } from "./ToggleSwitch";
 import { DEFAULT_EDITOR_OPTIONS } from "../utils/defaultEditorOptions";
 import ReverseContext from "../context/ReverseContext";
+import Tooltip from "@mui/material/Tooltip";
 
 /* Default Initial Display for Operations */
 const defaultOperations =
@@ -85,15 +84,13 @@ export default function Editor({
   const verticalGutterRef = useRef(null);
   const upperCopyButton = useRef(null);
   const operationErrorMsg = useRef(null);
+  const liveQueryModeRef = useRef(DEFAULT_EDITOR_OPTIONS.liveQueryMode);
 
   const [queryEditor, setQueryEditor] = useState(null);
   const [variablesEditor, setVariablesEditor] = useState(null);
   const [resultsViewer, setResultsViewer] = useState(null);
   const [activeLowerEditor, setActiveLowerEditor] = useState("results");
   const [editorOptions, setEditorOptions] = useState(DEFAULT_EDITOR_OPTIONS);
-
-  const liveQueryModeRef = useRef(DEFAULT_EDITOR_OPTIONS.liveQueryMode);
-
   const [MonacoGQLAPI, setMonacoGQLAPI] = useState(null);
 
   const {
@@ -102,7 +99,6 @@ export default function Editor({
     setReverseMode,
     resetReverseContext,
     setMutationMode,
-    revQueryObj,
   } = useContext(ReverseContext);
   // below line is preferable but crashes the app on context save bcz for a moment context object does not exist.
   //in production should work fine
@@ -284,10 +280,10 @@ export default function Editor({
   // NOT CONNECTED OR TESTED
   // function for toggling the RealTimeFetching for querys
   function toggleLiveQueryMode() {
-    setEditorOptions({
-      ...editorOptions,
-      liveQueryMode: !editorOptions.liveQueryMode,
-    });
+    setEditorOptions((prevOptions) => ({
+      ...prevOptions,
+      liveQueryMode: !prevOptions.liveQueryMode,
+    }));
   }
 
   /* Get Operations & Validate (Simple Validation)
@@ -537,12 +533,14 @@ export default function Editor({
             >
               copy
             </button>
-            <button
-              onClick={() => execOperation(false)}
-              className="submit-query-button"
-            >
-              Submit
-            </button>
+            <Tooltip title={"Try cmd/ctrl + enter :)"}>
+              <button
+                onClick={() => execOperation(false)}
+                className="submit-query-button"
+              >
+                Submit
+              </button>
+            </Tooltip>
             <div className="reverse-toggle-switch-container">
               <ToggleSwitch
                 toggleName="Reverse Mode"
