@@ -21,7 +21,7 @@ const DEFAULT_COLORS = {
 const App = () => {
   /********************************************** State & Refs *************************************************/
 
-  // TODO: redux refactor (for only the necessary global pieces)
+  // TODO: redux refactor
   const [endpoint, setEndpoint] = useState(null);
   const [schema, setSchema] = useState(null);
   const [vSchema, setVSchema] = useState(null);
@@ -51,12 +51,11 @@ const App = () => {
 
   /********************************************** useEffect's *************************************************/
 
-  /* Highlight Active Query */
-  // If the user executes a query, update the active ID's for Types, Fields, & Edges
+  /* Highlight Active Request */
+  // If the user executes a request, update the active ID's for Types, Fields, & Edges
   useEffect(() => {
     if (query === null) return;
     const { queryString } = query;
-    // console.log("vSchema : ", vSchema);
     const activeIDs = getActivesFromQuery(queryString, vSchema);
     if (activeIDs === null) return;
     const { activeTypeIDs, activeFieldIDs, activeEdgeIDs } = activeIDs;
@@ -67,6 +66,7 @@ const App = () => {
 
   /* Reset Actives */
   // If the schema is changed or reset, then reset all active ID's back to null
+  // Reset all relevant mode state as well
   useEffect(() => {
     setActiveTypeIDs(null);
     setActiveFieldIDs(null);
@@ -78,6 +78,7 @@ const App = () => {
     resetReverseContext();
   }, [vSchema]);
 
+  // When reverse mode toggles, reset relevant state, and restrict certain modes in conjunction
   useEffect(() => {
     if (reverseMode) {
       setActiveEdgeIDs(null);
@@ -95,6 +96,7 @@ const App = () => {
     }
   }, [reverseMode]);
 
+  // If active only mode is set to off, turn ghost mode off (NB: ghost mode === suggestions, displayMode === active only)
   useEffect(() => {
     if (displayMode === "all") setGhostMode("off");
   }, [displayMode]);
@@ -106,12 +108,12 @@ const App = () => {
 
   /********************************************** Helper Functions *************************************************/
 
-  /* Prevent Left Pane From Forcing Overflow */
-  const handleHorizontalDrag = (sizes) => {
-    if (sizes[0] > 49) {
-      editorVizSplit.current.split.setSizes([49, 51]);
-    }
-  };
+  /* Prevent Left Pane From Forcing Overflow (Artifact. No longer used, but can be helpful for UX changes) */
+  // const handleHorizontalDrag = (sizes) => {
+  //   if (sizes[0] > 49) {
+  //     editorVizSplit.current.split.setSizes([49, 51]);
+  //   }
+  // };
 
   // accesses performance object
   // calculates query time of the last PerformanceEntry that interacted w/endpoint
@@ -125,13 +127,11 @@ const App = () => {
       });
     }
   }
-  console.log(reverseModeError);
   /************************************************ Render ******************************************************/
   return (
     <main>
       <nav className="toolbar">
         <div className="logo__container"></div>
-        {/* TODO: Make the fullscreen button a custom control input component that goes with the other buttons */}
         <Endpoint
           endpoint={endpoint}
           setEndpoint={setEndpoint}

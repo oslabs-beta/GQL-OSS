@@ -13,10 +13,12 @@ import { DEFAULT_EDITOR_OPTIONS } from "../utils/defaultEditorOptions";
 import ReverseContext from "../context/ReverseContext";
 import Tooltip from "@mui/material/Tooltip";
 
+/******************************************************************************************************************/
+/******************************************** PRE CONFIG FOR EDITOR ***********************************************/
+/******************************************************************************************************************/
+
 /* Default Initial Display for Operations */
-const defaultOperations =
-  // localStorage.getItem("operations") ??
-  `
+const defaultOperations = `
 # GQL Request Pane #
 
 query {
@@ -25,9 +27,7 @@ query {
 `;
 
 /* Default Initial Display for Reverse-Mode Operations */
-const defaultReverseOperations =
-  // localStorage.getItem("operations") ??
-  `
+const defaultReverseOperations = `
 # Reverse Mode #
 # Build a request in the visualizer #
 
@@ -37,20 +37,17 @@ query {
 `;
 
 /* Default Initial Display for Variables */
-const defaultVariables =
-  // localStorage.getItem("variables") ??
-  `
+const defaultVariables = `
 /* Variables Pane */
 
 {}
 `;
 
 /* Default Initial Display for Results */
-const defaultResults =
-  // localStorage.getItem("variables") ??
-  "\n/* Results Pane */ \n\n";
+const defaultResults = "\n/* Results Pane */ \n\n";
 
-/* Get Model at URI, or Create One at URI with Given Value */
+/* Get Model at URI, or Create One at URI with Given Value
+   NB: Monaco has a virtual file system / memory manager. Think of URI's as simple unique ID's for this internal system */
 const getOrCreateModel = (uri, value) => {
   return (
     editor.getModel(Uri.file(uri)) ??
@@ -67,7 +64,9 @@ languages.json.jsonDefaults.setDiagnosticsOptions({
 /* Add Editor to DOM Via its Ref */
 const createEditor = (ref, options) => editor.create(ref.current, options);
 
-/** EDITOR COMPONENT **/
+/******************************************************************************************************************/
+/********************************************** EDITOR COMPONENT **************************************************/
+/******************************************************************************************************************/
 
 export default function Editor({
   schema,
@@ -78,13 +77,22 @@ export default function Editor({
 }) {
   /********************************************** State & Refs *************************************************/
 
-  const opsRef = useRef(null);
-  const varsRef = useRef(null);
-  const resultsRef = useRef(null);
+  const opsRef = useRef(null); // operations editor pane (the actual DOM element)
+  const varsRef = useRef(null); // variables editor pane (the actual DOM element)
+  const resultsRef = useRef(null); // results editor pane (the actual DOM element)
   const verticalGutterRef = useRef(null);
   const upperCopyButton = useRef(null);
   const operationErrorMsg = useRef(null);
   const liveQueryModeRef = useRef(DEFAULT_EDITOR_OPTIONS.liveQueryMode);
+  // Refs for accurate updates and un-stale state
+  const currentSchema = useRef(schema);
+  const fetcher = useRef(
+    endpoint
+      ? createGraphiQLFetcher({
+          url: endpoint,
+        })
+      : null
+  );
 
   const [queryEditor, setQueryEditor] = useState(null);
   const [variablesEditor, setVariablesEditor] = useState(null);
@@ -104,18 +112,9 @@ export default function Editor({
   //in production should work fine
   // const { revQueryObj } = useContext(ReverseContext);
 
-  // Refs for accurate updates
-  const currentSchema = useRef(schema);
-  const fetcher = useRef(
-    endpoint
-      ? createGraphiQLFetcher({
-          url: endpoint,
-        })
-      : null
-  );
+  /************************************************* useEffect's ****************************************************/
 
-  /********************************************** useEFfect's *************************************************/
-  /* update liveQueryModeRef to prevent stale state in queryModel.onDidChangeContent */
+  /* Update liveQueryModeRef to prevent stale state in queryModel.onDidChangeContent */
   useEffect(() => {
     liveQueryModeRef.current = editorOptions.liveQueryMode;
   }, [editorOptions.liveQueryMode]);
@@ -253,8 +252,6 @@ export default function Editor({
 
   useEffect(() => {
     if (!formattedQuery) return;
-    // console.log("formatted query: ", formattedQuery);
-    // console.log("revqueryobj: ", revQueryObj);
     editor
       .getModel(Uri.file("operation.graphql"))
       ?.setValue(
@@ -277,8 +274,8 @@ export default function Editor({
   }, [reverseMode]);
 
   /****************************************** Helper Functions ********************************************/
-  // NOT CONNECTED OR TESTED
-  // function for toggling the RealTimeFetching for querys
+
+  // Toggle real time requests & highlighting
   function toggleLiveQueryMode() {
     setEditorOptions((prevOptions) => ({
       ...prevOptions,
@@ -297,30 +294,20 @@ export default function Editor({
       .getModel(Uri.file("operation.graphql"))
       .getValue();
 
-    // sanitize the string of any ()
+    // Sanitize the string of any parentheses and characters within (variables)
+    // This is to dovetail with Reverse Context framework
     const sanitizedOperations = operations.replaceAll(/\([^)]*\)/g, "");
 
     try {
       const parsedOperations = gql`
         ${sanitizedOperations}
       `;
-      // console.log("parsedOperations: ", parsedOperations);
       return {
         valid: true,
         operationString: sanitizedOperations,
         operationType: parsedOperations.definitions[0].operation,
       };
     } catch (e) {
-      // console.log("error: ", e);
-      // if (e.message.includes("Syntax Error")) {
-      //   return {
-      //     valid: true,
-      //     operationString: sanitizedOperations,
-      //     operationType: operations.toLowerCase().includes("mutation")
-      //       ? "mutation"
-      //       : "query",
-      //   };
-      // }
       return { valid: false, error: "Invalid operation" };
     }
   };
@@ -364,12 +351,9 @@ export default function Editor({
       }
       return;
     }
-    // console.log("AAAA");
-    // console.log("operations: ", sanitizedOperations);
 
     // Update query state at top level in order to update active ID's for highlighting
     setQuery({ queryString: sanitizedOperations.operationString });
-    // console.log("BBBB");
 
     /* Short Circuiting Conditions Pre-Request Sending Through Fetcher */
     // Do NOT automatically execute mutations
@@ -388,7 +372,6 @@ export default function Editor({
       }
       return;
     }
-    // console.log("opsprerequest: ", operationsPreRequest);
 
     /* All good now to send a real request and receive data response! */
 
@@ -406,7 +389,6 @@ export default function Editor({
     // no multipart or subscriptions yet.
     const data = await result.next();
 
-    // update metrics
     updateMetrics();
 
     // Display the results in results pane
@@ -557,7 +539,6 @@ export default function Editor({
                     return !prevMode;
                   });
                 }}
-                // disabled={schema === null}
               />
             </div>
             <span className="operation-error-msg"></span>

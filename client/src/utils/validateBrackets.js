@@ -8,16 +8,18 @@ export default function validateBrackets(code) {
     const char = code.charAt(i);
 
     // If the character is an opening bracket, push it onto the stack
-    if (char === '(' || char === '[' || char === '{') {
+    if (char === "(" || char === "[" || char === "{") {
       stack.push(char);
     }
 
     // If the character is a closing bracket, pop the top of the stack and check if it matches
-    else if (char === ')' || char === ']' || char === '}') {
+    else if (char === ")" || char === "]" || char === "}") {
       const top = stack.pop();
-      if ((char === ')' && top !== '(') ||
-          (char === ']' && top !== '[') ||
-          (char === '}' && top !== '{')) {
+      if (
+        (char === ")" && top !== "(") ||
+        (char === "]" && top !== "[") ||
+        (char === "}" && top !== "{")
+      ) {
         // There is an unmatched closing bracket
         return false;
       }

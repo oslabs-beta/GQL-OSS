@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, memo } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactFlow, {
   Background,
   Controls,
@@ -27,7 +27,9 @@ const nodeTypes = {
   typeNode: TypeNode,
 };
 
-/* VISUALIZER COMPONENT */
+/******************************************************************************************************************/
+/******************************************** VISUALZIER COMPONENT ************************************************/
+/******************************************************************************************************************/
 
 const Visualizer = ({
   vSchema,
@@ -195,9 +197,6 @@ const Visualizer = ({
     // Queue graph generation (async) to explicitly occur AFTER nodes are set
     if (autoregraphMode)
       setTimeout(() => {
-        // console.log(
-        //   "generating graph cuz activeTypeIDs, displayMode, ghostNodeIDs, ghostMode, collapseTrigger, or expandTrigger changed"
-        // );
         generateGraph();
       }, 0);
   }, [
@@ -263,7 +262,13 @@ const Visualizer = ({
     setTimeout(() => flowInstance.fitView(), 0);
   }, [displayMode, ghostMode]);
 
-  /**************************************** Helper Functions ****************************************/
+  /* Resetting the trigger for collapsing nodes to prevent buggy functionality when changing Display Mode */
+  useEffect(() => {
+    setCollapseTrigger(0);
+    setExpandTrigger(0);
+  }, [displayMode, ghostMode]);
+
+  /***************************************************** Helper Fn's ********************************************************/
 
   /* Generate Elk Graph Layout From React Flow Nodes & Edges */
   const generateGraph = async (initial = false) => {
@@ -282,13 +287,9 @@ const Visualizer = ({
     }
     // Generate graph layout from React Flow nodes & edges by processing through Elk
     if (initial || displayMode === "all") {
-      // console.log("here for some reason");
       graphedNodes = await createGraphLayout(currNodes, edges);
     } else if (displayMode === "activeOnly") {
-      // console.log("activeNodes: ", activeNodes);
-      // console.log("activeEdges: ", activeEdges);
       graphedNodes = await createGraphLayout(activeNodes, activeEdges);
-      // console.log("graphed nodes: ", graphedNodes);
     }
 
     // Remap React Flow nodes to reflect the graph layout
@@ -307,14 +308,12 @@ const Visualizer = ({
       });
     }
     // Queue fitView to explicitly occur AFTER the graphed nodes have asynchronously been set
-    // if (displayMode === "activeOnly" || ghostMode === "on" || initial)
     setTimeout(async () => {
       if (ghostMode === "off") flowInstance.fitView();
     }, 0);
     // You can configure this to fitView after every change when displayMode === 'all' as well,
     // however that UX feels slightly worse
 
-    // if (!initial)
     setTimeout(() => setLoaderHidden(true), 550);
   };
 
@@ -339,54 +338,6 @@ const Visualizer = ({
     );
   }
 
-  /* Toggle Display Mode */
-  function toggleDisplayMode() {
-    // if (displayMode === "activeOnly") setLoaderHidden(true);
-    setDisplayMode((prevDisplayMode) =>
-      prevDisplayMode === "activeOnly" ? "all" : "activeOnly"
-    );
-  }
-
-  /* Toggle Ghost Mode */
-  function toggleGhostMode() {
-    setGhostMode((prevGhostMode) => (prevGhostMode === "on" ? "off" : "on"));
-  }
-
-  // /* Toggle Minimap */
-  function toggleMinimap() {
-    const showMinimap = !visualizerOptions.showMinimap;
-    const updatedVisualizerOptions = { ...visualizerOptions, showMinimap };
-    setVisualizerOptions(updatedVisualizerOptions);
-  }
-
-  // /* Toggle Controls */
-  function toggleControls() {
-    const showControls = !visualizerOptions.showControls;
-    const updatedVisualizerOptions = { ...visualizerOptions, showControls };
-    setVisualizerOptions(updatedVisualizerOptions);
-  }
-
-  const nodeColor = (node) => {
-    // if (node.data.active) return "rgb(129 120 200 / 45%)";
-    if (node.data.active) return "rgb(108 102 159 / 45%)";
-    return "rgb(60 57 86 / 57%)";
-    // return "rgba(188, 183, 204, .5)";
-  };
-
-  // /* Collapsing and expanding all nodes */
-  const collapseAll = () => {
-    setCollapseTrigger((collapseTrigger) => collapseTrigger + 1);
-  };
-  const expandAll = () => {
-    setExpandTrigger((expandTrigger) => expandTrigger + 1);
-  };
-
-  // /* Resetting the trigger for collapsing nodes to prevent buggy functionality when changing Display Mode */
-  useEffect(() => {
-    setCollapseTrigger(0);
-    setExpandTrigger(0);
-  }, [displayMode, ghostMode]);
-
   function updateColors(colorCode, colorTarget) {
     const currentColors = customColors;
     currentColors[colorTarget] = colorCode;
@@ -405,7 +356,6 @@ const Visualizer = ({
         return updatedNode;
       })
     );
-    // for(const node of nodes) updateNodeInternals(node.id);
     setEdges((edges) =>
       edges.map((edge) => {
         const updatedEdge = {
@@ -431,11 +381,48 @@ const Visualizer = ({
     );
   }
 
-  /******************************************* Helper Functions *************************************************/
-
   const fullscreenVisualizer = () => {
     const el = document.querySelector(".visualizer-container");
     el.requestFullscreen();
+  };
+
+  /* Toggle Display Mode */
+  function toggleDisplayMode() {
+    setDisplayMode((prevDisplayMode) =>
+      prevDisplayMode === "activeOnly" ? "all" : "activeOnly"
+    );
+  }
+
+  /* Toggle Ghost Mode */
+  function toggleGhostMode() {
+    setGhostMode((prevGhostMode) => (prevGhostMode === "on" ? "off" : "on"));
+  }
+
+  // /* Toggle Minimap */
+  function toggleMinimap() {
+    const showMinimap = !visualizerOptions.showMinimap;
+    const updatedVisualizerOptions = { ...visualizerOptions, showMinimap };
+    setVisualizerOptions(updatedVisualizerOptions);
+  }
+
+  // /* Toggle Controls */
+  function toggleControls() {
+    const showControls = !visualizerOptions.showControls;
+    const updatedVisualizerOptions = { ...visualizerOptions, showControls };
+    setVisualizerOptions(updatedVisualizerOptions);
+  }
+
+  const nodeColor = (node) => {
+    if (node.data.active) return "rgb(108 102 159 / 45%)";
+    return "rgb(60 57 86 / 57%)";
+  };
+
+  // /* Collapsing and expanding all nodes */
+  const collapseAll = () => {
+    setCollapseTrigger((collapseTrigger) => collapseTrigger + 1);
+  };
+  const expandAll = () => {
+    setExpandTrigger((expandTrigger) => expandTrigger + 1);
   };
 
   /************************************************ Render ******************************************************/

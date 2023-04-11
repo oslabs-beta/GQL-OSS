@@ -15,17 +15,8 @@
 }
 
 .react-flow {
-  /* background: #171721;
-  background: #1f1f29;
-  background: #1d1e25; */
-  /* background: #24272f; */
-  /* background: #1d1e28; */
   background: #1d1e22;
 }
-
-/* .react-flow__background {
-  z-index: -3;
-} */
 
 .react-flow__attribution {
   background: #1d1e25;
@@ -44,7 +35,6 @@
 }
 
 .react-flow__controls button {
-  /* background: #3e4e741f; */
   background: #5b55774d;
   padding: 8px;
   border-color: #9994aa;
@@ -83,14 +73,12 @@
   z-index: 1;
   height: 100%;
   width: 100%;
-  /* background-color: #1d1e22; */
   position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 15px;
-  /* display: none; */
 }
 .loading-modal p {
   color: whitesmoke;

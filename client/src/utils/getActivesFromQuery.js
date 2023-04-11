@@ -1,6 +1,7 @@
 import { gql } from "graphql-tag";
 
-/* Create sets of active type ID's and active field ID's */
+/* Create sets of active type ID's and active field ID's from the queryString (request string ... can be mutation as well)*/
+/* Cross check against the vSchema for accurate references */
 const getActivesFromQuery = (queryString, vSchema) => {
   if (queryString === "" || null)
     return { activeFieldIDs: null, activeTypeIDs: null };
@@ -13,9 +14,6 @@ const getActivesFromQuery = (queryString, vSchema) => {
   } catch (e) {
     console.log("error in getActives parsing queryString: ", e);
   }
-  // console.log("queryString: ", queryString);
-  // console.log("queryObj: ", queryObj);
-  // console.log("vSchema: ", vSchema);
 
   // Array of Objects each representing an Object Type in the vSchema
   const vSchemaTypes = vSchema.objectTypes;
@@ -64,9 +62,6 @@ const getActivesFromQuery = (queryString, vSchema) => {
       addActives(queryType, gqlSelection);
     }
   }
-  // console.log(activeTypeIDs);
-  // console.log(activeFieldIDs);
-  // console.log(activeEdgeIDs);
   return {
     activeTypeIDs,
     activeFieldIDs,

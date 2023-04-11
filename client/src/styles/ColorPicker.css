@@ -1,18 +1,8 @@
-/*  Slider from: https://alvarotrigo.com/blog/toggle-switch-css/ */
-/* .color-picker__switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 10px;
-} */
-
 .color-picker p {
   text-transform: capitalize;
 }
 
 .color-input {
-  /* background: #3e3e5b63;
-   */
   background: none;
   border: none;
   outline: none;
@@ -37,7 +27,3 @@
   justify-content: center;
   margin-bottom: 3px;
 }
-
-/* .color-picker__switch input {
-  display: none;
-} */

@@ -33,6 +33,7 @@ export function ToggleSwitch({
   else if (isAlwaysOff) tooltipMessage = "Active Only must be on";
   if (toggleName === "Reverse Mode")
     tooltipMessage = "Turning this on will reset your data!";
+  //TODO: refactor tooltips and toggle switch conditions into a more universally consolidated DRY framework
 
   return (
     <div className="toggle-switch">
