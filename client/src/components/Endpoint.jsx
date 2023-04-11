@@ -23,7 +23,7 @@ export const Endpoint = ({
   const { resetReverseContext } = useContext(ReverseContext);
   const [endpointError, setEndpointError] = useState("");
 
-  /************************************************** Helper Fn's ***********************************************************/
+  /************************************************** Helper Functions ************************************************/
 
   /* Note, 'schema' refers to the actual GQL schema
      whereas 'vSchema' refers to our custom parsed schema
@@ -31,22 +31,22 @@ export const Endpoint = ({
   const setEPAndFetchSchema = async () => {
     if (endpointText === "")
       return setEndpointError("Please enter an endpoint");
-    // fetch and parse schema
     try {
+      // fetch schema from endpoint via Introspection Query
       const schema = await request(endpointText, getIntrospectionQuery());
       setEndpoint(endpointText);
       setSchema(schema);
+      // parse schema for use by visualizer
       const parsedSchemaData = parseReceivedSchema(schema);
       setVSchema(parsedSchemaData.visualizerSchema);
       resetReverseContext();
-      // const newMetrics = calculate_metrics(endpointText);
-      // updateMetrics(newMetrics);
       updateMetrics();
     } catch (e) {
       setEndpointError("Error fetching from this endpoint");
     }
   };
 
+  // helper function to dynamically render button name
   const getEndpointButtonName = () => {
     if (!endpoint) return "Set";
     else if (endpoint === endpointText) return "Refresh";
@@ -65,7 +65,7 @@ export const Endpoint = ({
         className="endpoint__input"
         placeholder="GraphQL Endpoint..."
         value={endpointText}
-        onChange={(e) => setEndpointText(e.target.value)}
+        onChange={(e) => setEndpointText(e.target.value.trim())}
       ></input>
       <button onClick={setEPAndFetchSchema} className="endpoint__button">
         {`${getEndpointButtonName()} Endpoint`}
