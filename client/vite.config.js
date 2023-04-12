@@ -4,9 +4,6 @@ import monacoEditorPlugin from "vite-plugin-monaco-editor";
 import legacy from "@vitejs/plugin-legacy";
 
 export default defineConfig({
-  build: {
-    target: "es2015",
-  },
   server: {
     port: 3001,
   },
