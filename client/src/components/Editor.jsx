@@ -272,6 +272,18 @@ export default function Editor({
       editor
         .getModel(Uri.file("operation.graphql"))
         ?.setValue(defaultReverseOperations);
+    } else {
+      const builtOps = editor
+        .getModel(Uri.file("operation.graphql"))
+        ?.getValue();
+      editor
+        .getModel(Uri.file("operation.graphql"))
+        ?.setValue(
+          builtOps.replace(
+            "\n# Reverse Mode #\n# Build a request in the visualizer #\n\n",
+            "\n# GQL Request Pane #\n\n"
+          )
+        );
     }
     queryEditor?.updateOptions({ readOnly: reverseMode });
     setActiveLowerEditor("results");
