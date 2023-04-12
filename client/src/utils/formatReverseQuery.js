@@ -16,7 +16,6 @@ const formatReverseQuery = (reverseQueryStr) => {
   const length = reverseQueryStr.length;
   let numOfTabs = 0;
   const tab = `\t`;
-  // console.log(reverseQueryStr);
 
   //iterate through received query string
   // add a new line (\n) after each opening curly brack and comma)
