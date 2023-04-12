@@ -1,0 +1,26 @@
+.Pushbutton button {
+  font-family: "Poppins", sans-serif;
+  padding: 2px 6px;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 7px;
+  background: transparent;
+  color: whitesmoke;
+  outline: 1px solid rgb(188, 183, 204);
+  transition: all 0.1s ease;
+  font-weight: 300;
+  font-size: 11px;
+}
+
+.Pushbutton button:hover {
+  background-color: rgba(56, 56, 72, 0.5);
+  color: white;
+  outline: 1px solid rgb(188, 183, 204);
+  outline-offset: 1px;
+}
+
+.Pushbutton button:active {
+  outline-offset: 2px;
+  background-color: rgba(255, 255, 255, 0.4);
+  color: black;
+}

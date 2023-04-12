@@ -1,0 +1,25 @@
+.field {
+  position: relative;
+  padding: 8px 16px;
+  flex-grow: 1;
+  text-align: center;
+}
+
+.field.active {
+  background: #283145ca;
+}
+
+.field.reverse-mode {
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+.field.reverse-mode:hover {
+  background: #283145ca;
+}
+
+.field-data {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}

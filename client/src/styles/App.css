@@ -1,17 +1,137 @@
-@keyframes sliding {
-  0% {
-    transform: translateX(0vh);
-  }
+.editor-visualizer-split {
+  display: flex;
+  flex-direction: row;
+}
 
-  50% {
-    transform: translateX(75vw);
-  }
+main {
+  display: flex;
+  flex-direction: column;
+}
+.query-results-split {
+  height: 100%;
+  width: 100%;
+}
 
-  100% {
-    transform: translateX(0vw);
+.gutter {
+  background-color: #413c45;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+
+.gutter.gutter-horizontal {
+  background-image: url("../images/gutter-handle-vertical.png");
+  cursor: col-resize;
+}
+.gutter.gutter-vertical {
+  background-image: url("../images/gutter-handle-horizontal.png");
+  cursor: row-resize;
+}
+.seg-holder {
+  height: calc(100vh - 50px);
+}
+
+:fullscreen {
+  background-color: white;
+}
+
+.toolbar {
+  background-image: url("../images/nav-background.jpeg");
+  background-size: contain;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  /* height: 5.5vh; */
+  height: 50px;
+  border-bottom: 2px double #413c45;
+}
+
+.fullscreen-btn {
+  font-family: "Poppins", sans-serif;
+  padding: 7px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: whitesmoke;
+  outline: 1px solid rgb(188, 183, 204);
+  transition: all 0.1s ease;
+  font-weight: 300;
+}
+
+.fullscreen-btn:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.6);
+  outline: 2px solid rgb(188, 183, 204);
+  outline-offset: 1px;
+}
+
+.fullscreen-btn:active {
+  outline-offset: 2px;
+  background-color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.toolbar__header-container {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 3.5rem;
+}
+
+.toolbar__header {
+  user-select: none;
+  position: absolute;
+  right: 3.5rem;
+  color: whitesmoke;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 1.2rem;
+  transform: scale(1);
+  opacity: 1;
+  transition: all 0.2s ease;
+}
+
+.toolbar__header span {
+  font-weight: 200;
+  font-style: italic;
+}
+
+.logo__container {
+  position: absolute;
+  left: 0.5rem;
+  background-image: url("../images/logo4.png");
+  height: 2rem;
+  width: 4rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.2s ease;
+  filter: brightness(1.3);
+}
+
+@media all and (max-width: 1225px) {
+  .toolbar__header {
+    transform: scale(0);
+    opacity: 0;
   }
 }
 
-.test {
-  animation: sliding 6s linear infinite;
+@media all and (max-width: 755px) {
+  .logo__container {
+    opacity: 0;
+    transform: scale(0);
+  }
+  .help-button__container {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+@media all and (max-width: 638px) {
+  .endpoint__input {
+    width: 350px;
+  }
+  .endpoint__button {
+    width: auto;
+  }
 }

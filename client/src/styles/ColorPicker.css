@@ -1,0 +1,29 @@
+.color-picker p {
+  text-transform: capitalize;
+}
+
+.color-input {
+  background: none;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.color-picker__name {
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.color-picker__container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 3px;
+}

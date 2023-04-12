@@ -1,0 +1,169 @@
+.visualizer-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.type-node__handle-target-left {
+  background-color: transparent;
+  top: 1rem;
+  left: 0;
+}
+
+.type-node__handle-target-top {
+  background-color: transparent;
+}
+
+.react-flow {
+  background: #1d1e22;
+}
+
+.react-flow__attribution {
+  background: #1d1e25;
+}
+.react-flow__attribution a {
+  font-size: 5px;
+  color: #3e3f46;
+}
+
+.react-flow__minimap {
+  background: #3e4e741f;
+}
+
+.react-flow__minimap-mask {
+  fill: #5b55774d;
+}
+
+.react-flow__controls button {
+  background: #5b55774d;
+  padding: 8px;
+  border-color: #9994aa;
+  fill: #9994aa;
+  border-bottom: 1px solid #9994aa;
+  transition: background-color 0.15s ease;
+}
+
+.react-flow__controls button:hover {
+  background: #746d944d;
+}
+
+.react-flow__controls button:active {
+  fill: #bfbbcd;
+}
+
+.react-flow__controls button:last-of-type {
+  border-bottom: none;
+}
+
+.react-flow__controls-button svg {
+  height: 100%;
+  width: 100%;
+}
+.react-flow__node-typeNode {
+  z-index: 2;
+}
+.type-node__container {
+  z-index: 2;
+}
+.type-node {
+  z-index: 2;
+}
+
+.loading-modal {
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+.loading-modal p {
+  color: whitesmoke;
+}
+.loading-modal:hidden {
+  display: none;
+}
+
+/* Loading Spinner CSS */
+
+.loader {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 6rem;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+.loader:before,
+.loader:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  animation: pulsOut 1.3s ease-in-out;
+  filter: drop-shadow(0 0 1rem rgba(255, 255, 255, 0.75));
+}
+.loader:before {
+  width: 100%;
+  padding-bottom: 100%;
+  box-shadow: inset 0 0 0 1rem rgb(188, 183, 204);
+  animation-name: pulsIn;
+}
+.loader:after {
+  width: calc(100% - 2rem);
+  padding-bottom: calc(100% - 2rem);
+  box-shadow: 0 0 0 0 rgb(188, 183, 204);
+}
+
+@keyframes pulsIn {
+  0% {
+    box-shadow: inset 0 0 0 1rem rgb(188, 183, 204);
+    opacity: 1;
+  }
+  50%,
+  100% {
+    box-shadow: inset 0 0 0 0 rgb(188, 183, 204);
+    opacity: 0;
+  }
+}
+
+@keyframes pulsOut {
+  0%,
+  50% {
+    box-shadow: 0 0 0 0 rgb(188, 183, 204);
+    opacity: 0;
+  }
+  100% {
+    box-shadow: 0 0 0 1rem rgb(188, 183, 204);
+    opacity: 1;
+  }
+}
+
+/* Animated ellipses after loading modal message */
+
+.loading-msg:after {
+  position: absolute;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  -webkit-animation: ellipsis steps(4, end) 2000ms infinite;
+  animation: ellipsis steps(4, end) 2000ms infinite;
+  content: "\2026"; /* ascii code for the ellipsis character */
+  width: 0px;
+}
+
+@keyframes ellipsis {
+  to {
+    width: 1em;
+  }
+}
+
+@-webkit-keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}

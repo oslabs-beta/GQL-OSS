@@ -1,0 +1,60 @@
+.endpoint__container {
+  margin: 1rem 0;
+  margin: 0px;
+}
+
+.endpoint__label {
+  font-weight: 500;
+}
+
+.endpoint__input {
+  width: 30rem;
+  margin: 0 0.3rem;
+  outline: none;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgb(188, 183, 204);
+  border-radius: 5px;
+  margin-left: 10px;
+  color: whitesmoke;
+  padding: 7px;
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+  font-weight: 300;
+}
+
+.endpoint__input::placeholder {
+  color: rgb(156, 152, 168);
+}
+
+.endpoint__button {
+  font-family: "Poppins", sans-serif;
+  margin-left: 5px;
+  padding: 7px;
+  border: none;
+
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: whitesmoke;
+  outline: 1px solid rgb(188, 183, 204);
+  transition: all 0.1s ease;
+  font-weight: 300;
+  width: 130px;
+}
+
+.endpoint__button:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  outline: 2px solid rgb(188, 183, 204);
+  outline-offset: 1px;
+}
+
+.endpoint__button:active {
+  outline-offset: 2px;
+  background-color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition: background-color 600000s 0s, color 600000s 0s;
+}

@@ -1,0 +1,128 @@
+.type-node {
+  display: flex;
+  flex-direction: column;
+  background-color: #202125dd;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  font-size: 16px;
+  position: relative;
+  min-width: 190px;
+  color: whitesmoke;
+  border-radius: 5px;
+  border: 2px solid rgb(188, 183, 204);
+}
+
+.type-node:hover {
+  box-shadow: 0 12px 22px rgba(97, 97, 106, 0.19),
+    0 8px 8px rgba(102, 104, 111, 0.23);
+  background-color: rgba(34, 35, 40, 0.871);
+}
+
+.type-heading {
+  padding: 13px 40px;
+  font-size: 17px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  text-align: center;
+  border-bottom: 1px solid rgb(111, 107, 123);
+}
+
+.type-heading__rotating-button {
+  position: absolute;
+  right: 0.81rem;
+  letter-spacing: normal;
+}
+
+.type-heading::after {
+  content: "";
+  border: 1px solid rgb(188, 183, 204);
+  border-radius: 5px;
+  height: 18px;
+  width: 18px;
+  visibility: visible;
+  position: absolute;
+  right: 0.6rem;
+}
+
+.type-heading:hover {
+  cursor: pointer;
+}
+
+.gradient-border {
+  border: none;
+  --borderWidth: 2px;
+  background-color: #202125;
+  position: relative;
+}
+.gradient-border2 {
+  --angle: 0deg;
+  border: 3px solid;
+  border-radius: 5px;
+  border-image: linear-gradient(
+      var(--angle),
+      #f79533,
+      #f37055,
+      #ef4e7b,
+      #a166ab,
+      #5073b8,
+      #1098ad,
+      #07b39b,
+      #6fba82
+    )
+    1;
+  animation: 5s rotate linear infinite;
+}
+
+@keyframes rotate {
+  to {
+    --angle: 360deg;
+  }
+}
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.gradient-border:after {
+  content: "";
+  position: absolute;
+  border-radius: 5px;
+  top: calc(-1 * var(--borderWidth));
+  left: calc(-1 * var(--borderWidth));
+  height: calc(100% + var(--borderWidth) * 2);
+  width: calc(100% + var(--borderWidth) * 2);
+  background: linear-gradient(
+    60deg,
+    #d4ff00,
+    #ffdd00,
+    #ff8812,
+    #ff5330,
+    #ff2c68,
+    #d252e9,
+    #4986fe,
+    #02ddff,
+    #15ffe0,
+    #68ff8d
+  );
+  z-index: -1;
+  animation: animatedgradient 3s ease alternate infinite;
+  background-size: 300% 300%;
+}
+
+@keyframes animatedgradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}

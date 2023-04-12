@@ -1,0 +1,101 @@
+.toggle-switch__switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 10px;
+}
+
+.toggle-switch p {
+  text-transform: capitalize;
+}
+
+.toggle-switch__name {
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 400;
+}
+.react-flow__panel .toggle-switch__name {
+  margin-bottom: -5px;
+  margin-top: -1px;
+}
+
+.toggle-switch__container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-switch__label-left,
+.toggle-switch__label-right {
+  font-size: 11px;
+  font-weight: 300;
+}
+
+.toggle-switch__label-left {
+  transform: translateX(-4px);
+}
+.unavailable {
+  color: rgb(105, 105, 105);
+}
+
+.toggle-switch__label-right {
+  transform: translateX(4px);
+}
+
+.toggle-switch__switch input {
+  display: none;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #bbb;
+  background-color: #4a4a54;
+  background-color: #333337;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  transform: translateY(12px);
+  background-color: #fff;
+  background-color: #262431;
+  background-color: #262735;
+  background-color: #26262ff3;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+  border: 1px #61616c solid;
+}
+
+input:checked + .toggle-slider {
+  background-color: #bbb;
+  background-color: #bbb;
+}
+
+input:checked + .toggle-slider:before {
+  -webkit-transform: translateX(16px);
+  -ms-transform: translateX(16px);
+  transform: translateX(16px) translateY(12px);
+}
+
+/* Rounded sliders */
+.toggle-slider.round {
+  border-radius: 34px;
+}
+
+.toggle-slider.round:before {
+  border-radius: 50%;
+}

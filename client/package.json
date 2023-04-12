@@ -8,12 +8,29 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "axios": "^0.26.0",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@graphiql/toolkit": "^0.8.2",
+    "@mui/material": "^5.11.16",
+    "elkjs": "^0.8.2",
+    "framer-motion": "^6.3.3",
+    "gql-query-builder": "^3.8.0",
+    "graphql": "^16.6.0",
+    "graphql-request": "^5.2.0",
+    "graphql-tag": "^2.12.6",
+    "jsonc-parser": "^3.2.0",
+    "monaco-editor": "^0.36.1",
+    "monaco-graphql": "^1.1.8",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-split": "^2.0.14",
+    "reactflow": "^11.6.1",
+    "vite-plugin-monaco-editor": "^1.1.0",
+    "web-worker": "^1.2.0"
   },
   "devDependencies": {
+    "@vitejs/plugin-legacy": "^4.0.2",
     "@vitejs/plugin-react": "^1.0.7",
-    "vite": "^2.8.0"
+    "vite": "^4.2.1"
   }
 }

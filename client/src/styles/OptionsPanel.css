@@ -1,0 +1,41 @@
+.options-panel__container {
+  --offwhite: rgb(188, 183, 204);
+  border: 1px solid var(--offwhite);
+  background-color: #202125dd;
+  color: whitesmoke;
+  padding: 0.5rem;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.options-panel__header {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.options-panel__expand-button {
+  user-select: none;
+  color: whitesmoke;
+  background-color: transparent;
+  border: none;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.options-panel__expand-button::after {
+  content: "";
+  border: 1px solid var(--offwhite);
+  height: 17px;
+  width: 17px;
+  position: absolute;
+  right: 10px;
+  border-radius: 5px;
+}
+
+.options-panel__container hr {
+  width: 100%;
+  border-top: none;
+}
