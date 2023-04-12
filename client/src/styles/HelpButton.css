@@ -4,7 +4,7 @@
   background-color: transparent;
   perspective: 1000px;
   position: absolute;
-  right: 1rem;
+  right: 0.5rem;
   opacity: 1;
   transform: scale(1);
   transition: all 0.2s ease;
@@ -20,6 +20,10 @@
   height: 2rem;
   transition: transform 0.6s;
   transform-style: preserve-3d;
+}
+
+.help-button__container.github-hb {
+  right: 47px;
 }
 
 .sideA,
@@ -45,7 +49,14 @@
 
 .sideB {
   transform: rotateY(180deg);
-  background-color: black;
+  /* background-color: black; */
+}
+.help-hb .sideA,
+.help-hb .sideB {
+  background-color: whitesmoke;
+  color: black;
+  font-weight: 500;
+  font-size: 1.5rem;
 }
 
 .icon {

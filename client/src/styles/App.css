@@ -81,7 +81,7 @@ main {
 .toolbar__header {
   user-select: none;
   position: absolute;
-  right: 3.5rem;
+  right: 5.5rem;
   color: whitesmoke;
   font-family: "Poppins", sans-serif;
   font-weight: 400;
@@ -107,17 +107,17 @@ main {
   opacity: 1;
   transform: scale(1);
   transition: all 0.2s ease;
-  filter: brightness(1.3);
+  filter: brightness(1.34);
 }
 
-@media all and (max-width: 1225px) {
+@media all and (max-width: 1287px) {
   .toolbar__header {
     transform: scale(0);
     opacity: 0;
   }
 }
 
-@media all and (max-width: 755px) {
+@media all and (max-width: 800px) {
   .logo__container {
     opacity: 0;
     transform: scale(0);
