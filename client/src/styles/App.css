@@ -79,31 +79,72 @@ main {
 }
 
 .toolbar__header {
+  user-select: none;
   position: absolute;
   right: 3.5rem;
   /* left: 1rem; */
   color: whitesmoke;
   font-family: "Poppins", sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   font-size: 1.2rem;
+  /* font-style: italic; */
+  transform: scale(1);
+  opacity: 1;
+  transition: all 0.2s ease;
+}
+
+.toolbar__header span {
+  font-weight: 200;
   font-style: italic;
 }
 
 .logo__container {
   position: absolute;
-  left: 1rem;
+  left: 0.5rem;
   /* right: 4rem; */
   /* background-image: url("../images/logo1.png"); */
-  background-image: url("../images/logo2.png");
+  /* background-image: url("../images/logo2.png"); */
   /* background-image: url("../images/logo3.png"); */
-  /* background-image: url("../images/logo4.png"); */
+  background-image: url("../images/logo4.png");
   /* background-image: url("../images/logo5.png"); */
   /* background-image: url("../images/logo6.png"); */
   /* background-image: url("../images/logo7.png"); */
   /* background-image: url("../images/logo8.png"); */
-  background-size: cover;
-  height: 2.5rem;
+  /* background-size: cover; */
+  height: 2rem;
   width: 4rem;
+  background-size: contain;
+  background-repeat: no-repeat;
   /* height: 2.6rem;
   width: 2rem; */
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.2s ease;
+  filter: brightness(1.3);
+}
+
+@media all and (max-width: 1225px) {
+  .toolbar__header {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+@media all and (max-width: 755px) {
+  .logo__container {
+    opacity: 0;
+    transform: scale(0);
+  }
+  .help-button__container {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+@media all and (max-width: 638px) {
+  .endpoint__input {
+    width: 350px;
+  }
+  .endpoint__button {
+    width: auto;
+  }
 }

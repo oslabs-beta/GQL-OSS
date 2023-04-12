@@ -139,7 +139,9 @@ const App = () => {
           setVSchema={setVSchema}
           updateMetrics={updateMetrics}
         />
-        <h1 className="toolbar__header">GraphQL One Stop Shop</h1>
+        <h1 className="toolbar__header">
+          <span>GraphQL</span> One Stop Shop
+        </h1>
         <HelpButton />
       </nav>
 

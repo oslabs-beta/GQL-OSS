@@ -6,11 +6,13 @@ import { GithubSVG } from "./GithubSVG";
 // Rotating Help / Github button for toolbar
 export const HelpButton = () => {
   return (
-    <Tooltip title="Readme">
+    <Tooltip title="Fork us on GitHub!">
       <section className="help-button__container">
         <a href="https://github.com/oslabs-beta/GQL-OSS" target="blank">
           <div className="help-button">
-            <div className="sideA">?</div>
+            <div className="sideA">
+              <GithubSVG />
+            </div>
             <div className="sideB">
               <GithubSVG />
             </div>
