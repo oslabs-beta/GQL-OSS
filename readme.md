@@ -44,9 +44,10 @@
 </details>
 
 <hr>
-<br/>
 
 ## <b>Overview</b>
+
+---
 
 <p align="left">
   GraphQL is a popular alternative to REST with several solid development tool options.  Some tools, such as <a href="https://github.com/graphql/graphiql">GraphiQL</a>, help with the generation & testing of queries and mutations, while others, such as <a href="https://github.com/IvanGoncharov/graphql-voyager">GraphQL Voyager</a>, allow users to visualize schema for convenient API navigation. The GraphQL One Stop Shop team set out to build a comprehensive GraphQL development tool to consolidate these functionalities into a single application.  OSS provides a development environment with integrated visual and query feedback in real time as a query / mutation is typed in the code editor field.
@@ -56,15 +57,21 @@
   <img  src="https://raw.githubusercontent.com/oslabs-beta/ReacTree/fabian/readme/src/media/navbar-controls.gif" width=90% >
 </p>
 
+---
+
 ## <b>Getting Started</b>
 
 Head to <a href="https://marketplace.visualstudio.com/items?itemName=ReacTreeDev.reactree">
 GraphQL-oss.io</a> to visit the one stop shop.
 <br/>
 
+---
+
 ## <b>Endpoint</b>
 
 _The top portion of the application is used to set the GraphQL endpoint_
+
+---
 
 Enter the desired GraphQL API endpoint and click “set endpoint”. This can be the URL of an API hosted on the web or a development server running at a localhost address. The schema should load and auto generate a layout.
 
@@ -74,9 +81,13 @@ Enter the desired GraphQL API endpoint and click “set endpoint”. This can be
   <img  src="https://raw.githubusercontent.com/oslabs-beta/ReacTree/fabian/readme/src/media/launch-props-open-files.gif" width=90% >
 </p>
 
+---
+
 ## <b>Code Editor</b>
 
 _The left portion of the application is used for generating queries/mutations and viewing the data responses_
+
+---
 
 <u>The top editor is The Request Pane</u>, used for creating queries & mutations. As the user types in a query, an auto-complete feature checks for valid fields that match the schema. A query can also be sent by clicking the “submit” button or using ⌘+⮐ cmd+enter ctrl+enter.
 
@@ -110,9 +121,13 @@ Editor Features:
 
 **NOTE**: At this time, subscriptions are not supported.
 
+---
+
 ## <b>Schema Visualizer</b>
 
 _The right portion of the application displays an interactive representation of the schema at the current endpoint._
+
+---
 
 Each Object Type from the Schema is represented as a node which contains all the fields that belong to that type. Relationships are rendered as arrows pointing from fields to their corresponding Object Type. Nodes are draggable and collapsable for a highly customizable environment.
 
@@ -132,7 +147,11 @@ Each Object Type from the Schema is represented as a node which contains all the
 - **Collapse/Expand All** - collapse / expand all nodes
 - **Regraph** - Resets the graph layout
 
+---
+
 ## <b>Tech Stack</b>
+
+---
 
 - [React](https://reactjs.org/)
 - [React Flow](https://reactflow.dev/)
@@ -144,13 +163,19 @@ Each Object Type from the Schema is represented as a node which contains all the
   <br/>
   <br/>
 
+---
+
 ## <b>Article</b>
 
 Checkout out our <a href="">medium article</a> for more information about the GraphQL One Stop Shop!
 
 <br/>
 
+---
+
 ## <b>Contributing</b>
+
+---
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -170,6 +195,8 @@ Or buy us a coffee to fuel further development
   </p>
 <br/>
 
+---
+
 ## <b>Meet Our Team</b>
 
 - Clark Pang • [LinkedIn](https://www.linkedin.com/in/fabian-salazar-260a7957/) • [Github](https://github.com/fsalazar88)
@@ -178,6 +205,8 @@ Or buy us a coffee to fuel further development
 - Michael Gacetta • [LinkedIn](https://www.linkedin.com/in/gacetta/) • [Github](https://github.com/gacetta)
 
 <br/>
+
+---
 
 ## <b>License</b>
 
