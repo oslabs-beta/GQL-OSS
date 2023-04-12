@@ -74,6 +74,7 @@ const Visualizer = ({
   //Triggers for "Expand All" and "Collapse All" functionality
   const [collapseTrigger, setCollapseTrigger] = useState(0);
   const [expandTrigger, setExpandTrigger] = useState(0);
+
   const [autoregraphMode, setAutoregraphMode] = useState(true);
 
   /********************************************** useEFfect's *************************************************/
@@ -315,7 +316,7 @@ const Visualizer = ({
     // You can configure this to fitView after every change when displayMode === 'all' as well,
     // however that UX feels slightly worse
 
-    setTimeout(() => setLoaderHidden(true), 550);
+    if (!loaderHidden) setTimeout(() => setLoaderHidden(true), 550);
   };
 
   /* Toggle position of node target handle between left and top */
