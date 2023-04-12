@@ -22,6 +22,7 @@
     The GraphQL One Stop Shop</a>
     </span></u></b>
     <p><img src="https://img.shields.io/badge/dynamic/json?color=E10098&label=version&prefix=v&query=version&url=https%3A%2F%2Fraw.githubusercontent.com%2Foslabs-beta%2FGQL-OSS%2Fmichael%2Freadme%2Fclient%2Fpackage.json"></p>
+    <!-- <p><img src="https://img.shields.io/badge/dynamic/json?color=E10098&label=version&prefix=v&query=version&url=https%3A%2F%2Fraw.githubusercontent.com%2Foslabs-beta%2FGQL-OSS%2Fmain%2Fpackage.json"></p> -->
 </div>
 
 <hr>
@@ -187,9 +188,9 @@ Or buy us a coffee to fuel further development
 
 ## <b>Meet Our Team</b>
 
-- Clark Pang • [LinkedIn](https://www.linkedin.com/in/fabian-salazar-260a7957/) • [Github](https://github.com/fsalazar88)
-- Cole Bryan• [LinkedIn](https://www.linkedin.com/in/michaelbenliyan/) • [Github](https://github.com/MichaelBenliyan)
-- Felipe Ocampo • [LinkedIn](https://www.linkedin.com/in/briannohski/) • [Github](https://github.com/dogenoh)
+- Clark Pang • [LinkedIn](https://www.linkedin.com/in/clarkpang/) • [Github](https://github.com/clark-pang)
+- Cole Bryan• [LinkedIn](https://www.linkedin.com/in/michaelbenliyan/) • [Github](https://github.com/CNBryan129)
+- Felipe Ocampo • [LinkedIn](https://www.linkedin.com/in/ocampofelipe/) • [Github](https://github.com/felipeaocampo)
 - Michael Gacetta • [LinkedIn](https://www.linkedin.com/in/gacetta/) • [Github](https://github.com/gacetta)
 
 <br/>
