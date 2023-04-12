@@ -2,8 +2,8 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/oslabs-beta/ReacTree">
-    <img src="https://raw.githubusercontent.com/oslabs-beta/GQL-OSS/dev/client/src/images/logo4.png" alt="Logo" width="250">
+  <a href="https://github.com/oslabs-beta/GQL-OSS">
+    <img src="https://raw.githubusercontent.com/oslabs-beta/GQL-OSS/main/client/src/images/logo4.png" alt="Logo" width="250">
   </a>
   <h1 align="center"><b>GraphQL One Stop Shop</b></h1>
 </p>
@@ -18,11 +18,10 @@
 <div align="center">      
   <!-- LINK TO WEBSITE -->
   Visit
-    <b><u><span><a href="https://marketplace.visualstudio.com/items?itemName=ReacTreeDev.reactree">
+    <b><u><span><a href="https://www.graphql-oss.io/">
     The GraphQL One Stop Shop</a>
     </span></u></b>
-    <p><img src="https://img.shields.io/badge/dynamic/json?color=E10098&label=version&prefix=v&query=version&url=https%3A%2F%2Fraw.githubusercontent.com%2Foslabs-beta%2FGQL-OSS%2Fmichael%2Freadme%2Fclient%2Fpackage.json"></p>
-    <!-- <p><img src="https://img.shields.io/badge/dynamic/json?color=E10098&label=version&prefix=v&query=version&url=https%3A%2F%2Fraw.githubusercontent.com%2Foslabs-beta%2FGQL-OSS%2Fmain%2Fpackage.json"></p> -->
+    <p><img src="https://img.shields.io/badge/dynamic/json?color=E10098&label=version&prefix=v&query=version&url=https%3A%2F%2Fraw.githubusercontent.com%2Foslabs-beta%2FGQL-OSS%2Fmain%2Fclient%2Fpackage.json"></p>
 </div>
 
 <hr>
@@ -34,8 +33,8 @@
     <li><a href="#overview">Overview</a></li>
     <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#endpoint">Endpoint</a></li>
-    <li><a href="#editor">Code Editor</a></li>
-    <li><a href="#visualizer">Schema Visualizer</a></li>
+    <li><a href="#code-editor">Code Editor</a></li>
+    <li><a href="#schema-visualizer">Schema Visualizer</a></li>
     <li><a href="#tech-stack">Tech Stack</a></li>
     <li><a href="#article">Article</a></li>
     <li><a href="#contributing">Contributing</a></li>
@@ -46,7 +45,7 @@
 
 <hr>
 
-## <b>Overview</b>
+## <a id="overview"></a><b>Overview</b>
 
 <p align="left">
   GraphQL is a popular alternative to REST with several solid development tool options.  Some tools, such as <a href="https://github.com/graphql/graphiql">GraphiQL</a>, help with the generation & testing of queries and mutations, while others, such as <a href="https://github.com/IvanGoncharov/graphql-voyager">GraphQL Voyager</a>, allow users to visualize schema for convenient API navigation. The GraphQL One Stop Shop team set out to build a comprehensive GraphQL development tool to consolidate these functionalities into a single application.  OSS provides a development environment with integrated visual and query feedback in real time as a query / mutation is typed in the code editor field.
@@ -58,15 +57,16 @@
 
 ---
 
-## <b>Getting Started</b>
+## <a id="getting-started"></a><b>Getting Started</b>
 
-Head to <a href="https://marketplace.visualstudio.com/items?itemName=ReacTreeDev.reactree">
-GraphQL-oss.io</a> to visit the one stop shop.
+Head to [GraphQL-oss.io](https://www.graphql-oss.io/) to visit the one stop shop.
 <br/>
 
 ---
 
-## <b>Endpoint</b>
+# Test
+
+## <a id="endpoint"></a><b>Endpoint</b>
 
 _The top portion of the application is used to set the GraphQL endpoint_
 
@@ -80,7 +80,7 @@ Enter the desired GraphQL API endpoint and click “set endpoint”. This can be
 
 ---
 
-## <b>Code Editor</b>
+## <a id="code-editor"></a><b>Code Editor</b>
 
 _The left portion of the application is used for generating queries/mutations and viewing the data responses_
 
@@ -118,7 +118,7 @@ Editor Features:
 
 ---
 
-## <b>Schema Visualizer</b>
+## <a id="schema-visualizer"></a><b>Schema Visualizer</b>
 
 _The right portion of the application displays an interactive representation of the schema at the current endpoint._
 
@@ -142,7 +142,7 @@ Each Object Type from the Schema is represented as a node which contains all the
 
 ---
 
-## <b>Tech Stack</b>
+## <a id="tech-stack"></a><b>Tech Stack</b>
 
 - [React](https://reactjs.org/)
 - [React Flow](https://reactflow.dev/)
@@ -156,7 +156,7 @@ Each Object Type from the Schema is represented as a node which contains all the
 
 ---
 
-## <b>Article</b>
+## <a id="article"></a><b>Article</b>
 
 Checkout out our <a href="">medium article</a> for more information about the GraphQL One Stop Shop!
 
@@ -164,11 +164,11 @@ Checkout out our <a href="">medium article</a> for more information about the Gr
 
 ---
 
-## <b>Contributing</b>
+## <a id="contributing"></a><b>Contributing</b>
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-Get started with GraphQL OSS at https://www.graphql-oss.io/. And connect with us on <a href="">LinkedIn</a>.
+Get started with GraphQL OSS at https://www.graphql-oss.io/. And connect with us on [LinkedIn]().
 
 Additionally, you can find the project’s source code, documentation, and issue tracker in [Github]("https://github.com/oslabs-beta/GQL-OSS"). You can also fork the project, make changes, and submit pull requests to help improve the project.
 
@@ -178,18 +178,18 @@ Or buy us a coffee to fuel further development
 
 <a href="https://www.buymeacoffee.com/gacetta" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" alt="Buy Me A Coffee" height="30" width="130"></a>
 
-  <p align="left">
-      <br />
-      <a href="https://github.com/oslabs-beta/GQL-OSS/issues">Report Bug / Request Feature</a>
-  </p>
+<br />
+
+[Report Bug / Request Feature](https://github.com/oslabs-beta/GQL-OSS/issues)
+
 <br/>
 
 ---
 
-## <b>Meet Our Team</b>
+## <a id="meet-our-team"></a><b>Meet Our Team</b>
 
 - Clark Pang • [LinkedIn](https://www.linkedin.com/in/clarkpang/) • [Github](https://github.com/clark-pang)
-- Cole Bryan• [LinkedIn](https://www.linkedin.com/in/michaelbenliyan/) • [Github](https://github.com/CNBryan129)
+- Cole Bryan• [LinkedIn](https://www.youtube.com/watch?v=dQw4w9WgXcQ) • [Github](https://github.com/CNBryan129)
 - Felipe Ocampo • [LinkedIn](https://www.linkedin.com/in/ocampofelipe/) • [Github](https://github.com/felipeaocampo)
 - Michael Gacetta • [LinkedIn](https://www.linkedin.com/in/gacetta/) • [Github](https://github.com/gacetta)
 
@@ -197,7 +197,7 @@ Or buy us a coffee to fuel further development
 
 ---
 
-## <b>License</b>
+## <a id="license"></a><b>License</b>
 
 <!-- Make sure to add license file to master branch -->
 
