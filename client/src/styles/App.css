@@ -82,12 +82,10 @@ main {
   user-select: none;
   position: absolute;
   right: 3.5rem;
-  /* left: 1rem; */
   color: whitesmoke;
   font-family: "Poppins", sans-serif;
   font-weight: 400;
   font-size: 1.2rem;
-  /* font-style: italic; */
   transform: scale(1);
   opacity: 1;
   transition: all 0.2s ease;
@@ -101,22 +99,11 @@ main {
 .logo__container {
   position: absolute;
   left: 0.5rem;
-  /* right: 4rem; */
-  /* background-image: url("../images/logo1.png"); */
-  /* background-image: url("../images/logo2.png"); */
-  /* background-image: url("../images/logo3.png"); */
   background-image: url("../images/logo4.png");
-  /* background-image: url("../images/logo5.png"); */
-  /* background-image: url("../images/logo6.png"); */
-  /* background-image: url("../images/logo7.png"); */
-  /* background-image: url("../images/logo8.png"); */
-  /* background-size: cover; */
   height: 2rem;
   width: 4rem;
   background-size: contain;
   background-repeat: no-repeat;
-  /* height: 2.6rem;
-  width: 2rem; */
   opacity: 1;
   transform: scale(1);
   transition: all 0.2s ease;
