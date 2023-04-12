@@ -5,6 +5,9 @@
   perspective: 1000px;
   position: absolute;
   right: 1rem;
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.2s ease;
 }
 
 .help-button__container:hover .help-button {
@@ -15,11 +18,12 @@
   position: relative;
   width: 2rem;
   height: 2rem;
-  transition: transform .6s;
+  transition: transform 0.6s;
   transform-style: preserve-3d;
 }
 
-.sideA, .sideB {
+.sideA,
+.sideB {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -29,15 +33,15 @@
   align-items: center;
   justify-content: center;
   outline: 1px solid black;
-  opacity: .8;
+  opacity: 0.8;
 }
 
-.sideA {
+/* .sideA {
   background-color: whitesmoke;
   color: black;
   font-weight: 500;
   font-size: 1.5rem;
-}
+} */
 
 .sideB {
   transform: rotateY(180deg);

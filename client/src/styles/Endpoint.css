@@ -31,12 +31,14 @@
   margin-left: 5px;
   padding: 7px;
   border: none;
+
   border-radius: 5px;
   background-color: rgba(0, 0, 0, 0.3);
   color: whitesmoke;
   outline: 1px solid rgb(188, 183, 204);
   transition: all 0.1s ease;
   font-weight: 300;
+  width: 130px;
 }
 
 .endpoint__button:hover {
