@@ -19,7 +19,7 @@ import createGraphLayout from "../utils/createGraphLayout";
 import "reactflow/dist/style.css";
 import "../styles/Visualizer.css";
 import { defaultVisualizerOptions } from "../utils/defaultVisualizerOptions";
-import { FullscreenArrow } from "./FullscreenArrow";
+import { FullscreenArrowSVG } from "./FullscreenArrowSVG";
 
 /* Custom Node */
 // Declared outside of component to prevent re-declaration upon every render
@@ -64,7 +64,8 @@ const Visualizer = ({
   // Ref for maintaining accurate picture of current active field ID's in listeners & callbacks
   const currentActiveFieldIDs = useRef(activeFieldIDs);
 
-  // State management for VZ options
+  // State management for visualizer options
+  // default options set in ../utils/defaultVisualizerOptions.js
   const [visualizerOptions, setVisualizerOptions] = useState(
     defaultVisualizerOptions
   );
@@ -317,7 +318,7 @@ const Visualizer = ({
     setTimeout(() => setLoaderHidden(true), 550);
   };
 
-  /* Toggle Target Position */
+  /* Toggle position of node target handle between left and top */
   function toggleTargetPosition() {
     const targetPosition =
       visualizerOptions.targetPosition === "left" ? "top" : "left";
@@ -398,18 +399,16 @@ const Visualizer = ({
     setGhostMode((prevGhostMode) => (prevGhostMode === "on" ? "off" : "on"));
   }
 
-  // /* Toggle Minimap */
+  /* Toggle Visualizer Minimap */
   function toggleMinimap() {
     const showMinimap = !visualizerOptions.showMinimap;
-    const updatedVisualizerOptions = { ...visualizerOptions, showMinimap };
-    setVisualizerOptions(updatedVisualizerOptions);
+    setVisualizerOptions({ ...visualizerOptions, showMinimap });
   }
 
-  // /* Toggle Controls */
+  /* Toggle Visualizer Controls */
   function toggleControls() {
     const showControls = !visualizerOptions.showControls;
-    const updatedVisualizerOptions = { ...visualizerOptions, showControls };
-    setVisualizerOptions(updatedVisualizerOptions);
+    setVisualizerOptions({ ...visualizerOptions, showControls });
   }
 
   const nodeColor = (node) => {
@@ -473,7 +472,7 @@ const Visualizer = ({
         {showControls && (
           <Controls>
             <ControlButton onClick={fullscreenVisualizer}>
-              <FullscreenArrow />
+              <FullscreenArrowSVG />
             </ControlButton>
           </Controls>
         )}

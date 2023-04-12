@@ -1,6 +1,7 @@
 import React from "react";
 
-export const FullscreenArrow = () => {
+// SVG for fullscreen control panel button
+export const FullscreenArrowSVG = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

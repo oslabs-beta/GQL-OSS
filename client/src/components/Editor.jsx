@@ -146,6 +146,9 @@ export default function Editor({
     const queryModel = getOrCreateModel("operation.graphql", defaultOperations);
     const variablesModel = getOrCreateModel("variables.json", defaultVariables);
     const resultsModel = getOrCreateModel("results.json", defaultResults);
+
+    // editorOptions to be used in createEditor()
+    // default options are currently set in ../utils/defaultEditorOptions.js
     const {
       enableMiniMap,
       verticalScrollbar,
@@ -223,7 +226,8 @@ export default function Editor({
 
     // Assign Change Listeners
     // Debounce to wait 300ms after user stops typing before executing
-    // Ref used here for non-stale state
+    // only runs execOperation when liveQueryMode is engaged
+    // liveQueryModeRef used here for non-stale state
     queryModel.onDidChangeContent(
       debounce(300, () => {
         const operations = editor
@@ -275,7 +279,7 @@ export default function Editor({
 
   /****************************************** Helper Functions ********************************************/
 
-  // Toggle real time requests & highlighting
+  // Toggle functionality for live query mode
   function toggleLiveQueryMode() {
     setEditorOptions((prevOptions) => ({
       ...prevOptions,
@@ -389,6 +393,7 @@ export default function Editor({
     // no multipart or subscriptions yet.
     const data = await result.next();
 
+    //check response timing data and update metrics
     updateMetrics();
 
     // Display the results in results pane
@@ -454,19 +459,18 @@ export default function Editor({
       // retrieve the contents of the uriFile
       const operations = editor.getModel(Uri.file(uriFile)).getValue().trim();
 
-      // remove comments from copied operations text
+      // filter comments from copied operations text
       // complex regex: https://regex101.com/r/B8WkuX/1
       // will filter comments:
-      //   /* This Will Be Removed */
+      //  /* This Will Be filtered */
       //
-      //   /*
-      //    * This Will Also Be Removed
-      //   */
+      //  /*
+      //   * This Will Also Be filtered
+      //  */
       //
-      //    // so will almost all of these as long as they aren't preceeded by a semicolon (a URL)
+      //  // This will be filtered as long as not preceeded by a semicolon (i.e. a URL)
       //
-      // removes: comments
-      // removes: # a pair of pound signs and everything between them #
+      //  # a pair of pound signs and everything inside will be filtered #
       const filteredOperations = operations
         .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, "$1")
         .replace(/#[^#]*#/gm, "");
