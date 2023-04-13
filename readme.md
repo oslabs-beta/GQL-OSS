@@ -52,7 +52,7 @@
 </p>
 <br/>
 <p align="center">
-  <img  src="https://raw.githubusercontent.com/oslabs-beta/ReacTree/fabian/readme/src/media/navbar-controls.gif" width=90% >
+  <img  src="./client/src/images/test2.gif" width=90% >
 </p>
 
 ---
