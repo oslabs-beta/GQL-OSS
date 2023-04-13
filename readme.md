@@ -25,7 +25,7 @@
 </div>
 
 <p align="center">
-  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/overview.gif?raw=true" width=90% >
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/overview.gif?raw=true" width=100% >
 </p>
 
 <hr>
@@ -77,7 +77,7 @@ Head to [graphql-oss.io](https://www.graphql-oss.io/) to try it out!
 Set your desired GraphQL API endpoint with the input at the top. This can be the URL of an API hosted on the web or a server running locally on your machine. If the endpoint is valid and accessible, OSS will autogenerate a balanced and proportionate directed-graph layout of the schema and connect the editors to the schema's syntax and structure.
 
 <p align="center">
-  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/set_endpoint_2.gif?raw=true" width=90% >
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/set_endpoint_2.gif?raw=true" width=100% >
 </p>
 
 
@@ -97,7 +97,7 @@ The top editor is the **Request Pane**, used for creating queries & mutations. A
 <b>Testing Queries</b>
 </p>
 <p align="center">
-  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/overview.gif?raw=true" width=90% >
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/overview.gif?raw=true" width=100% >
 </p>
 
 
@@ -114,7 +114,7 @@ Upon successful response, performance metrics are displayed at the bottom.
 </p>
 
 <p align="center">
-  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/mutation_var.gif?raw=true" width=90% >
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/mutation_var.gif?raw=true" width=100% >
 </p>
 
 
@@ -128,13 +128,13 @@ Editor Features:
 <b>Building a Query with Reverse Mode</b>
 </p>
 <p align="center">
-  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/reverse_mode.gif?raw=true" width=90% >
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/reverse_mode.gif?raw=true" width=100% >
 </p>
 <p align="center">
 <b>Reverse Mode Collision Handling</b>
 </p>
 <p align="center">
-  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/reverse_collision.gif?raw=true" width=90% >
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/reverse_collision.gif?raw=true" width=100% >
 </p>
 
 
@@ -158,13 +158,13 @@ The **display options panel** provides workflow modes and visualizer options:
 - **Active Only** _(on | ***off***)_ - Only displays Type Nodes and Relationships that are currently active in the request pane
 
 <p align="center">
-  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/all_to_actives_only.gif?raw=true" width=90% >
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/all_to_actives_only.gif?raw=true" width=100% >
 </p>
 
 
 - **Suggestions** _(only available when Active Only is on)_ - Displays not only all active Type Nodes and Relationships, but also all nodes that are currently accessible from the furthest active nodes (leaves in the graph), effectively suggesting the next operational steps to be taken.
 <p align="center">
-  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/actives_only_to_ghost_mode.gif?raw=true" width=90% >
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/actives_only_to_ghost_mode.gif?raw=true" width=100% >
 </p>
 
 
