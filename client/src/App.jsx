@@ -142,7 +142,8 @@ const App = () => {
         <h1 className="toolbar__header">
           <span>GraphQL</span> One Stop Shop
         </h1>
-        <HelpButton />
+        <HelpButton type="github-hb" />
+        <HelpButton type="help-hb" />
       </nav>
 
       <Split
