@@ -3,23 +3,23 @@
 <br />
 <p align="center">
   <a href="https://github.com/oslabs-beta/GQL-OSS">
-    <img src="https://raw.githubusercontent.com/oslabs-beta/GQL-OSS/main/client/src/images/logo4.png" alt="Logo" width="250">
+    <img src="https://raw.githubusercontent.com/oslabs-beta/GQL-OSS/clark/readme/client/src/images/logo-bright.png" alt="Logo" width="250">
   </a>
   <h1 align="center"><b>GraphQL One Stop Shop</b></h1>
 </p>
 
   <h2 align="center">
-    A comprehensive GraphQL development tool with integrated code editor and schema visualizer.
+    A comprehensive GraphQL development tool that integrates editor-based request testing with live and dynamic visualization
     <br />
-
+	<br />
   </h2>
 
 <!-- BADGES -->
 <div align="center">      
   <!-- LINK TO WEBSITE -->
-  Visit
+  <i>Try it out!</i>
     <b><u><span><a href="https://www.graphql-oss.io/">
-    The GraphQL One Stop Shop</a>
+    GraphQL One Stop Shop</a>
     </span></u></b>
     <p><img src="https://img.shields.io/badge/dynamic/json?color=E10098&label=version&prefix=v&query=version&url=https%3A%2F%2Fraw.githubusercontent.com%2Foslabs-beta%2FGQL-OSS%2Fmain%2Fclient%2Fpackage.json"></p>
 </div>
@@ -28,15 +28,14 @@
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
-  <summary>Table of Contents</summary>
+<summary><b>Table of Contents</b></summary>
   <ol>
     <li><a href="#overview">Overview</a></li>
     <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#endpoint">Endpoint</a></li>
-    <li><a href="#code-editor">Code Editor</a></li>
-    <li><a href="#schema-visualizer">Schema Visualizer</a></li>
-    <li><a href="#tech-stack">Tech Stack</a></li>
-    <li><a href="#article">Article</a></li>
+    <li><a href="#code-editor">Editor</a></li>
+    <li><a href="#schema-visualizer">Visualizer</a></li>
+    <li><a href="#tech-stack">Technologies Used</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#meet-our-team">Meet our Team</a></li>
     <li><a href="#license">License</a></li>
@@ -48,7 +47,7 @@
 ## <a id="overview"></a><b>Overview</b>
 
 <p align="left">
-  GraphQL is a popular alternative to REST with several solid development tool options.  Some tools, such as <a href="https://github.com/graphql/graphiql">GraphiQL</a>, help with the generation & testing of queries and mutations, while others, such as <a href="https://github.com/IvanGoncharov/graphql-voyager">GraphQL Voyager</a>, allow users to visualize schema for convenient API navigation. The GraphQL One Stop Shop team set out to build a comprehensive GraphQL development tool to consolidate these functionalities into a single application.  OSS provides a development environment with integrated visual and query feedback in real time as a query / mutation is typed in the code editor field.
+  GraphQL is a popular alternative to REST that has a rich and evolving ecosystem. Tools such as <a href="https://github.com/graphql/graphiql">GraphiQL</a> offer request testing in a code environment, while tools like <a href="https://github.com/IvanGoncharov/graphql-voyager">GraphQL Voyager</a> offer visualization of GraphQL schemas. <b>One Stop Shop</b> sets out to provide a streamlined developer experience by tightly coupling these two concepts into a single, integrated workflow. With OSS, simply enter a GraphQL API endpoint to receive an interactive visualization of the schema, build out requests in the editor with autocompletion and validation, and see all your changes dynamically reflected in the visualizer and response pane.  Real-time feedback, visual highlighting, and auto-regraphing enable fluid and intuitive navigation. In addition, OSS provides complete control over how much complexity is shown at any given time, with the ability to narrow down overwhelming API's to only their most relevant pieces. Customize your experience by utilizing numerous workflow modes such as 'Active Only,' 'Suggestions,' and even 'Reverse' which enables you to build out queries or mutations by interacting with nothing but the visualizer.
 </p>
 <br/>
 <p align="center">
@@ -59,20 +58,23 @@
 
 ## <a id="getting-started"></a><b>Getting Started</b>
 
-Head to [GraphQL-oss.io](https://www.graphql-oss.io/) to visit the one stop shop.
+Head to [graphql-oss.io](https://www.graphql-oss.io/) to try it out!
+1) Set an endpoint (API URL, or local server)
+2) Navigate your visualization
+3) Build queries or mutations either through the editors or by interacting with the visualizer in Reverse Mode
+4) Enjoy live and dynamic feedback in the visualizer and response pane
+5) Experiment with different workflow modes to find your custom preferences
+6) Have fun and build!
 <br/>
 
 ---
 
-# Test
 
 ## <a id="endpoint"></a><b>Endpoint</b>
 
-_The top portion of the application is used to set the GraphQL endpoint_
+Set your desired GraphQL API endpoint with the input at the top. This can be the URL of an API hosted on the web or a server running locally on your machine. If the endpoint is valid and accessible, OSS will autogenerate a balanced and proportionate directed-graph layout of the schema and connect the editors to the schema's syntax and structure.
 
-Enter the desired GraphQL API endpoint and click “set endpoint”. This can be the URL of an API hosted on the web or a development server running at a localhost address. The schema should load and auto generate a layout.
-
-**NOTE:** OSS does not auto refresh the schema at this time. If you make any server-side changes to the API, the “refresh endpoint” button must be clicked to properly reflect the updates.
+**NOTE:** At this time, OSS does not auto refresh the schema. If you make any server-side changes to the API, “refresh endpoint” must be clicked to properly reflect the updates.
 
 <p align="center">
   <img  src="https://raw.githubusercontent.com/oslabs-beta/ReacTree/fabian/readme/src/media/launch-props-open-files.gif" width=90% >
@@ -80,11 +82,11 @@ Enter the desired GraphQL API endpoint and click “set endpoint”. This can be
 
 ---
 
-## <a id="code-editor"></a><b>Code Editor</b>
+## <a id="code-editor"></a><b>Editor</b>
 
-_The left portion of the application is used for generating queries/mutations and viewing the data responses_
+_The lefthand Editors of OSS allow you to build queries or mutations and view the data responses_
 
-<u>The top editor is **The Request Pane**</u>, used for creating queries & mutations. As the user types in a query, an auto-complete feature checks for valid fields that match the schema. A query can also be sent by clicking the “submit” button or using ⌘+⮐ (mac) or cmd+enter(mac) / ctrl+enter(windows). **FIX THIS - CHOOSE**
+The top editor is the **Request Pane**, used for creating queries & mutations. As you type, all operations are checked against the schema for autocompletion and validation. By default, "live mode" is on, meaning queries will automatically submit as you type for real-time feedback. You may also execute an operation manually by clicking "submit" or typing ⌘/ctrl + ⮐.
 
 <p align="center">
   <img  src="https://raw.githubusercontent.com/oslabs-beta/ReacTree/fabian/readme/src/media/navbar-controls.gif" width=90% >
@@ -92,11 +94,13 @@ _The left portion of the application is used for generating queries/mutations an
 
 <br/>
 
-The bottom editor serves several purposes:
+The bottom Editor is multi-purpose.
 
-<u>The “Results” tab displays **The Results Pane**</u>, where response data from the API is displayed.
+The “Results” tab displays the **Results Pane**, where response data from the API is displayed.
 
-<u>The “Variables” tab switches to **The Variables Pane**</u>, which allows for variable use in the Request Pane above.
+The “Variables” tab displays the **Variables Pane**, where variables can be entered in JSON format and will be automatically plugged in to the operation being executed. The variables pane is hooked into the Request pane for autocompletion and validation.
+
+Upon successful response, performance metrics are displayed at the bottom.
 
 <p align="center">
   <img  src="https://raw.githubusercontent.com/oslabs-beta/ReacTree/fabian/readme/src/media/themes.gif" width=90% >
@@ -104,63 +108,58 @@ The bottom editor serves several purposes:
 
 <br/>
 
-Performance metrics are displayed below these editors upon a successful response.
+
 
 <br/>
 
 Editor Features:
 
-- **Copy Button** - when clicked, copies the contents of the current editor window
-- **Live Query Mode** (**_on_** | off) - upon typing in the Request Pane, the OSS constantly validates and sends requests to API, updating results and visualizer highlighting in real time.
-- **Reverse Mode** (on | **_off_**) - When engaged, allows for generation of a query / mutation by clicking on the schema.
+- **Copy Button** - Copies the contents of the current editor window disregarding preamble comments
+- **Live Query Mode** (**_on_** | off) - Upon typing in the Request Pane, OSS validates and executes queries, updating results and visualizer highlighting in real time. Mutations are never automatically executed and require manual submission. If a query is not fully validated, it will not be sent to the API. However it may still be partially highlighted in the visualizer for guidance.
+- **Reverse Mode** (on | **_off_**) - Build queries or mutations by clicking through valid routes to any level of nestedness in the visualizer itself. Turning on Reverse Mode will reset the state of your visualizer and data, while turning it off will persist it so you can fill out variables or continue building out requests after the fact. Collisions occur when fields that have multiple possible active routes are chosen, and can be resolved through the collision interface when triggered. You may only select fields with open active routes, and you must start building from Query/Root or Mutation.
 
 **NOTE**: At this time, subscriptions are not supported.
 
 ---
 
-## <a id="schema-visualizer"></a><b>Schema Visualizer</b>
+## <a id="schema-visualizer"></a><b>Visualizer</b>
 
-_The right portion of the application displays an interactive representation of the schema at the current endpoint._
+_The righthand Visualizer is a dynamic and interactive directed-graph representation of the current endpoint's schema._
 
-Each Object Type from the Schema is represented as a node which contains all the fields that belong to that type. Relationships are rendered as arrows pointing from fields to their corresponding Object Type. Nodes are draggable and collapsable for a highly customizable environment.
+Each Object Type from the Schema is represented as a _Type Node_ which contains all the _fields_ that belong to that Type. Relationships between Types and fields are rendered as arrows pointing from a field to its corresponding Object Type. Nodes are draggable and collapsible to suit your needs and preferences.
 
-**A control panel** allows for easy zooming, centering, drag lock and fullscreen control.
+The **control panel** allows for easy zooming, centering, drag lock, and fullscreen control.
 
-**A minimap** allows for easy navigation within the visualizer
+The **minimap** allows for easy navigation within the visualizer and highlights active nodes from a bird's eye view
 
-**A collapsable display options panel** provides more visualizer options:
+The **display options panel** provides workflow modes and visualizer options:
 
-- **Active Only** _(on | ***off***)_ - Only displays Nodes and Relationships that are currently “active” in the request pane
-- **Suggestions** _(only available in Active Only)_ - Displays “inactive” Nodes that have a relationship to the “active” nodes
-- **Auto Regraph** _(***on*** | off)_ - Updates the visualizer layout when the rendered nodes change, i.e. when a new “active” node is added
+- **Active Only** _(on | ***off***)_ - Only displays Type Nodes and Relationships that are currently active in the request pane
+- **Suggestions** _(only available when Active Only is on)_ - Displays not only all active Type Nodes and Relationships, but also all nodes that are currently accessible from the furthest active nodes (leaves in the graph), effectively suggesting the next operational steps to be taken.
+- **Auto Regraph** _(***on*** | off)_ - Automatically refreshes the visualizer layout to proportionate and balanced spacing when the active or visibility statuses change for nodes or edges.
 - **Target Position** _( ***left*** | top )_ - Updates the location of the arrowhead pointing to each node.
 - **Minimap** _(***on*** | off)_ - Toggles visualizer minimap
 - **Controls** _(***on*** | off)_ - Toggles visualizer control panel
 - **Color Selection** - Customize the colors of the visualizer
-- **Collapse/Expand All** - collapse / expand all nodes
-- **Regraph** - Resets the graph layout
-
+- **Collapse/Expand All** - Collapse / expand all nodes. An individual node can be collapsed or expanded by clicking on its header.
+- **Regraph** - Manually refresh the visualizer layout to proportionate and balanced spacing at any given time.
 ---
 
-## <a id="tech-stack"></a><b>Tech Stack</b>
+## <a id="tech-stack"></a><b>Technologies Used</b>
 
 - [React](https://reactjs.org/)
 - [React Flow](https://reactflow.dev/)
-- [React-Split](https://www.npmjs.com/package/react-split)
-- [GraphQL](https://graphql.org/)
-- [Monaco-Editor](https://microsoft.github.io/monaco-editor/) w/ [GraphQL Plugin](https://www.npmjs.com/package/monaco-graphql)
 - [ElkJS](https://github.com/kieler/elkjs)
+- [Monaco-Editor](https://microsoft.github.io/monaco-editor/) w/ [GraphQL Plugin](https://www.npmjs.com/package/monaco-graphql)
 - [Vite](https://vitejs.dev/)
+- [GraphQL](https://graphql.org/)
+- [React-Split](https://www.npmjs.com/package/react-split)
   <br/>
   <br/>
 
 ---
 
-## <a id="article"></a><b>Article</b>
 
-Checkout out our <a href="">medium article</a> for more information about the GraphQL One Stop Shop!
-
-<br/>
 
 ---
 
@@ -168,19 +167,18 @@ Checkout out our <a href="">medium article</a> for more information about the Gr
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-Get started with GraphQL OSS at https://www.graphql-oss.io/. And connect with us on [LinkedIn]().
+Feel free to open tickets and start conversations around feedback or issues. All forks and suggestions are welcome - we'd love to collaborate with you!
 
-Additionally, you can find the project’s source code, documentation, and issue tracker in [Github]("https://github.com/oslabs-beta/GQL-OSS"). You can also fork the project, make changes, and submit pull requests to help improve the project.
+If you like our application and find it useful, please consider starring our repo. This can help increase our overall impact and reach in the community, as well as attract more contributors and users. We'd greatly appreciate it!
 
-If you like the project and find it useful, please consider giving it a star on GitHub. This can help increase visibility for the project and attract more contributors and users.
+[Report Bug / Request Feature](https://github.com/oslabs-beta/GQL-OSS/issues)
 
 Or buy us a coffee to fuel further development
 
 <a href="https://www.buymeacoffee.com/gacetta" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" alt="Buy Me A Coffee" height="30" width="130"></a>
 
-<br />
 
-[Report Bug / Request Feature](https://github.com/oslabs-beta/GQL-OSS/issues)
+
 
 <br/>
 
@@ -188,10 +186,19 @@ Or buy us a coffee to fuel further development
 
 ## <a id="meet-our-team"></a><b>Meet Our Team</b>
 
+Developed with love by:
+
 - Clark Pang • [LinkedIn](https://www.linkedin.com/in/clarkpang/) • [Github](https://github.com/clark-pang)
-- Cole Bryan• [LinkedIn](https://www.youtube.com/watch?v=dQw4w9WgXcQ) • [Github](https://github.com/CNBryan129)
+- Cole Bryan• [LinkedIn](https://www.linkedin.com/in/cnbryan/) • [Github](https://github.com/CNBryan129)
 - Felipe Ocampo • [LinkedIn](https://www.linkedin.com/in/ocampofelipe/) • [Github](https://github.com/felipeaocampo)
 - Michael Gacetta • [LinkedIn](https://www.linkedin.com/in/gacetta/) • [Github](https://github.com/gacetta)
+
+
+ Check out out our <a href="">Medium article</a> for more information!
+
+
+ Team [LinkedIn](https://www.linkedin.com/company/graphql-oss/)
+
 
 <br/>
 
