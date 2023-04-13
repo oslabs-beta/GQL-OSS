@@ -52,7 +52,7 @@
 </p>
 <br/>
 <p align="center">
-  <img  src="./client/src/images/test2.gif" width=90% >
+  <img  src="./client/src/images/set_endpoint.gif" width=90% >
 </p>
 
 ---
