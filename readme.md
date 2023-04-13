@@ -24,6 +24,10 @@
     <p><img src="https://img.shields.io/badge/dynamic/json?color=E10098&label=version&prefix=v&query=version&url=https%3A%2F%2Fraw.githubusercontent.com%2Foslabs-beta%2FGQL-OSS%2Fmain%2Fclient%2Fpackage.json"></p>
 </div>
 
+<p align="center">
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/overview.gif?raw=true" width=90% >
+</p>
+
 <hr>
 
 <!-- TABLE OF CONTENTS -->
@@ -50,9 +54,7 @@
   GraphQL is a popular alternative to REST that has a rich and evolving ecosystem. Tools such as <a href="https://github.com/graphql/graphiql">GraphiQL</a> offer request testing in a code environment, while tools like <a href="https://github.com/IvanGoncharov/graphql-voyager">GraphQL Voyager</a> offer visualization of GraphQL schemas. <b>One Stop Shop</b> sets out to provide a streamlined developer experience by tightly coupling these two concepts into a single, integrated workflow. With OSS, simply enter a GraphQL API endpoint to receive an interactive visualization of the schema, build out requests in the editor with autocompletion and validation, and see all your changes dynamically reflected in the visualizer and response pane.  Real-time feedback, visual highlighting, and auto-regraphing enable fluid and intuitive navigation. In addition, OSS provides complete control over how much complexity is shown at any given time, with the ability to narrow down overwhelming API's to only their most relevant pieces. Customize your experience by utilizing numerous workflow modes such as 'Active Only,' 'Suggestions,' and even 'Reverse' which enables you to build out queries or mutations by interacting with nothing but the visualizer.
 </p>
 <br/>
-<p align="center">
-  <img  src="https://raw.githubusercontent.com/oslabs-beta/ReacTree/fabian/readme/src/media/navbar-controls.gif" width=90% >
-</p>
+
 
 ---
 
@@ -64,7 +66,7 @@ Head to [graphql-oss.io](https://www.graphql-oss.io/) to try it out!
 3) Build queries or mutations either through the editors or by interacting with the visualizer in Reverse Mode
 4) Enjoy live and dynamic feedback in the visualizer and response pane
 5) Experiment with different workflow modes to find your custom preferences
-6) Have fun and build!
+6) <i>Have fun and build!</i>
 <br/>
 
 ---
@@ -74,11 +76,13 @@ Head to [graphql-oss.io](https://www.graphql-oss.io/) to try it out!
 
 Set your desired GraphQL API endpoint with the input at the top. This can be the URL of an API hosted on the web or a server running locally on your machine. If the endpoint is valid and accessible, OSS will autogenerate a balanced and proportionate directed-graph layout of the schema and connect the editors to the schema's syntax and structure.
 
-**NOTE:** At this time, OSS does not auto refresh the schema. If you make any server-side changes to the API, “refresh endpoint” must be clicked to properly reflect the updates.
-
 <p align="center">
-  <img  src="https://raw.githubusercontent.com/oslabs-beta/ReacTree/fabian/readme/src/media/launch-props-open-files.gif" width=90% >
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/set_endpoint_2.gif?raw=true" width=90% >
 </p>
+
+
+**NOTE:** <i>At this time, OSS does not auto refresh the schema. If you make any server-side changes to the API, “refresh endpoint” must be clicked to properly reflect the updates.</i>
+
 
 ---
 
@@ -88,13 +92,16 @@ _The lefthand Editors of OSS allow you to build queries or mutations and view th
 
 The top editor is the **Request Pane**, used for creating queries & mutations. As you type, all operations are checked against the schema for autocompletion and validation. By default, "live mode" is on, meaning queries will automatically submit as you type for real-time feedback. You may also execute an operation manually by clicking "submit" or typing ⌘/ctrl + ⮐.
 
+
 <p align="center">
-  <img  src="https://raw.githubusercontent.com/oslabs-beta/ReacTree/fabian/readme/src/media/navbar-controls.gif" width=90% >
+<b>Testing Queries</b>
+</p>
+<p align="center">
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/overview.gif?raw=true" width=90% >
 </p>
 
-<br/>
 
-The bottom Editor is multi-purpose.
+The bottom Editor serves multiple purposes:
 
 The “Results” tab displays the **Results Pane**, where response data from the API is displayed.
 
@@ -103,14 +110,13 @@ The “Variables” tab displays the **Variables Pane**, where variables can be 
 Upon successful response, performance metrics are displayed at the bottom.
 
 <p align="center">
-  <img  src="https://raw.githubusercontent.com/oslabs-beta/ReacTree/fabian/readme/src/media/themes.gif" width=90% >
+<b>Testing Mutations</b>
 </p>
 
-<br/>
+<p align="center">
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/mutation_var.gif?raw=true" width=90% >
+</p>
 
-
-
-<br/>
 
 Editor Features:
 
@@ -118,7 +124,22 @@ Editor Features:
 - **Live Query Mode** (**_on_** | off) - Upon typing in the Request Pane, OSS validates and executes queries, updating results and visualizer highlighting in real time. Mutations are never automatically executed and require manual submission. If a query is not fully validated, it will not be sent to the API. However it may still be partially highlighted in the visualizer for guidance.
 - **Reverse Mode** (on | **_off_**) - Build queries or mutations by clicking through valid routes to any level of nestedness in the visualizer itself. Turning on Reverse Mode will reset the state of your visualizer and data, while turning it off will persist it so you can fill out variables or continue building out requests after the fact. Collisions occur when fields that have multiple possible active routes are chosen, and can be resolved through the collision interface when triggered. You may only select fields with open active routes, and you must start building from Query/Root or Mutation.
 
-**NOTE**: At this time, subscriptions are not supported.
+<p align="center">
+<b>Building a Query with Reverse Mode</b>
+</p>
+<p align="center">
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/reverse_mode.gif?raw=true" width=90% >
+</p>
+<p align="center">
+<b>Reverse Mode Collision Handling</b>
+</p>
+<p align="center">
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/reverse_collision.gif?raw=true" width=90% >
+</p>
+
+
+
+**NOTE**: <i>At this time, subscriptions are not supported.</i>
 
 ---
 
@@ -135,7 +156,18 @@ The **minimap** allows for easy navigation within the visualizer and highlights 
 The **display options panel** provides workflow modes and visualizer options:
 
 - **Active Only** _(on | ***off***)_ - Only displays Type Nodes and Relationships that are currently active in the request pane
+
+<p align="center">
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/all_to_actives_only.gif?raw=true" width=90% >
+</p>
+
+
 - **Suggestions** _(only available when Active Only is on)_ - Displays not only all active Type Nodes and Relationships, but also all nodes that are currently accessible from the furthest active nodes (leaves in the graph), effectively suggesting the next operational steps to be taken.
+<p align="center">
+  <img  src="https://github.com/oslabs-beta/GQL-OSS/blob/felipe/giftest/client/src/images/gifs/actives_only_to_ghost_mode.gif?raw=true" width=90% >
+</p>
+
+
 - **Auto Regraph** _(***on*** | off)_ - Automatically refreshes the visualizer layout to proportionate and balanced spacing when the active or visibility statuses change for nodes or edges.
 - **Target Position** _( ***left*** | top )_ - Updates the location of the arrowhead pointing to each node.
 - **Minimap** _(***on*** | off)_ - Toggles visualizer minimap
