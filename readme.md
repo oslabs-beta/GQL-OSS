@@ -226,7 +226,7 @@ Developed with love by:
 - Michael Gacetta • [LinkedIn](https://www.linkedin.com/in/gacetta/) • [Github](https://github.com/gacetta)
 
 
- Check out out our <a href="">Medium article</a> for more information!
+ Check out out our <a href="https://medium.com/@cnbryan129/managing-a-complex-graphql-schema-head-on-down-to-the-one-stop-shop-6b27e1c0c82b">Medium article</a> for more information!
 
 
  Team [LinkedIn](https://www.linkedin.com/company/graphql-oss/)
