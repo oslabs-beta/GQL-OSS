@@ -75,7 +75,7 @@ Enter the desired GraphQL API endpoint and click “set endpoint”. This can be
 **NOTE:** OSS does not auto refresh the schema at this time. If you make any server-side changes to the API, the “refresh endpoint” button must be clicked to properly reflect the updates.
 
 <p align="center">
-  <img  src="https://raw.githubusercontent.com/oslabs-beta/ReacTree/fabian/readme/src/media/launch-props-open-files.gif" width=90% >
+  <img  src="./client/src/images/reverse_collision.gif" width=90% >
 </p>
 
 ---
@@ -99,7 +99,7 @@ The bottom editor serves several purposes:
 <u>The “Variables” tab switches to **The Variables Pane**</u>, which allows for variable use in the Request Pane above.
 
 <p align="center">
-  <img  src="https://raw.githubusercontent.com/oslabs-beta/ReacTree/fabian/readme/src/media/themes.gif" width=90% >
+  <img  src="./client/src/images/reversemode.gif" width=90% >
 </p>
 
 <br/>
