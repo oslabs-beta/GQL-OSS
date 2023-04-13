@@ -3,7 +3,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/oslabs-beta/GQL-OSS">
-    <img src="https://raw.githubusercontent.com/oslabs-beta/GQL-OSS/clark/readme/client/src/images/logo.png" alt="Logo" width="250">
+    <img src="https://raw.githubusercontent.com/oslabs-beta/GQL-OSS/clark/readme/client/src/images/logo-bright.png" alt="Logo" width="250">
   </a>
   <h1 align="center"><b>GraphQL One Stop Shop</b></h1>
 </p>
