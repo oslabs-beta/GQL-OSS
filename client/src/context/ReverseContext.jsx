@@ -18,10 +18,10 @@ export const ContextProvider = ({ children }) => {
   const [reverseModeError, setReverseModeError] = useState(null);
   const [mutationMode, setMutationMode] = useState(false);
 
-  // console.log(`revQueryObj: `, revQueryObj);
-  // console.log("revActiveTypesNFields:", revActiveTypesNFields);
-  // console.log(`revActiveRelationships: `, revActiveRelationships);
-  // console.log(`revCurFields: `, revCurFields);
+  console.log(`revQueryObj: `, revQueryObj);
+  console.log("revActiveTypesNFields:", revActiveTypesNFields);
+  console.log(`revActiveRelationships: `, revActiveRelationships);
+  console.log(`revCurFields: `, revCurFields);
 
   const revQueryObjUpdated = useRef(revQueryObj);
 
