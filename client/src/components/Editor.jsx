@@ -462,6 +462,7 @@ export default function Editor({
   // /* Copy the Editor Contents */
   async function copyEditorField(e, ref) {
     try {
+      console.log("copy editor text button clicked - TO DO: add tooltip text");
       let uriFile;
       // set the uriFile name based on ref
       if (ref === opsRef) uriFile = "operation.graphql";
@@ -488,6 +489,8 @@ export default function Editor({
         .replace(/#[^#]*#/gm, "");
 
       // copy to clipboard
+      // TO DO: add tooltip text
+
       await navigator.clipboard.writeText(filteredOperations);
       const copyButton = e.target;
       copyButton.innerText = "copied!";
